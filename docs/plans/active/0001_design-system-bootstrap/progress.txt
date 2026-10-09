@@ -1,0 +1,14 @@
+## Iteration 1
+- Increment: 01 — Repo skeleton and toolchain
+- Status: done
+- Files changed: package.json, mise.toml, Makefile, LICENSE, brand/LICENSE, guidelines/LICENSE, .github/CODEOWNERS, README.md, GOVERNANCE.md, docs/one-offs.md, .gitignore, .editorconfig, tests/unit/smoke.test.mjs, plan status
+- Test gate: passed (first attempt)
+- Red run: `node --test` on smoke.test.mjs before any file existed: 0 pass / 5 fail (pins Node 24 in engines; every dependency exact; licence notices and CODEOWNERS exist; package licence points at split LICENSE; root LICENSE excludes brand/ and guidelines/)
+- Green run: `make check` EXIT=0, 5/5 pass; also 5/5 under `mise exec` (Node 24.18.0)
+- Learnings:
+  - Global node on this machine is 26 (~/.mise.toml); mise.toml pins node 24.18.0 and gitleaks 8.30.1 exactly. `make` uses whatever node is on PATH; run `mise exec -- make check` (or activate mise in the repo) to get Node 24.
+  - `node --test` with a quoted glob ("tests/unit/**/*.test.mjs") needs Node >= 21; fine on 24.
+  - `build` and `lint` are explicit stubs that echo; increments 04 and 07 replace them. `confidentiality-check` runs `gitleaks dir --redact .` only; increment 02 adds .gitleaks.toml and the deny-list scanner after it.
+  - package.json has no dependencies yet; the exact-pin test covers all four dependency fields so later increments inherit it.
+- Commit: 66f03dc
+- Timestamp: 2026-10-09T21:42:00+02:00

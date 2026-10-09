@@ -1,0 +1,37 @@
+{
+  "semantic": {
+    "chart": {
+      "$type": "color",
+      "series": {
+        "1": {
+          "$value": "{core.color.navy}",
+          "$description": "Categorical series 1 of 4, always used first; also the highlight in highlight-on-grey charts."
+        },
+        "2": {
+          "$value": "{core.color.bluegrey-1}",
+          "$description": "Categorical series 2 of 4."
+        },
+        "3": {
+          "$value": "{core.color.bluegrey-2}",
+          "$description": "Categorical series 3 of 4."
+        },
+        "4": {
+          "$value": "{core.color.bluegrey-3}",
+          "$description": "Categorical series 4 of 4; context bars in highlight-on-grey charts."
+        }
+      },
+      "rest": {
+        "$value": "{core.color.bluegrey-4}",
+        "$description": "Remainder or empty fill, never a categorical series; too close to series 4 under colour-vision deficiency, so draw it with a series 4 outline."
+      },
+      "axis": {
+        "$value": "{core.color.grey-500}",
+        "$description": "Axis lines and ticks (non-text, Owner ruling 1, 2026-10-09); axis labels use tertiary."
+      },
+      "baseline": {
+        "$value": "{core.color.grey-300}",
+        "$description": "Gridlines and baselines (decorative)."
+      }
+    }
+  }
+}

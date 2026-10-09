@@ -38,7 +38,7 @@ mise install   # Node, gitleaks, actionlint, zizmor and shellcheck, pinned in mi
 make check     # lint, workflow lint, build, tests and the confidentiality check
 ```
 
-`make check` is the single local entry point and mirrors CI, which installs the same tools from `mise.toml` and runs the same target. Locally the deny-list scan warns when `MQ_DENYLIST` is unset; point it at a copy of the deny-list (or `tests/fixtures/denylist.txt` for a dry run) to run the full check.
+`make build` installs the npm dependencies from `package-lock.json` (`npm ci --ignore-scripts`) when the lockfile changes, then regenerates `dist/` from `tokens/` with Style Dictionary. `make check` is the single local entry point and mirrors CI, which installs the same tools from `mise.toml` and runs the same target. Locally the deny-list scan warns when `MQ_DENYLIST` is unset; point it at a copy of the deny-list (or `tests/fixtures/denylist.txt` for a dry run) to run the full check.
 
 Dependabot proposes weekly bumps for npm dependencies and GitHub Actions. It has no mise ecosystem, so the tool pins in `mise.toml` are bumped by hand, in a PR whose `make check` must pass.
 

@@ -6,9 +6,15 @@ check: lint workflow-lint build test confidentiality-check
 test:
 	node --test "tests/unit/**/*.test.mjs"
 
-# No token build yet; increment 04 adds Style Dictionary.
-build:
-	@echo "build: nothing to build yet"
+# Lockfile install, re-run only when package-lock.json changes. Dependency install scripts
+# never run.
+node_modules/.package-lock.json: package-lock.json
+	npm ci --ignore-scripts
+
+# dist/ is generated from tokens/ and never committed; rebuilt from scratch every time.
+build: node_modules/.package-lock.json
+	rm -rf dist
+	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
 
 # No linters yet; increment 07 adds stylelint.
 lint:

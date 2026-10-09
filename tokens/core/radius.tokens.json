@@ -1,0 +1,21 @@
+{
+  "core": {
+    "radius": {
+      "3": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "Owner ruling 3, 2026-10-09: small items (tags, inputs, chips)."
+      },
+      "6": {
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        },
+        "$description": "Owner ruling 3, 2026-10-09: cards and panels; the maximum anywhere, no pill shapes."
+      },
+      "$type": "dimension"
+    }
+  }
+}

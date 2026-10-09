@@ -1,0 +1,28 @@
+{
+  "semantic": {
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "color": {
+          "$value": "{core.color.navy}",
+          "$description": "Focus ring on light backgrounds: 2 px navy with an offset, 13.90:1 on canvas (research note 0001, section 7)."
+        },
+        "color-on-navy": {
+          "$value": "{core.color.white}",
+          "$description": "Focus ring on navy backgrounds, 14.53:1."
+        }
+      }
+    },
+    "focus-ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{core.stroke.2}",
+        "$description": "Focus ring width (WCAG 2.4.7 and 1.4.11)."
+      },
+      "offset": {
+        "$value": "{core.stroke.2}",
+        "$description": "Gap between the focused element and its ring."
+      }
+    }
+  }
+}

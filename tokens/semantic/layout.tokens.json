@@ -1,0 +1,50 @@
+{
+  "semantic": {
+    "radius": {
+      "$type": "dimension",
+      "small": {
+        "$value": "{core.radius.3}",
+        "$description": "Owner ruling 3, 2026-10-09: tags, inputs and chips."
+      },
+      "medium": {
+        "$value": "{core.radius.6}",
+        "$description": "Owner ruling 3, 2026-10-09: cards and panels."
+      }
+    },
+    "space": {
+      "1": {
+        "$value": "{core.space.4}",
+        "$description": "Spacing step 1, 4 px."
+      },
+      "2": {
+        "$value": "{core.space.8}",
+        "$description": "Spacing step 2, 8 px."
+      },
+      "3": {
+        "$value": "{core.space.12}",
+        "$description": "Spacing step 3, 12 px."
+      },
+      "4": {
+        "$value": "{core.space.16}",
+        "$description": "Spacing step 4, 16 px."
+      },
+      "5": {
+        "$value": "{core.space.24}",
+        "$description": "Spacing step 5, 24 px."
+      },
+      "6": {
+        "$value": "{core.space.32}",
+        "$description": "Spacing step 6, 32 px."
+      },
+      "7": {
+        "$value": "{core.space.48}",
+        "$description": "Spacing step 7, 48 px."
+      },
+      "8": {
+        "$value": "{core.space.72}",
+        "$description": "Spacing step 8, 72 px."
+      },
+      "$type": "dimension"
+    }
+  }
+}

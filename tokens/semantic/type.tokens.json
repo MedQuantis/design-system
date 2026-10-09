@@ -1,0 +1,115 @@
+{
+  "semantic": {
+    "font": {
+      "family": {
+        "$type": "fontFamily",
+        "heading": {
+          "$value": "{core.font.family.outfit}",
+          "$description": "Headings, column titles and hero figures (Owner ruling 4, 2026-10-09, Owner ruling 10, 2026-10-09)."
+        },
+        "body": {
+          "$value": "{core.font.family.newsreader}",
+          "$description": "Body text of documents and slides, regulatory text in apps (Owner ruling 10, 2026-10-09)."
+        },
+        "ui": {
+          "$value": "{core.font.family.outfit}",
+          "$description": "Labels and app UI (Owner ruling 10, 2026-10-09)."
+        },
+        "mono": {
+          "$value": "{core.font.family.geist-mono}",
+          "$description": "Figures and codes (Owner ruling 10, 2026-10-09)."
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "heading": {
+          "$value": "{core.font.weight.500}",
+          "$description": "Owner ruling 4, 2026-10-09: every heading, column title and hero figure."
+        },
+        "emphasis": {
+          "$value": "{core.font.weight.600}",
+          "$description": "Owner ruling 4, 2026-10-09: a short highlighted word inside body text, as the Med of the logo."
+        },
+        "body": {
+          "$value": "{core.font.weight.400}",
+          "$description": "Body text."
+        }
+      },
+      "size": {
+        "$type": "dimension",
+        "hero-min": {
+          "$value": "{core.font.size.34}",
+          "$description": "Hero title at the narrowest viewport."
+        },
+        "hero-max": {
+          "$value": "{core.font.size.56}",
+          "$description": "Hero title at the widest viewport."
+        },
+        "h2": {
+          "$value": "{core.font.size.32}",
+          "$description": "Section title."
+        },
+        "h3": {
+          "$value": "{core.font.size.20}",
+          "$description": "Subsection title."
+        },
+        "lead": {
+          "$value": "{core.font.size.18}",
+          "$description": "Lead paragraph."
+        },
+        "body": {
+          "$value": "{core.font.size.16-5}",
+          "$description": "Body text on screen."
+        },
+        "small": {
+          "$value": "{core.font.size.15}",
+          "$description": "Small body text."
+        },
+        "label": {
+          "$value": "{core.font.size.13}",
+          "$description": "Labels."
+        },
+        "eyebrow": {
+          "$value": "{core.font.size.11}",
+          "$description": "Eyebrow above a title; 11 px is the floor for any text."
+        },
+        "figure": {
+          "$value": "{core.font.size.50}",
+          "$description": "Hero figure."
+        },
+        "kpi": {
+          "$value": "{core.font.size.30}",
+          "$description": "KPI value."
+        },
+        "stat": {
+          "$value": "{core.font.size.24}",
+          "$description": "Statistic value."
+        },
+        "table-header": {
+          "$value": "{core.font.size.11}",
+          "$description": "Table header cell."
+        },
+        "table-cell": {
+          "$value": "{core.font.size.13}",
+          "$description": "Table cell with figures."
+        },
+        "table-text": {
+          "$value": "{core.font.size.14}",
+          "$description": "Table cell with prose."
+        },
+        "takeaway": {
+          "$value": "{core.font.size.16}",
+          "$description": "Takeaway line under a figure."
+        },
+        "note": {
+          "$value": "{core.font.size.12-5}",
+          "$description": "Notes and sources."
+        },
+        "axis": {
+          "$value": "{core.font.size.11}",
+          "$description": "Chart axis labels."
+        }
+      }
+    }
+  }
+}

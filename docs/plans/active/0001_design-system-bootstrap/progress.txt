@@ -30,3 +30,22 @@
   - Exit codes: 0 clean, 1 findings, 2 misconfigured (no deny-list in CI, missing deny-list file, stale exclusion).
 - Commit: 77fddd3
 - Timestamp: 2026-10-09T21:50:00+02:00
+
+## Iteration 3
+- Increment: 03 - CI workflow
+- Status: done
+- Files changed: .github/workflows/ci.yml, .github/dependabot.yml, Makefile (workflow-lint target, wired into check), mise.toml (actionlint, zizmor, shellcheck), README.md (development notes, manual mise bumps, owner set-up), tests/unit/workflows.test.mjs, plan (status, Current Increment, M1 milestone done)
+- Test gate: passed (first attempt; two test regexes corrected during green, see learnings)
+- Red run: `mise exec -- node --test tests/unit/workflows.test.mjs` before any implementation: 0 pass / 11 fail (CI workflow exists; every uses: is pinned to a 40-character commit SHA with its tag in a comment; CI runs on pull_request and on push of tags; CI runs the confidentiality check through make check; CI installs Node and tools from mise.toml with jdx/mise-action, not setup-node; checkout does not persist credentials and permissions are read-only; deny-list is fetched with MQ_DENYLIST_TOKEN to a temp path and never echoed; workflow-lint mirrors CI's actionlint and zizmor and is part of make check; mise.toml pins actionlint, zizmor and shellcheck exactly; dependabot covers npm and github-actions weekly; README lists the deny-list repo and token as owner set-up steps and the manual mise bumps)
+- Green run: `mise exec -- make test` EXIT=0 (27/27); `mise exec -- make workflow-lint` EXIT=0 (actionlint clean, zizmor "No findings"); `MQ_DENYLIST=tests/fixtures/denylist.txt mise exec -- make check` EXIT=0 (40 files scanned, 8 excluded, 0 findings); plain `mise exec -- make check` EXIT=0; `CI=true make confidentiality-check` without deny-list EXIT=2.
+- Pins: actions/checkout 3d3c42e5aac5ba805825da76410c181273ba90b1 (v7.0.1), jdx/mise-action 2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca (v5.1.1), both lightweight tags resolved with `gh api repos/<repo>/git/ref/tags/<tag>`; mise itself pinned to 2026.2.16 in the action (the local version); mise.toml actionlint 1.7.12, zizmor 1.30.1, shellcheck 0.11.0.
+- Learnings:
+  - The private deny-list repo slug is not in the workflow: it comes from the Actions variable `MQ_DENYLIST_REPO` (file `denylist.txt` at its root), so the public repo never names it. This adds one owner step beyond the plan's secret; README lists it.
+  - Dependabot PRs only see Dependabot secrets, so `MQ_DENYLIST_TOKEN` must also be stored as a Dependabot secret or every Dependabot PR fails the scan closed. README says so.
+  - mise-action cache is disabled: the workflow runs on tag pushes, and a cache written by a PR must not reach a release build. Fast enough without it for five tools.
+  - zizmor at default severity flagged `dependabot-cooldown` (medium); a 7-day cooldown on both ecosystems clears it. `--min-severity high` remains the gate. zizmor runs offline (no GH_TOKEN), identically locally and in CI.
+  - actionlint enables its shellcheck rule only when shellcheck is on PATH (verbose output lists disabled rules; shellcheck is not among them under `mise exec`). Pinning shellcheck in mise.toml makes CI behave the same.
+  - Two test assertions were wrong, not the workflow: the `run: make check` regex missed the `- ` list prefix, and the no-echo check flagged an error message that names the secret without expanding it. Both now match intent (a `- run:` step; no `$...TOKEN` or `secrets.` expansion on an echo line).
+  - Not exercised here: the workflow has never run on GitHub (no push before increment 11's audit); the secret, the variable and the deny-list repo do not exist yet, so the first real run fails closed until the owner set-up is done.
+- Commit: 472a05e
+- Timestamp: 2026-10-09T22:10:00+02:00

@@ -34,11 +34,21 @@ The design system ships framework-neutral outputs only (CSS, JSON, Tailwind them
 ## Development
 
 ```sh
-mise install   # Node 24 and gitleaks, pinned in mise.toml
-make check     # lint, build, tests and the confidentiality check
+mise install   # Node, gitleaks, actionlint, zizmor and shellcheck, pinned in mise.toml
+make check     # lint, workflow lint, build, tests and the confidentiality check
 ```
 
-`make check` is the single local entry point and mirrors CI.
+`make check` is the single local entry point and mirrors CI, which installs the same tools from `mise.toml` and runs the same target. Locally the deny-list scan warns when `MQ_DENYLIST` is unset; point it at a copy of the deny-list (or `tests/fixtures/denylist.txt` for a dry run) to run the full check.
+
+Dependabot proposes weekly bumps for npm dependencies and GitHub Actions. It has no mise ecosystem, so the tool pins in `mise.toml` are bumped by hand, in a PR whose `make check` must pass.
+
+## Owner set-up
+
+CI fails closed until these exist:
+
+1. A private MedQuantis repository holding the deny-list as `denylist.txt` at its root, one client, partner or person name per line.
+2. A fine-grained personal access token with read-only `Contents` access to that repository alone, stored in this repository as the Actions secret `MQ_DENYLIST_TOKEN`, and again as a Dependabot secret of the same name so Dependabot PRs can run the scan.
+3. The Actions variable `MQ_DENYLIST_REPO` set to that repository's `owner/name`, so its name stays out of this public repository.
 
 ## Licence
 

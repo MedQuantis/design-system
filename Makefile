@@ -1,7 +1,7 @@
-.PHONY: check test build lint confidentiality-check
+.PHONY: check test build lint workflow-lint confidentiality-check
 
 # Single local entry point; CI runs the same target.
-check: lint build test confidentiality-check
+check: lint workflow-lint build test confidentiality-check
 
 test:
 	node --test "tests/unit/**/*.test.mjs"
@@ -13,6 +13,11 @@ build:
 # No linters yet; increment 07 adds stylelint.
 lint:
 	@echo "lint: nothing to lint yet"
+
+# Same invocations as CI; actionlint calls shellcheck on every run: block.
+workflow-lint:
+	actionlint
+	zizmor --min-severity high .github/
 
 # Secrets first, then names, amounts, internal hosts and metadata. The deny-list path comes
 # from MQ_DENYLIST; without it the scan warns locally and fails in CI.

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, build, test and confidentiality check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Node, gitleaks, actionlint, zizmor and shellcheck come from mise.toml, the same
+      # declaration used locally. No cache: tag builds must not restore state written by PRs.
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        with:
+          version: 2026.2.16
+          install: true
+          cache: false
+
+      # The deny-list lives in a private repo; the read-only token never reaches the log and
+      # the file stays outside the workspace. A missing secret makes the scan fail closed.
+      - name: Fetch deny-list
+        env:
+          GH_TOKEN: ${{ secrets.MQ_DENYLIST_TOKEN }}
+          DENYLIST_REPO: ${{ vars.MQ_DENYLIST_REPO }}
+        run: |
+          if [ -z "$GH_TOKEN" ] || [ -z "$DENYLIST_REPO" ]; then
+            echo "::error::MQ_DENYLIST_TOKEN secret or MQ_DENYLIST_REPO variable is not set"
+            exit 1
+          fi
+          gh api "repos/${DENYLIST_REPO}/contents/denylist.txt" \
+            -H "Accept: application/vnd.github.raw" > "${RUNNER_TEMP}/denylist.txt"
+          echo "MQ_DENYLIST=${RUNNER_TEMP}/denylist.txt" >> "$GITHUB_ENV"
+
+      - run: make check

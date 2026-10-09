@@ -158,10 +158,11 @@ Scope:
 2. `.github/workflows/ci.yml`: checkout, `jdx/mise-action` (SHA-pinned) installing Node and every tool from `mise.toml`, so local and CI versions have one declaration (no `setup-node`), then `make check`; deny-list fetched from the private MedQuantis deny-list repo with a fine-grained read-only token secret (`MQ_DENYLIST_TOKEN`), written to a temp path, never echoed.
 3. `.github/workflows/ci.yml` runs actionlint and zizmor on `.github/**`.
 4. Local mirror (CI/local parity): a `workflow-lint` Makefile target running the same `actionlint` and `zizmor --min-severity high .github/` invocations as CI, wired into `make check`; `mise.toml` pins actionlint and zizmor exactly (both are already declared in the owner's dotfiles, so no dotfiles change).
+5. `.github/dependabot.yml` for the `npm` and `github-actions` ecosystems (weekly). Dependabot has no mise ecosystem (owner, 2026-10-09: one bot, no Renovate), so `README.md` states that `mise.toml` pins are bumped by hand in a PR whose gate must pass.
 
 Primary files:
 
-1. `.github/workflows/ci.yml`, `Makefile`, `mise.toml`
+1. `.github/workflows/ci.yml`, `.github/dependabot.yml`, `Makefile`, `mise.toml`
 2. `tests/unit/workflows.test.mjs`
 
 Test gate:

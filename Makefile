@@ -14,6 +14,8 @@ build:
 lint:
 	@echo "lint: nothing to lint yet"
 
-# Increment 02 adds the deny-list scanner after gitleaks.
+# Secrets first, then names, amounts, internal hosts and metadata. The deny-list path comes
+# from MQ_DENYLIST; without it the scan warns locally and fails in CI.
 confidentiality-check:
-	gitleaks dir --no-banner --redact .
+	gitleaks dir --no-banner --redact --config .gitleaks.toml .
+	node scripts/confidentiality-check.mjs

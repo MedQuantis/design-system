@@ -1,0 +1,4 @@
+# Fixture deny-list: invented names only, never a real client, partner or person.
+Helvetor Assurances
+Brontal
+Zéphyrine Mollard

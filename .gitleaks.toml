@@ -1,0 +1,10 @@
+title = "MedQuantis design system"
+
+# Default rules; the deny-list and pattern scan in scripts/confidentiality-check.mjs covers
+# what gitleaks does not (names, amounts, internal hosts, metadata).
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Untracked install and build output"
+paths = ['''(^|/)node_modules/''', '''(^|/)dist/''']

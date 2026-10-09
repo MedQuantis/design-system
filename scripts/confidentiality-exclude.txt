@@ -1,0 +1,10 @@
+# Exact tracked paths skipped by scripts/confidentiality-check.mjs. Only fixtures that must
+# contain a violation belong here; never add a directory or a pattern.
+tests/fixtures/denylist.txt
+tests/fixtures/confidentiality/deny-term.md
+tests/fixtures/confidentiality/chf-amount.md
+tests/fixtures/confidentiality/examples/unmarked-percentage.md
+tests/fixtures/confidentiality/sharepoint-url.md
+tests/fixtures/confidentiality/crm-path.md
+tests/fixtures/confidentiality/svg-metadata.svg
+tests/fixtures/confidentiality/jpeg-exif.jpg

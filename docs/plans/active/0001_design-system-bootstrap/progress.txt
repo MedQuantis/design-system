@@ -12,3 +12,21 @@
   - package.json has no dependencies yet; the exact-pin test covers all four dependency fields so later increments inherit it.
 - Commit: 66f03dc
 - Timestamp: 2026-10-09T21:42:00+02:00
+
+## Iteration 2
+- Increment: 02 — Confidentiality scanner
+- Status: done
+- Files changed: scripts/confidentiality-check.mjs, scripts/confidentiality-exclude.txt, .gitleaks.toml, Makefile, tests/unit/confidentiality.test.mjs, tests/fixtures/denylist.txt, tests/fixtures/confidentiality/** (7 violating fixtures + clean/), plan (status, Current Increment, mq:illustrative marker on ruling 8)
+- Test gate: passed (first attempt)
+- Red run: `node --test tests/unit/confidentiality.test.mjs` before the scanner existed: ERR_MODULE_NOT_FOUND, all 11 tests fail (deny-list term; CHF amount outside examples/; unmarked percentage in examples/; SharePoint URL; crm/ path; SVG metadata + absolute path; JPEG EXIF; clean fixtures; deny-list term in path; CLI fails closed in CI; CLI fails on missing deny-list)
+- Green run: `make test` 16/16 pass; `MQ_DENYLIST=tests/fixtures/denylist.txt make confidentiality-check` EXIT=0 (37 files scanned, 8 excluded, 0 findings); `make check` EXIT=0; `CI=true make confidentiality-check` without deny-list EXIT=2. Probe file with a fixture deny-list term and a CHF amount outside examples/ was reported (EXIT=1), then removed.
+- Learnings:
+  - Interpretation of ADR-0005 layer 2: outside `examples/` only currency amounts are flagged (percentages are legitimate in CSS and guidelines); inside `examples/` any amount or percentage needs the marker. Marker is `mq:illustrative`, valid on the same line or, in the first five lines, for the whole file. Deny-list, hosts, paths and metadata are never exempted by it.
+  - Plan ruling 8 cites `CHF 2'460'000` as a format example; it now carries `<!-- mq:illustrative -->`. Increment 09's `guidelines/data-patterns.md` will need the same marker (file header) for its format examples.
+  - Exclusion list is `scripts/confidentiality-exclude.txt`, exact paths only; a listed path missing from the tree makes the scanner exit 2. Files come from `git ls-files --cached --others --exclude-standard`, so untracked new files are scanned too.
+  - Tests must never name a deny-list term literally (the real-tree run uses the fixture deny-list); the path test builds its term from the loaded list.
+  - Image metadata policy: PNG tEXt/iTXt/zTXt/eXIf and JPEG APP1 (EXIF/XMP)/APP13 (IPTC) are flagged. The brand PNGs carry only a tIME chunk, which is allowed. ICO files are not parsed.
+  - Dotfiles: gitleaks is already declared in `dot_mise.toml` (`gitleaks = "latest"`); no dotfiles change needed. The repo's mise.toml pins 8.30.1 exactly.
+  - Exit codes: 0 clean, 1 findings, 2 misconfigured (no deny-list in CI, missing deny-list file, stale exclusion).
+- Commit: 77fddd3
+- Timestamp: 2026-10-09T21:50:00+02:00

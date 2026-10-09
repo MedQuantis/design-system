@@ -157,16 +157,18 @@ Scope:
 1. **Write first, expect red:** a `tests/unit/workflows.test.mjs` asserting every `uses:` is pinned to a 40-character SHA and that the confidentiality job runs on `pull_request` and on `push` of tags.
 2. `.github/workflows/ci.yml`: checkout, setup-node (SHA-pinned), `make check`; deny-list fetched from the private MedQuantis deny-list repo with a fine-grained read-only token secret (`MQ_DENYLIST_TOKEN`), written to a temp path, never echoed.
 3. `.github/workflows/ci.yml` runs actionlint and zizmor on `.github/**`.
+4. Local mirror (CI/local parity): a `workflow-lint` Makefile target running the same `actionlint` and `zizmor --min-severity high .github/` invocations as CI, wired into `make check`; `mise.toml` pins actionlint and zizmor exactly (both are already declared in the owner's dotfiles, so no dotfiles change).
 
 Primary files:
 
-1. `.github/workflows/ci.yml`
+1. `.github/workflows/ci.yml`, `Makefile`, `mise.toml`
 2. `tests/unit/workflows.test.mjs`
 
 Test gate:
 
 1. `make test` exits 0.
-2. `actionlint` and `uvx zizmor --min-severity high .github/` exit 0.
+2. `make workflow-lint` exits 0.
+3. `make check` exits 0.
 
 Exit criteria:
 

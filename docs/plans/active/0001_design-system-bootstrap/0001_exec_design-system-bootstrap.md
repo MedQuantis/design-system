@@ -14,7 +14,7 @@ review_interval: 30d
 
 ## Summary
 
-Implements [ADR-0002](../../architecture/decisions/adr-0002-central-tokens-first-design-system.md) (central tokens-first repo, pinned consumption), [ADR-0003](../../architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md) (navy everywhere), [ADR-0004](../../architecture/decisions/adr-0004-status-colours-in-apps-only.md) (status colours in apps only), [ADR-0005](../../architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md) (public behind a confidentiality gate) and [ADR-0006](../../architecture/decisions/adr-0006-mq-token-prefix.md) (`--mq-` prefix). No PRD; the ADRs are the source.
+Implements [ADR-0002](../../../architecture/decisions/adr-0002-central-tokens-first-design-system.md) (central tokens-first repo, pinned consumption), [ADR-0003](../../../architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md) (navy everywhere), [ADR-0004](../../../architecture/decisions/adr-0004-status-colours-in-apps-only.md) (status colours in apps only), [ADR-0005](../../../architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md) (public behind a confidentiality gate) and [ADR-0006](../../../architecture/decisions/adr-0006-mq-token-prefix.md) (`--mq-` prefix). No PRD; the ADRs are the source.
 
 The plan has two halves. Increments 01 to 11 build this repo; nothing is pushed to a public remote before increment 11's audit passes. Increments 12 to 17 migrate one consumer each, in that consumer's own repo, through its own branch and PR, following that repo's own rules (`AGENTS.md`, CI gates, doc-sync obligations).
 
@@ -495,6 +495,8 @@ Exit criteria:
 6. Every dependency and every GitHub Action is pinned exactly (actions by full SHA).
 7. Consumer increments follow the consumer repo's own rules and gates, and ask the owner before committing.
 8. Each increment must be independently runnable and reversible.
+9. The Ralph loop in this repo runs increments 01 to 11 only. Increments 12 to 17 change other repositories and are driven separately; an iteration agent never edits files outside this repository, except the dotfiles declaration of increment 02, which it records in `progress.txt` as a pending owner action instead of committing when the dotfiles source is not available.
+10. Run every test gate in the foreground and end each iteration with a definitive state (done or blocked), never waiting on a background process.
 
 ## Milestone Chunks (Standalone Delivery Groups)
 

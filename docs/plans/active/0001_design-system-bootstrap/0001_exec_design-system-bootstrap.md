@@ -27,7 +27,7 @@ Principles:
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
 **Overall Status:** in-progress
-**Current Increment:** 10
+**Current Increment:** 11
 
 ## Repository layout (approved 2026-10-09)
 
@@ -366,7 +366,7 @@ Exit criteria:
 
 ### Increment 11: Release pipeline and pre-public audit
 
-**Status:** pending
+**Status:** in-progress
 
 Scope:
 
@@ -427,4 +427,4 @@ Corrections carried by those plans: the former increment 17 check ("the stitched
 | M2: Tokens | 04-05 | done | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
 | M3: Components and assets | 06-08 | done | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
 | M4: Guidelines and Claude | 09-10 | done | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
-| M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
+| M5: Release | 11 | in-progress | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |

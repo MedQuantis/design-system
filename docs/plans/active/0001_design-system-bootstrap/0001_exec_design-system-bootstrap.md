@@ -27,7 +27,7 @@ Principles:
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
 **Overall Status:** in-progress
-**Current Increment:** 07
+**Current Increment:** 08
 
 ## Repository layout (approved 2026-10-09)
 
@@ -57,7 +57,7 @@ design-system/
 ├── scripts/                             # confidentiality-check, build-specimen, copy-fonts, sync-skill-assets
 ├── tests/
 │   ├── unit/  fixtures/                 # node --test
-│   └── e2e/   __screenshots__/          # Playwright and axe on the specimen, PDF export
+│   └── e2e/   specimen.spec.mjs-snapshots/  # Playwright and axe on the specimen, PDF export
 ├── plugins/medquantis-design-system/
 │   ├── .claude-plugin/plugin.json
 │   └── skills/medquantis-design-system/
@@ -289,12 +289,13 @@ Exit criteria:
 
 ### Increment 08: Specimen page
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** a Playwright 1.64.0 test (system Chromium) loading the generated `dist/specimen/index.html`: every component class from `css/components.css` appears at least once; `@axe-core/playwright` 4.13.0 with tags `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa` reports no serious or critical violation; `toHaveScreenshot` baselines for the page and for a forced focus state; every request outside the file origin is routed to a failure; a PDF export with `tagged: true` and `outline: true` succeeds.
 2. `scripts/build-specimen.mjs` generates the specimen from `dist/tokens.json`, `css/` and `examples/` (swatches with contrast, type scale, radius, every component, a 1280×720 slide frame, an A4 print page, the app status layer), fictitious data only. It is never hand-edited. A docs site (Starlight or VitePress) is deferred until about ten shared components or usage guidance next to examples is needed.
+3. Kit shadow (owner, 2026-10-10): the kit contract's `--shadow` maps to `--mq-shadow-small` (an alias in `tokens/kit/contract.tokens.json` instead of the kit default), emitted as a literal value in `dist/kit-contract.css` like every kit name; the mapping test asserts it.
 
 Primary files:
 
@@ -514,7 +515,7 @@ Exit criteria:
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | M1: Confidentiality gate | 01-03 | done | Repo exists with a blocking leak check, locally and in CI | `make check`, actionlint, zizmor | Every leak category detected; fails closed without a deny-list | `chore(repo)`, `feat(gate)`, `ci(gate)` |
 | M2: Tokens | 04-05 | done | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
-| M3: Components and assets | 06-08 | in-progress | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
+| M3: Components and assets | 06-08 | done | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
 | M4: Guidelines and Claude | 09-10 | pending | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
 | M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
 | M6: Consumers | 12-17 | pending | Platform, website and Paracel consume a pinned release | Each consumer's own gate | No design value defined outside the vendored release | `refactor(design-system)` per consumer PR |

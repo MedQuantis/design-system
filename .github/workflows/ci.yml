@@ -31,6 +31,12 @@ jobs:
           install: true
           cache: false
 
+      # Playwright's Chromium headless shell, pinned by the exact @playwright/test version in
+      # package-lock.json, plus its OS libraries; the same build renders the baselines locally.
+      # No cache, for the same reason as above.
+      - name: Install the pinned Playwright browser
+        run: make browsers PLAYWRIGHT_INSTALL_FLAGS=--with-deps
+
       # The deny-list lives in a private repo; the read-only token never reaches the log and
       # the file stays outside the workspace. A missing secret makes the scan fail closed.
       - name: Fetch deny-list

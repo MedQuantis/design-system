@@ -107,33 +107,8 @@
     "elevation": {
       "$type": "shadow",
       "shadow": {
-        "$value": [
-          {
-            "color": {
-              "colorSpace": "srgb",
-              "components": [0.0627, 0.0941, 0.1569],
-              "alpha": 0.06,
-              "hex": "#101828"
-            },
-            "offsetX": { "value": 0, "unit": "px" },
-            "offsetY": { "value": 1, "unit": "px" },
-            "blur": { "value": 2, "unit": "px" },
-            "spread": { "value": 0, "unit": "px" }
-          },
-          {
-            "color": {
-              "colorSpace": "srgb",
-              "components": [0.0627, 0.0941, 0.1569],
-              "alpha": 0.1,
-              "hex": "#101828"
-            },
-            "offsetX": { "value": 0, "unit": "px" },
-            "offsetY": { "value": 1, "unit": "px" },
-            "blur": { "value": 3, "unit": "px" },
-            "spread": { "value": 0, "unit": "px" }
-          }
-        ],
-        "$description": "Kit contract: card elevation. Kit default kept; shadows are not MedQuantis tokens yet (increment 07, owner decision pending)."
+        "$value": "{semantic.shadow.small}",
+        "$description": "Kit contract: card elevation, the MedQuantis small shadow (owner decision, 2026-10-10)."
       }
     }
   }

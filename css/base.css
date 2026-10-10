@@ -109,4 +109,16 @@
   :where(.mq-em) {
     font-weight: var(--mq-font-weight-emphasis);
   }
+
+  :where(.mq-doc a) {
+    color: var(--mq-accent);
+    text-underline-offset: 0.15em;
+  }
+
+  /* Keyboard focus: 2 px navy ring with an offset (WCAG 2.4.7, 1.4.11); white inside navy
+     panels, set in components.css. */
+  :where(.mq-doc :focus-visible) {
+    outline: var(--mq-focus-ring-width) solid var(--mq-focus-ring-color);
+    outline-offset: var(--mq-focus-ring-offset);
+  }
 }

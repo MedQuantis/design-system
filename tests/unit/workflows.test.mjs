@@ -120,3 +120,15 @@ test("README lists the deny-list repo and token as owner set-up steps and the ma
   assert.match(readme, /MQ_DENYLIST_REPO/);
   assert.match(readme, /mise\.toml.*by hand/);
 });
+
+test("CI installs the Playwright browser pinned by the lockfile, with its OS libraries, before make check and uncached", () => {
+  const text = ci();
+  const install = text.search(/^\s+(?:-\s+)?run:\s*make browsers PLAYWRIGHT_INSTALL_FLAGS=--with-deps\s*$/m);
+  const check = text.search(/^\s+(?:-\s+)?run:\s*make check\s*$/m);
+  assert.notEqual(install, -1, "CI does not install the Playwright browser through make browsers");
+  assert.ok(install < check, "the browser must be installed before make check");
+  assert.doesNotMatch(text, /actions\/cache|playwright install(?!-)/, "the browser comes from make browsers, never from a cache or an ad-hoc install");
+  const recipe = read("Makefile").match(/^browsers:.*\n((?:\t.*\n?)*)/m);
+  assert.ok(recipe, "no browsers target");
+  assert.match(recipe[1], /node_modules\/\.bin\/playwright install --only-shell \$\(PLAYWRIGHT_INSTALL_FLAGS\) chromium/);
+});

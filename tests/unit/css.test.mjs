@@ -253,3 +253,20 @@ test("README says which consumers load the mq- component CSS", () => {
   assert.match(readme, /build-less/i);
   assert.match(readme, /component librar(y|ies)[^.]*tokens[^.]*Tailwind theme only/i);
 });
+
+test("base.css draws the focus ring from the focus tokens, and components.css turns it white on navy", () => {
+  const focusRules = (file) => {
+    const found = [];
+    parse(file).walkRules((rule) => {
+      if (rule.selector.includes(":focus-visible")) found.push(rule);
+    });
+    return found;
+  };
+  const decls = (rules) => Object.fromEntries(rules.flatMap((rule) => rule.nodes.filter((node) => node.type === "decl").map((decl) => [decl.prop, decl.value])));
+  const base = decls(focusRules("base.css"));
+  assert.match(base.outline ?? "", /var\(--mq-focus-ring-width\) solid var\(--mq-focus-ring-color\)/, "base.css has no focus ring on light backgrounds");
+  assert.equal(base["outline-offset"], "var(--mq-focus-ring-offset)");
+  const navy = focusRules("components.css");
+  assert.ok(navy.some((rule) => rule.selector.includes(".mq-panel")), "no focus rule inside the navy panel");
+  assert.equal(decls(navy)["outline-color"], "var(--mq-focus-ring-color-on-navy)");
+});

@@ -95,6 +95,16 @@
     color: var(--mq-on-navy-title);
   }
 
+  :where(.mq-panel a) {
+    /* mq-bg: --mq-panel-start */
+    color: var(--mq-on-navy-title);
+  }
+
+  :where(.mq-panel :focus-visible) {
+    /* mq-bg: --mq-panel-start */
+    outline-color: var(--mq-focus-ring-color-on-navy);
+  }
+
   /* KPI tiles: default on surface, navy, pale */
   :where(.mq-kpis) {
     display: grid;
@@ -342,6 +352,16 @@
     border-radius: 0 var(--mq-radius-small) var(--mq-radius-small) 0;
   }
 
+  /* Legend swatch base; it precedes the series rules, which share its zero specificity. */
+  :where(.mq-swatch) {
+    flex: none;
+    box-sizing: border-box;
+    width: var(--mq-space-3);
+    height: var(--mq-space-3);
+    border-radius: var(--mq-radius-small);
+    background-color: var(--mq-chart-series-1);
+  }
+
   :where(.mq-segment.is-1, .mq-swatch.is-1) {
     background-color: var(--mq-chart-series-1);
   }
@@ -381,15 +401,6 @@
     color: var(--mq-muted);
     font-family: var(--mq-font-family-ui);
     font-size: var(--mq-font-size-label);
-  }
-
-  :where(.mq-swatch) {
-    flex: none;
-    box-sizing: border-box;
-    width: var(--mq-space-3);
-    height: var(--mq-space-3);
-    border-radius: var(--mq-radius-small);
-    background-color: var(--mq-chart-series-1);
   }
 
   :where(.mq-swatch.is-outline) {

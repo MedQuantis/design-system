@@ -1,0 +1,19 @@
+{
+  "$description": "Fictitious data for the specimen page (ADR-0005): invented names and round amounts. Every line with a figure carries the illustrative marker; scripts/build-specimen.mjs formats the figures (owner ruling 8).",
+  "kpis": [
+    { "label": "Budget du programme", "value": 2460000, "format": "chf", "caption": "Exercice fictif", "mark": "mq:illustrative" },
+    { "label": "Part de marché", "value": 12.5, "format": "percent", "caption": "Assureur A, canton fictif", "mark": "mq:illustrative" },
+    { "label": "Patients traités", "value": 48000, "format": "number", "caption": "Médicament X, une année", "mark": "mq:illustrative" }
+  ],
+  "insurers": [
+    { "name": "Assureur A", "premium": 1200000, "share": 40, "mark": "mq:illustrative" },
+    { "name": "Assureur B", "premium": 750000, "share": 25, "mark": "mq:illustrative" },
+    { "name": "Assureur C", "premium": 450000, "share": 15, "mark": "mq:illustrative" },
+    { "name": "Assureur D", "premium": 300000, "share": 10, "mark": "mq:illustrative" },
+    { "name": "Autres assureurs", "premium": 300000, "share": 10, "mark": "mq:illustrative" }
+  ],
+  "products": [
+    { "name": "Médicament X", "progress": 75, "mark": "mq:illustrative" },
+    { "name": "Médicament Y", "progress": 40, "mark": "mq:illustrative" }
+  ]
+}

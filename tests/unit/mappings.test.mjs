@@ -196,6 +196,8 @@ test("kit colours, fonts and shapes are the generated --mq- values", () => {
     "--card-radius": "--mq-radius-medium",
     "--btn-radius": "--mq-radius-small",
     "--node-radius": "--mq-radius-medium",
+    // Owner decision 2026-10-10: the kit card elevation is the MedQuantis small shadow.
+    "--shadow": "--mq-shadow-small",
   };
   for (const [name, source] of Object.entries(expected)) {
     assert.ok(tokens.has(source), `${source} missing from tokens.css`);

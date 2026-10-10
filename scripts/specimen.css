@@ -1,0 +1,263 @@
+/*
+ * Layout of the generated specimen page (scripts/build-specimen.mjs) and nothing else; it is
+ * not part of the package. Tokens only, linted with the same rules as css/. Its layer comes
+ * after the mq layers, so a specimen frame never changes how a component looks.
+ */
+@layer mq.base, mq.components, mq.slide, mq.print, mq.app, specimen;
+
+@layer specimen {
+  /* No system font may render: it would differ between machines and shift the baselines. */
+  .mq-doc code {
+    font-family: var(--mq-font-family-mono);
+    font-size: inherit;
+  }
+
+  /* Fixed columns, so a token name never splits at its hyphens. */
+  .specimen-contrast {
+    table-layout: fixed;
+  }
+
+  .specimen-contrast .is-sample {
+    width: 5.5rem;
+  }
+
+  .specimen-contrast .is-token {
+    width: 15rem;
+  }
+
+  .specimen-contrast .is-ratio {
+    width: 6rem;
+  }
+
+  .specimen-contrast code {
+    white-space: nowrap;
+  }
+
+  .specimen-header {
+    padding-top: var(--mq-space-7);
+  }
+
+  .specimen-header .mq-display {
+    margin-top: var(--mq-space-4);
+  }
+
+  .specimen-brandline {
+    display: block;
+    width: auto;
+    height: var(--mq-space-6);
+  }
+
+  .specimen-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mq-space-2) var(--mq-space-5);
+    margin: var(--mq-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mq-font-family-ui);
+    font-size: var(--mq-font-size-small);
+    line-height: 1.8;
+  }
+
+  .specimen-section {
+    padding-top: var(--mq-space-7);
+  }
+
+  .specimen-section > .mq-title {
+    margin-bottom: var(--mq-space-2);
+  }
+
+  .specimen-section > .mq-prose {
+    margin: 0 0 var(--mq-space-5);
+  }
+
+  .specimen-sub {
+    margin: var(--mq-space-6) 0 var(--mq-space-3);
+  }
+
+  .specimen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: var(--mq-space-3);
+  }
+
+  .specimen-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--mq-space-4);
+  }
+
+  .specimen-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mq-space-3);
+  }
+
+  .specimen-stack {
+    display: grid;
+    gap: var(--mq-space-3);
+  }
+
+  .specimen-swatch {
+    display: grid;
+    grid-template-rows: 3.5rem auto;
+    overflow: hidden;
+    border: var(--mq-stroke-hairline) solid var(--mq-border);
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-surface);
+  }
+
+  .specimen-swatch-text {
+    display: grid;
+    gap: var(--mq-space-1);
+    padding: var(--mq-space-2) var(--mq-space-3);
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-label);
+  }
+
+  .specimen-swatch-note {
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-note);
+    line-height: 1.4;
+  }
+
+  .specimen-sample {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--mq-space-8);
+    height: var(--mq-space-7);
+    border: var(--mq-stroke-hairline) solid var(--mq-border);
+    border-radius: var(--mq-radius-small);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-body);
+    font-weight: var(--mq-font-weight-heading);
+  }
+
+  .specimen-sample.is-large {
+    font-size: var(--mq-font-size-kpi);
+  }
+
+  .specimen-mark {
+    width: var(--mq-space-6);
+    height: var(--mq-space-2);
+  }
+
+  .specimen-mark.is-hairline {
+    height: var(--mq-stroke-hairline);
+  }
+
+  .specimen-type-row {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--mq-space-4);
+    padding: var(--mq-space-2) 0;
+    border-bottom: var(--mq-stroke-hairline) solid var(--mq-border-light);
+  }
+
+  .specimen-type-row > code {
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-label);
+  }
+
+  .specimen-type-sample {
+    overflow-wrap: anywhere;
+    color: var(--mq-ink);
+    line-height: 1.2;
+  }
+
+  .specimen-radius {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 13rem;
+    height: 7rem;
+    padding: var(--mq-space-3);
+    border: var(--mq-stroke-strong) solid var(--mq-border-strong);
+    background-color: var(--mq-surface);
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-ui);
+    font-size: var(--mq-font-size-label);
+    text-align: center;
+  }
+
+  .specimen-radius.is-small {
+    border-radius: var(--mq-radius-small);
+  }
+
+  .specimen-radius.is-medium {
+    border-radius: var(--mq-radius-medium);
+  }
+
+  .specimen-radius.is-overlay {
+    border-radius: var(--mq-radius-overlay);
+  }
+
+  .specimen-elevation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 13rem;
+    height: 7rem;
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-surface);
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-label);
+  }
+
+  .specimen-brand-tile {
+    display: grid;
+    align-content: start;
+    gap: var(--mq-space-4);
+    padding: var(--mq-space-5);
+    border: var(--mq-stroke-hairline) solid var(--mq-border);
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-surface);
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-label);
+  }
+
+  .specimen-brand-tile.is-navy {
+    border-color: var(--mq-accent);
+    background-color: var(--mq-accent);
+    color: var(--mq-on-navy-title);
+  }
+
+  .specimen-brand-tile svg,
+  .specimen-brand-tile img {
+    display: block;
+    width: auto;
+    height: var(--mq-space-7);
+  }
+
+  .specimen-wide {
+    width: var(--mq-slide-width);
+    margin: 0 auto;
+  }
+
+  .specimen-slide-body {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+    gap: var(--mq-space-6);
+  }
+
+  .specimen-icon {
+    flex: none;
+  }
+
+  .specimen-footer {
+    padding-top: var(--mq-space-7);
+    padding-bottom: var(--mq-space-7);
+  }
+}

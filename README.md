@@ -36,6 +36,12 @@ Documents never load `css/app.css`: they are navy-only and show states by mark s
 
 Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, and any radius other than the three `--mq-radius-*` tokens, so no pill shape can be drawn.
 
+## Specimen
+
+The specimen is the visual reference of the design system: every colour token with its contrast pairings and their allowed use, the type scale, the radii and shadows, every `mq-` component, a 1280 x 720 slide, an A4 page, the brand files and the app status layer. `make specimen` generates it into `dist/specimen/index.html` from `dist/tokens.json`, `css/` and the fictitious data in `examples/`; open that file in a browser. The folder holds its own copies of the CSS, fonts and brand files, so it works offline and requests nothing outside itself. It is never edited by hand and never committed. `make build` does not build it, so the package outputs stay free of it.
+
+`make test` runs the unit tests, then Playwright and axe on the specimen: WCAG 2.2 AA with no serious or critical violation, no request outside the folder, a tagged PDF export, and screenshot baselines of the page and of the focus ring in `tests/e2e/specimen.spec.mjs-snapshots/`. The browser is Playwright's own Chromium headless shell, whose build is pinned by the exact `@playwright/test` version; `make browsers` installs it locally and CI installs the same build, so the baselines compare like with like. After a deliberate visual change, regenerate the baselines with `node_modules/.bin/playwright test --update-snapshots` and review the new images in the PR.
+
 ## Consumption
 
 - **Node consumers** install `@medquantis/design-system` at an exact version and let Dependabot propose bumps.
@@ -54,6 +60,8 @@ Consumers lint their own CSS with the same rules: `export { default } from "@med
 ```sh
 mise install      # Node, gitleaks, actionlint, zizmor, shellcheck and uv, pinned in mise.toml
 make check        # lint, workflow lint, build, tests and the confidentiality check
+make specimen     # generate the specimen page into dist/specimen/index.html
+make test         # unit tests, then Playwright and axe on the specimen (installs the pinned browser)
 make assets       # refresh fonts/ and icons/ from their pinned npm packages
 make brand        # re-outline the monogram and wordmark SVGs from the pinned Outfit font
 make brand-check  # prove the committed brand SVGs reproduce byte for byte (Python, not in make check)

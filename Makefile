@@ -1,10 +1,27 @@
-.PHONY: check test build lint workflow-lint confidentiality-check assets brand brand-check
+.PHONY: check test test-unit test-e2e specimen browsers build lint workflow-lint confidentiality-check assets brand brand-check
 
 # Single local entry point; CI runs the same target.
 check: lint workflow-lint build test confidentiality-check
 
-test:
+test: test-unit test-e2e
+
+test-unit: build
 	node --test "tests/unit/**/*.test.mjs"
+
+# Playwright and axe on the generated specimen, with screenshot baselines and a PDF export.
+test-e2e: specimen browsers
+	node_modules/.bin/playwright test
+
+# The specimen is the visual reference, generated into dist/specimen/ (gitignored). Not part of
+# make build, which produces the package outputs only.
+specimen: build
+	node scripts/build-specimen.mjs
+
+# Playwright's own Chromium headless shell, whose build is pinned by the exact @playwright/test
+# version, so baselines match between this machine and CI. CI passes
+# PLAYWRIGHT_INSTALL_FLAGS=--with-deps to add the OS libraries (apt, through sudo).
+browsers: node_modules/.package-lock.json
+	node_modules/.bin/playwright install --only-shell $(PLAYWRIGHT_INSTALL_FLAGS) chromium
 
 # Lockfile install, re-run only when package-lock.json changes. Dependency install scripts
 # never run.
@@ -18,7 +35,7 @@ build: node_modules/.package-lock.json
 
 # Stylelint on the shared CSS; the custom-property rule reads dist/tokens.css, so build first.
 lint: build
-	node_modules/.bin/stylelint "css/**/*.css"
+	node_modules/.bin/stylelint "css/**/*.css" scripts/specimen.css
 
 # Same invocations as CI; actionlint calls shellcheck on every run: block.
 workflow-lint:

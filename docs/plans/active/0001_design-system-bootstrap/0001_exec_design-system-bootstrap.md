@@ -82,7 +82,7 @@ These values diverged between sources; increment 04 encodes them.
 
 1. ~~Tertiary grey~~ **Ruled 2026-10-09:** `#707070` for all text (4.74:1 on canvas); `#8c8c8c` (3.22:1) only for non-text decoration.
 2. ~~Accent on navy backgrounds~~ **Ruled 2026-10-09:** the 2026-10-08 report rule, no sky blue `#8fc0ff`. On navy: titles, figures and icons `#ffffff`; secondary text and labels white at 68 % opacity; second-level text `#c3cbdc`; one-off accent `#8795b3`; rules white at 16 to 18 %; icon-pill fill white at 12 %; discreet numbers white at 40 %. Each text pair is checked by the contrast test, and any that fails AA is restricted to large or non-text use.
-3. ~~Corner radius~~ **Ruled 2026-10-09:** 6 px maximum everywhere; two values, 3 px for small items (tags, inputs, chips) and 6 px for cards and panels; no pill shapes. **Amended 2026-10-10:** one exception, 12 px (`--mq-radius-overlay`), only for dialogs and modals, side drawers and command palettes in apps; never in documents, slides, cards or website media.
+3. ~~Corner radius~~ **Ruled 2026-10-09:** 6 px maximum everywhere; two values, 3 px for small items (tags, inputs, chips) and 6 px for cards and panels; no pill shapes. **Amended 2026-10-10:** one exception, 12 px (`--mq-radius-overlay`), only for dialogs and modals, side drawers and command palettes in apps; never in documents, slides, cards or website media. Buttons are small items and take 3 px (owner, 2026-10-10).
 4. ~~Heading weight~~ **Ruled 2026-10-09:** Outfit 500 for every heading, column title and hero figure; 600 only for a short highlighted word inside body text (as the bold "Med" of the logo).
 5. **Warning colour, ruled 2026-10-09 (apps only):** `#d4850a` is a fill-only token (badges, highlights) always carrying ink text (5.93:1); `#a06400` is the warning text, icon and border token (4.86:1 on white, 4.42:1 on the warning tint, so text on the tint stays ink). White on the warning fill is forbidden (2.93:1).
 6. **Wordmark, ruled 2026-10-09:** "Med" Outfit 600, "Quantis" Outfit 300 (the website treatment), navy on light backgrounds and white on navy, at every size. Two files per background are kept (owner, 2026-10-10): live text for pages that load `fonts.css`, outlined for images, documents, email and print.
@@ -345,6 +345,8 @@ Scope:
 4. `dist/llms.txt` and `dist/llms-full.txt` generated from `guidelines/` and the token list, served through the CDN.
 5. `scripts/sync-skill-assets.mjs` copies the built `tokens.css`, `kit-contract.css` and fonts into the skill's `assets/` (the plugin cache cannot reach `dist/`); a test fails when the committed copy differs from a fresh build.
 6. `plugins/medquantis-design-system/.claude-plugin/plugin.json` and the root `.claude-plugin/marketplace.json` so the repo is installable as a Claude Code marketplace; a zipped skill build for claude.ai upload via `make skill-zip`.
+
+7. Framework-name test (owner, 2026-10-10): the increment 04 neutrality test is narrowed to the generated CSS and JSON outputs (`tokens.css`, `tokens.json`, `tailwind.css`, `kit-contract.css`), which is where framework neutrality applies; `dist/llms.txt` may name frameworks as guidance, since the guidelines explain what stays local in a Nuxt UI or React app.
 
 Primary files:
 

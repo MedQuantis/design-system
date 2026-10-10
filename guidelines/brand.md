@@ -21,7 +21,7 @@ The French line is the reference; the German and English lines are its approved 
 
 The footer of every document sent outside carries the legal line and the date of the document:
 
-`MedQuantis SA · Chemin du Crêt 27, 1095 Lutry · medquantis.ch`
+`MedQuantis SA · CH-1095 Lutry · medquantis.ch`
 
 Set it in Geist Mono at the note size, tertiary text colour (`--mq-tertiary`), with the date at the right end of the same line.
 

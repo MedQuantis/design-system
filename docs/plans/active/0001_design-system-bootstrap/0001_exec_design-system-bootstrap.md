@@ -16,7 +16,7 @@ review_interval: 30d
 
 Implements [ADR-0002](../../../architecture/decisions/adr-0002-central-tokens-first-design-system.md) (central tokens-first repo, pinned consumption), [ADR-0003](../../../architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md) (navy everywhere), [ADR-0004](../../../architecture/decisions/adr-0004-status-colours-in-apps-only.md) (status colours in apps only), [ADR-0005](../../../architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md) (public behind a confidentiality gate) and [ADR-0006](../../../architecture/decisions/adr-0006-mq-token-prefix.md) (`--mq-` prefix). No PRD; the ADRs are the source.
 
-The plan has two halves. Increments 01 to 11 build this repo; nothing is pushed to a public remote before increment 11's audit passes. Increments 12 to 17 migrate one consumer each, in that consumer's own repo, through its own branch and PR, following that repo's own rules (`AGENTS.md`, CI gates, doc-sync obligations).
+The plan has two halves. Increments 01 to 11 build this repo; nothing is pushed to a public remote before increment 11's audit passes. Consumer migrations were moved out on 2026-10-10 into one plan per consumer repo (see "Consumer migrations" below); this plan ends at increment 11, the public `v1.0.0`.
 
 Principles:
 
@@ -377,6 +377,9 @@ Scope:
 
 6. Screenshot baselines on CI (owner, 2026-10-10): if the first GitHub run fails only on the specimen screenshots, regenerate the baselines once from the `playwright-test-results` artifact the CI job uploads on failure (step added in the increment 08 follow-up), commit them, and keep this machine's runs within the configured tolerance; never loosen the tolerance to make CI pass.
 
+7. Gaps found by the consumer migration plans (2026-10-10), fixed before `v1.0.0`, each with a failing test first: `exports` exposes `./brand/*` so consumers can import the logos and favicons; the published package does not force Node 24 on consumers (development pin moves to `devEngines` or `mise.toml`, a Node 22 consumer installs without an engines error); a light weight token for the wordmark's "Quantis" (Outfit 300, ruling 6); the exported stylelint config rejects a local custom property (`--app-*`, `--site-*`, `--viz-*`) whose value is a literal instead of a `var(--mq-*)`; the deprecation note of `--mq-accent-on-dark` names the replacement per use (`--mq-on-navy-title` for titles and rules, `--mq-on-navy-accent` for the one-off accent).
+8. release-please bumps `plugins/medquantis-design-system/.claude-plugin/plugin.json`, the root `.claude-plugin/marketplace.json` and the SKILL.md `metadata.version` together with `package.json`, so `tests/unit/skill.test.mjs` stays green on the release PR.
+
 Primary files:
 
 1. `release-please-config.json`, `.release-please-manifest.json`, `.github/workflows/release.yml`
@@ -390,128 +393,29 @@ Exit criteria:
 
 1. `v1.0.0` tagged and published with provenance; the exact-version CDN URL of `dist/tokens.css` resolves and matches its SRI hash.
 
-### Increment 12: Platform decks consume the design system (platform repo, own PR)
+## Consumer migrations (moved out, owner 2026-10-10)
 
-**Status:** pending
+The former increments 12 to 17 were six pilots, not a migration. Each consumer now has its own plan in its own private repository, because those plans name client material that must never reach this public repository. All three start after this plan's increment 11 publishes `v1.0.0`.
 
-Scope:
+| Consumer | Plan | Replaces former increments |
+| :-- | :-- | :-- |
+| Platform repo | Plan 0001 "design-system migration" in the platform repo | 12, 13 |
+| Paracel repo | Plan 0184 "design-system migration" in the Paracel repo | 15, 16, 17 |
+| Website repo | Plan 0001 "design-system migration" in the website repo | 14 |
 
-1. **Write first, expect red:** a test in the platform repo asserting a deck built by `build.py` inlines `vendor/medquantis-ds/` CSS before the deck's local CSS, and that the deck-local CSS contains no hex value (stylelint rule from ADR-0002).
-2. `design/package.json` pins `@medquantis/design-system` at an exact version so Dependabot (npm ecosystem, `directory: /design`) proposes bumps; `make design-sync` reads that version, extracts the npm tarball into `vendor/medquantis-ds/` and writes `VERSION`; CI checks the vendored copy matches the pinned version.
-3. `build.py` inline order: design system, then `design/deck.css` (deck-specific layouts only).
-4. Pilot: migrate the single most recent deck still in edition; finished decks stay frozen on their stitched output.
-5. Update the platform's `decks/CLAUDE.md` and the `slide-deck` skill to point at the design system.
-
-Test gate:
-
-1. Platform's own lint and deck build pass; the pilot deck's PDF is visually compared with the pre-migration PDF and the differences are listed in the PR.
-
-Exit criteria:
-
-1. New decks start from the design system, not from a copied `styles.css`.
-
-### Increment 13: Platform viewer, report templates and docs (platform repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a test asserting `viewer/src/styles.css` defines no colour or font value of its own.
-2. Viewer depends on `@medquantis/design-system` at an exact version; `:root` copy removed; status colours via the app layer.
-3. The redaction answer and report templates load the vendored design system.
-4. `docs/design-system.md`, `docs/design-system-rapport.md`, `docs/brand.md`, `docs/style-guide.md` reduced to pointers to the design-system guidelines.
-
-Test gate:
-
-1. `npm run build` in `viewer/` and the platform lint pass.
-
-Exit criteria:
-
-1. No design value is defined anywhere in the platform repo outside `vendor/medquantis-ds/` and `node_modules/`.
-
-### Increment 14: Website (website repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a check that `assets/styles.css` defines no colour or font value and loads no remote font.
-2. Website loads the tagged CDN `tokens.css` and `fonts.css` (or a vendored copy, owner's choice at PR time); its `:root` removed; on-navy colour follows the ruling.
-
-Test gate:
-
-1. The website check passes and screenshots of FR, DE and EN pages at desktop and mobile width are attached to the PR.
-
-Exit criteria:
-
-1. Zero requests to Google Fonts.
-
-### Increment 15: Paracel frontend switches to navy (Paracel repo, own PR)
-
-**Status:** pending
-
-**Prerequisite:** Paracel repo issue #997 fixed and merged in its own PR first. `frontend/app.config.ts` sits outside the Nuxt 4 `app/` source directory, so Nuxt UI ignores it today (neutrals render slate, status colours render Tailwind defaults, the brand colour only reaches Nuxt UI through CSS overrides). Moving it switches the neutrals to stone, a visible change that must not ship in the same PR as the navy switch. Also before the palette swap: move the about 15 places where the accent red means "bad" (chart series, negative deltas, the 404 icon) to the error token, or they turn navy.
-
-Scope:
-
-1. **Write first, expect red:** a vitest asserting `primary` resolves to the navy scale and that `#d8232a` appears only as the danger colour; existing Playwright static tests updated for the new accent where they assert colour.
-2. `frontend/app/assets/css/main.css` imports `@medquantis/design-system/tailwind.css`; the local red palette and duplicated tokens are removed; Paracel's six limitation-annotation hues stay local as `--app-*`; the app keeps Nuxt UI components and never loads the `mq-` component CSS or `kit-contract.css`.
-3. `app/app.config.ts`: `primary: 'navy'`, `error` mapped to the danger scale (Nuxt UI names it `error`); `--ui-radius` set to the 3 px token, because Nuxt UI derives its whole radius scale as multiples of it (6 px gives 9 px `md` and 12 px `lg`), and the design-system theme loaded after Nuxt UI's so every step resolves to 3 or 6 px, checked on the computed radius of a modal, a card, a button and a badge; the modal, slideover and command palette take `rounded-overlay` through `app.config.ts` (ruling 3 exception); the three pill-shaped elements counted on 2026-10-10 (two filter buttons, one version tag) move to the 3 px radius; warning badges use the fill with ink text and `#a06400` for text, icons and borders (ruling 5).
-4. Update `docs/developer/frontend-guide.md` (repo rule for theming changes).
-
-Test gate:
-
-1. `make fe-ci-local` exits 0.
-
-Exit criteria:
-
-1. Active tab, focus ring, logo and primary buttons render navy; errors and destructive actions stay red with an icon or label.
-
-### Increment 16: Paracel docs/ux tokens and design-system doc (Paracel repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a check that `docs/ux/tokens.css` is byte-identical to the vendored `kit-contract.css` of the pinned release.
-2. `make design-sync` in the Paracel repo writes `docs/ux/tokens.css` from the release; `docs/ux/DESIGN_SYSTEM.md` and `design-system-final.html` reduced to pointers.
-
-Test gate:
-
-1. The check passes; the docs quality gate passes.
-
-Exit criteria:
-
-1. Kit skills (`com-slide-deck`, `com-artefact-viz`) render on-brand in the Paracel repo with no renderer change.
-
-### Increment 17: Paracel slides pilot (Paracel repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** the rebuilt pilot deck's stitched HTML contains `--mq-accent` and no `#d8232a` outside danger usage.
-2. Rebuild the most recently edited Paracel deck on the design system; other decks migrate when next edited.
-
-Test gate:
-
-1. The deck builds and renders to PDF.
-
-Exit criteria:
-
-1. One Paracel deck proven on the design system; the migration recipe recorded in the deck folder's README.
+Corrections carried by those plans: the former increment 17 check ("the stitched deck contains `--mq-accent`") could never pass on a kit-built deck, since the kit contract carries kit names only; Paracel Plan 0184 replaces it with a check that can pass.
 
 ## Delivery Rules
 
-1. One increment per commit in this repo; increments 12 to 17 are one PR each in their consumer repo.
-2. **Commit scope:** no capability map exists; use the area scope of each increment: `repo` (01), `gate` (02, 03), `tokens` (04, 05), `assets` (06), `css` (07), `specimen` (08), `guidelines` (09), `skill` (10), `release` (11), `design-system` (12 to 17, in the consumer repo). Plan reference in a `Refs: Plan-0001 increment NN` trailer, never in the scope.
+1. One increment per commit in this repo; consumer migrations follow their own plans in their own repos.
+2. **Commit scope:** no capability map exists; use the area scope of each increment: `repo` (01), `gate` (02, 03), `tokens` (04, 05), `assets` (06), `css` (07), `specimen` (08), `guidelines` (09), `skill` (10), `release` (11). Plan reference in a `Refs: Plan-0001 increment NN` trailer, never in the scope.
 3. Tests named in Scope are written first and observed failing before the implementation lands; `progress.txt` records the red run (failing test names) and then the green run. An increment whose tests were written after its code is not done. No exemption is declared in this plan.
 4. Nothing is pushed to a public remote before increment 11's audit is green. Until then, a private remote at most.
 5. No content is copied from a consumer repo without being rewritten with fictitious data; `make confidentiality-check` runs before every commit.
 6. Every dependency and every GitHub Action is pinned exactly (actions by full SHA).
 7. Consumer increments follow the consumer repo's own rules and gates, and ask the owner before committing.
 8. Each increment must be independently runnable and reversible.
-9. The Ralph loop in this repo runs increments 01 to 11 only. Increments 12 to 17 change other repositories and are driven separately; an iteration agent never edits files outside this repository, except the dotfiles declaration of increment 02, which it records in `progress.txt` as a pending owner action instead of committing when the dotfiles source is not available.
+9. The Ralph loop in this repo runs increments 01 to 11 only. An iteration agent never edits files outside this repository, except the dotfiles declaration of increment 02, which it records in `progress.txt` as a pending owner action instead of committing when the dotfiles source is not available.
 10. Run every test gate in the foreground and end each iteration with a definitive state (done or blocked), never waiting on a background process.
 
 ## Milestone Chunks (Standalone Delivery Groups)
@@ -523,4 +427,3 @@ Exit criteria:
 | M3: Components and assets | 06-08 | done | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
 | M4: Guidelines and Claude | 09-10 | done | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
 | M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
-| M6: Consumers | 12-17 | pending | Platform, website and Paracel consume a pinned release | Each consumer's own gate | No design value defined outside the vendored release | `refactor(design-system)` per consumer PR |

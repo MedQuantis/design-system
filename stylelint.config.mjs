@@ -2,7 +2,7 @@
 // Colours, fonts and shadows come from custom properties only; radius comes from the three
 // --mq-radius tokens only, so no stylesheet can draw a pill (owner ruling 3); spacing is a
 // custom property, 0 or auto. Custom properties must be defined, here or in dist/tokens.css, and a
-// consumer's --app-*, --site-* or --viz-* property may only point at tokens.
+// consumer's --app-*, --site-*, --viz-* or --deck-* property may only point at tokens.
 import { fileURLToPath } from "node:url";
 
 const tokensCss = fileURLToPath(new URL("./dist/tokens.css", import.meta.url));
@@ -18,8 +18,8 @@ const SPACING_VALUE = "/^((var\\(--[a-z0-9-]+\\)|0|auto)( |$))+$/";
 // A consumer's own custom properties (ADR-0002 rule 3) hold token references only: one or more
 // var() of an --mq-* token or another local property, or a calc() that scales them by a plain
 // number. A literal (12px, #0a2463, Outfit) or a literal fallback is rejected.
-const LOCAL_PROPERTY = "/^--(app|site|viz)-/";
-const LOCAL_REF = "var\\(--(mq|app|site|viz)-[a-z0-9-]+\\)";
+const LOCAL_PROPERTY = "/^--(app|site|viz|deck)-/";
+const LOCAL_REF = "var\\(--(mq|app|site|viz|deck)-[a-z0-9-]+\\)";
 const LOCAL_CALC = `calc\\((\\s*(${LOCAL_REF}|\\d+(\\.\\d+)?|[-+*/()]))+\\s*\\)`;
 const LOCAL_VALUE = `/^(${LOCAL_REF}|${LOCAL_CALC})([ ,]+(${LOCAL_REF}|${LOCAL_CALC}))*$/`;
 

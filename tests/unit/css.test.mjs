@@ -105,8 +105,8 @@ test("stylelint rejects every radius that is not a radius token, so no pill can 
   assert.deepEqual(await lint(".a { padding: 13px; }"), ["declaration-property-value-allowed-list"]);
 });
 
-test("stylelint rejects a local custom property (--app-*, --site-*, --viz-*) set to a literal instead of var(--mq-*) (ADR-0002 rule 3)", async () => {
-  for (const declaration of ["--app-gap: 12px", "--site-measure: 760px", "--viz-line-width: 2", "--app-ink: #0a2463", "--site-title: Outfit", "--viz-mix: calc(var(--mq-space-4) + 3px)", "--app-gap: var(--mq-space-2, 8px)"]) {
+test("stylelint rejects a local custom property (--app-*, --site-*, --viz-*, --deck-*) set to a literal instead of var(--mq-*) (ADR-0002 rule 3)", async () => {
+  for (const declaration of ["--app-gap: 12px", "--site-measure: 760px", "--viz-line-width: 2", "--app-ink: #0a2463", "--site-title: Outfit", "--viz-mix: calc(var(--mq-space-4) + 3px)", "--app-gap: var(--mq-space-2, 8px)", "--deck-pad: 72px", "--deck-accent: #0a2463"]) {
     const rules = await lint(`:root { ${declaration}; }`);
     assert.ok(rules.includes("declaration-property-value-allowed-list"), `${declaration} passes`);
   }
@@ -117,6 +117,8 @@ test("stylelint rejects a local custom property (--app-*, --site-*, --viz-*) set
     "  --viz-series: var(--mq-chart-series-1);",
     "  --app-sidebar: calc(var(--mq-space-8) * 6);",
     "  --app-gutter: var(--app-gap);",
+    "  --deck-pad: var(--mq-space-8);",
+    "  --deck-inset: var(--deck-pad);",
     "}",
   ].join("\n");
   assert.deepEqual(await lint(clean), []);

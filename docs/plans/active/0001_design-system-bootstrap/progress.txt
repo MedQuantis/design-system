@@ -309,3 +309,15 @@
 - PENDING OWNER ACTIONS (docs/audits/README.md, plan scope items 3, 4 and 6): (1) create the private deny-list repository, the MQ_DENYLIST_TOKEN secret (Actions and Dependabot) and the MQ_DENYLIST_REPO variable; run the real deny-list scan on the tree and the history, record it in the audit file; (2) push this branch to the private remote and get a green first CI run; if it fails only on the specimen screenshots, regenerate those baselines once from the playwright-test-results artifact (scope item 6); (3) create the @medquantis npm organisation; (4) bootstrap the trusted publisher (placeholder publish if npm still requires an existing package), configure it for MedQuantis/design-system and release.yml, require 2FA and disallow tokens; (5) decide how the release PR gets its CI check before protecting main (own push to the release branch, or a GitHub App token); (6) protect main; (7) switch the repository to public only after the audit is green; (8) merge the release PR to tag and publish v1.0.0, check the exact-version CDN URL of dist/tokens.css against its SRI hash (exit criterion), then remove release-as.
 - Commit: ea3f780, fb37bd1, 8343991, and the docs commit that carries this entry
 - Timestamp: 2026-10-10T15:40:00+02:00
+
+## Iteration 11b (follow-up, orchestrator)
+- Increment: 11 - the local-property rule covers --deck-* (ADR-0002 rule 3 names it; owner 2026-10-10)
+- Status: done (increment 11 stays in-progress)
+- Red run: "stylelint rejects a local custom property (--app-*, --site-*, --viz-*, --deck-*) set to a literal instead of var(--mq-*) (ADR-0002 rule 3)" failed with "--deck-pad: 72px passes".
+- Green run: `make lint` EXIT=0; `make test-unit` 177/177; `MQ_DENYLIST=<real list> make check` EXIT=0 (276 files scanned, 0 findings).
+- Also done with the owner: private deny-list repository, MQ_DENYLIST_REPO variable and MQ_DENYLIST_TOKEN secret (Actions and Dependabot); first CI run green on pull request #3; @medquantis npm organisation, placeholder 0.0.0-bootstrap.0 published, trusted publisher on release.yml with npm publish allowed, publishing requires 2FA and disallows tokens. npm also lists 0.0.0-stage, its own staged-publishing placeholder.
+- Learnings:
+  - npm attaches provenance only from a public repository, so the visibility switch comes before the release PR is merged.
+  - GitHub started no CI run when the draft PR was first opened; closing and reopening it did.
+  - On WSL, `npm login` cannot open a browser (BROWSER is ignored in favour of sensible-browser); `npm login --browser=false` prints the link and waits. Publishing needs 2FA on the npm account.
+- Commit: see git log

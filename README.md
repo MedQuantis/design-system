@@ -10,7 +10,7 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | :-- | :-- |
 | `dist/tokens.css` | Every consumer: `--mq-*` custom properties ([ADR-0006](docs/architecture/decisions/adr-0006-mq-token-prefix.md)) |
 | `dist/tokens.json` | Scripts and pipelines that need resolved values |
-| `dist/tailwind.css` | Tailwind 4 and Nuxt UI apps (`@theme` with 50 to 950 scales) |
+| `dist/tailwind.css` | Tailwind 4 and Nuxt UI apps (`@theme` with 50 to 950 scales); imports `tokens.css` itself |
 | `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app |
 | `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media |
 | `fonts/`, `icons/`, `brand/` | Self-hosted fonts, a pinned Lucide build, logos and monogram |

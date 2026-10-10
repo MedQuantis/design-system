@@ -1,5 +1,8 @@
-// Style Dictionary 5.6.0 build: DTCG sources in tokens/ to dist/tokens.css and dist/tokens.json.
+// Style Dictionary 5.6.0 build: DTCG sources in tokens/ to dist/tokens.css, dist/tokens.json,
+// dist/tailwind.css and dist/kit-contract.css.
 import StyleDictionary from "style-dictionary";
+import { kitContractFormat } from "./formats/kit-contract.mjs";
+import { tailwindFormat } from "./formats/tailwind.mjs";
 
 // Names drop the "semantic" tier and the grouping segments that only organise the source, so
 // semantic.color.accent is --mq-accent and semantic.color.status.danger is --mq-danger. Core
@@ -30,15 +33,35 @@ const jsonMq = ({ dictionary }) => {
   return `${JSON.stringify(Object.fromEntries(entries), null, 2)}\n`;
 };
 
-const cssTransforms = StyleDictionary.hooks.transformGroups.css.map((name) => (name === "name/kebab" ? "name/mq" : name));
+// color/css does not reach the colours nested in a shadow; this writes them as 8-bit rgba(),
+// the same form tokens.css uses for translucent colours.
+const shadowColour = {
+  type: "value",
+  filter: (token) => token.$type === "shadow",
+  transform: (token) =>
+    [token.$value].flat().map((layer) => {
+      const { components, alpha = 1 } = layer.color;
+      const [r, g, b] = components.map((c) => Math.round(c * 255));
+      return { ...layer, color: `rgba(${r}, ${g}, ${b}, ${alpha})` };
+    }),
+};
+
+// The kit tier only feeds kit-contract.css; it never becomes an --mq- token.
+const notKit = (token) => token.path[0] !== "kit";
+
+const cssTransforms = StyleDictionary.hooks.transformGroups.css.flatMap((name) => {
+  if (name === "name/kebab") return ["name/mq"];
+  if (name === "shadow/css/shorthand") return ["shadow/mq-colour", name];
+  return [name];
+});
 
 export default {
   usesDtcg: true,
-  source: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json"],
+  source: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json", "tokens/kit/*.tokens.json"],
   log: { verbosity: "default", warnings: "error" },
   hooks: {
-    transforms: { "name/mq": nameMq },
-    formats: { "mq/json": jsonMq },
+    transforms: { "name/mq": nameMq, "shadow/mq-colour": shadowColour },
+    formats: { "mq/json": jsonMq, "mq/tailwind": tailwindFormat, "mq/kit-contract": kitContractFormat },
   },
   platforms: {
     css: {
@@ -49,9 +72,12 @@ export default {
         {
           destination: "tokens.css",
           format: "css/variables",
+          filter: notKit,
           options: { outputReferences: false, selector: ":root" },
         },
-        { destination: "tokens.json", format: "mq/json" },
+        { destination: "tokens.json", format: "mq/json", filter: notKit },
+        { destination: "tailwind.css", format: "mq/tailwind", filter: notKit },
+        { destination: "kit-contract.css", format: "mq/kit-contract" },
       ],
     },
   },

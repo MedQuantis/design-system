@@ -1,0 +1,25 @@
+# Custom property names of the homemade-claude-kit token contract: delivery-comms plugin 1.3.0, skills/ux-design-system/templates/tokens.template.css. One name per line; values are not vendored.
+--ink
+--muted
+--canvas-bg
+--surface
+--surface-2
+--border
+--accent
+--accent-ink
+--success
+--warning
+--danger
+--info
+--font-body
+--font-heading
+--font-mono
+--title-size
+--space-sm
+--space-md
+--space-lg
+--shell-max
+--card-radius
+--btn-radius
+--node-radius
+--shadow

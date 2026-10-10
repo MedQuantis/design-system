@@ -170,3 +170,51 @@ export function minPairwiseDistance(colors, kind = "normal") {
   }
   return best;
 }
+
+// OKLab and OKLCH (Ottosson, 2020), from and to sRGB. Hue in degrees.
+export function toOklch(color) {
+  const { r, g, b } = parseColor(color);
+  const [lr, lg, lb] = [r, g, b].map(toLinear);
+  const l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb);
+  const m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb);
+  const s = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  const hue = (Math.atan2(B, A) * 180) / Math.PI;
+  return [L, Math.hypot(A, B), hue < 0 ? hue + 360 : hue];
+}
+
+// Linear-light sRGB channels of an OKLCH colour, unclamped, so callers can test the gamut.
+function oklchToLinear([L, C, H]) {
+  const A = C * Math.cos((H * Math.PI) / 180);
+  const B = C * Math.sin((H * Math.PI) / 180);
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s = (L - 0.0894841775 * A - 1.291485548 * B) ** 3;
+  return [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+  ];
+}
+
+const GAMUT_EPSILON = 1e-7;
+export const inSrgbGamut = (lch) => oklchToLinear(lch).every((c) => c >= -GAMUT_EPSILON && c <= 1 + GAMUT_EPSILON);
+
+export function oklchToHex(lch) {
+  const [r, g, b] = oklchToLinear(lch).map((c) => fromLinear(Math.min(1, Math.max(0, c))));
+  return toHex({ r, g, b });
+}
+
+// Largest chroma at this lightness and hue that sRGB can display (bisection).
+export function maxChroma(L, H) {
+  let low = 0;
+  let high = 0.5;
+  for (let i = 0; i < 40; i += 1) {
+    const mid = (low + high) / 2;
+    if (inSrgbGamut([L, mid, H])) low = mid;
+    else high = mid;
+  }
+  return low;
+}

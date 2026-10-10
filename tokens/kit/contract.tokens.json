@@ -1,0 +1,140 @@
+{
+  "kit": {
+    "color": {
+      "$type": "color",
+      "ink": {
+        "$value": "{semantic.color.ink}",
+        "$description": "Kit contract: primary text."
+      },
+      "muted": {
+        "$value": "{semantic.color.muted}",
+        "$description": "Kit contract: secondary text."
+      },
+      "canvas-bg": {
+        "$value": "{semantic.color.canvas}",
+        "$description": "Kit contract: page background (Owner ruling 9, 2026-10-09)."
+      },
+      "surface": {
+        "$value": "{semantic.color.surface}",
+        "$description": "Kit contract: card and panel background (Owner ruling 9, 2026-10-09)."
+      },
+      "surface-2": {
+        "$value": "{semantic.color.surface-alt}",
+        "$description": "Kit contract: recessed or group background."
+      },
+      "border": {
+        "$value": "{semantic.color.border}",
+        "$description": "Kit contract: hairlines and dividers."
+      },
+      "accent": {
+        "$value": "{semantic.color.accent}",
+        "$description": "Kit contract: primary action, links and identifiers; navy (ADR-0003)."
+      },
+      "accent-ink": {
+        "$value": "{semantic.color.on-accent}",
+        "$description": "Kit contract: text on accent fills, and on every state fill the kit renderers draw."
+      },
+      "success": {
+        "$value": "{semantic.color.status.success}",
+        "$description": "Kit contract: positive state."
+      },
+      "warning": {
+        "$value": "{semantic.color.status.warning}",
+        "$description": "Kit contract: caution state. Warning strong, not the fill, because kit renderers put white text on it (Owner ruling 5, 2026-10-09)."
+      },
+      "danger": {
+        "$value": "{semantic.color.status.danger}",
+        "$description": "Kit contract: negative state."
+      },
+      "info": {
+        "$value": "{semantic.color.status.info}",
+        "$description": "Kit contract: informational state."
+      }
+    },
+    "font": {
+      "$type": "fontFamily",
+      "font-body": {
+        "$value": "{semantic.font.family.body}",
+        "$description": "Kit contract: body and reading text, Newsreader (Owner ruling 10, 2026-10-09)."
+      },
+      "font-heading": {
+        "$value": "{semantic.font.family.heading}",
+        "$description": "Kit contract: titles, headings, badges and buttons, Outfit (Owner ruling 10, 2026-10-09)."
+      },
+      "font-mono": {
+        "$value": "{semantic.font.family.mono}",
+        "$description": "Kit contract: identifiers, codes and figures, Geist Mono (Owner ruling 10, 2026-10-09)."
+      }
+    },
+    "size": {
+      "$type": "dimension",
+      "title-size": {
+        "$value": "{semantic.font.size.h2}",
+        "$description": "Kit contract: view and slide title size, the section title size."
+      },
+      "space-sm": {
+        "$value": "{semantic.space.2}",
+        "$description": "Kit contract: small spacing, 8 px."
+      },
+      "space-md": {
+        "$value": "{semantic.space.4}",
+        "$description": "Kit contract: medium spacing, 16 px."
+      },
+      "space-lg": {
+        "$value": "{semantic.space.6}",
+        "$description": "Kit contract: large spacing, 32 px."
+      },
+      "shell-max": {
+        "$value": {
+          "value": 1400,
+          "unit": "px"
+        },
+        "$description": "Kit contract: maximum width of a kit view. Kit default kept; no MedQuantis value for wide boards yet (owner decision pending)."
+      },
+      "card-radius": {
+        "$value": "{semantic.radius.medium}",
+        "$description": "Kit contract: card radius (Owner ruling 3, 2026-10-09)."
+      },
+      "btn-radius": {
+        "$value": "{semantic.radius.small}",
+        "$description": "Kit contract: button radius (Owner ruling 3, 2026-10-09)."
+      },
+      "node-radius": {
+        "$value": "{semantic.radius.medium}",
+        "$description": "Kit contract: diagram node radius (Owner ruling 3, 2026-10-09)."
+      }
+    },
+    "elevation": {
+      "$type": "shadow",
+      "shadow": {
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [0.0627, 0.0941, 0.1569],
+              "alpha": 0.06,
+              "hex": "#101828"
+            },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 1, "unit": "px" },
+            "blur": { "value": 2, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [0.0627, 0.0941, 0.1569],
+              "alpha": 0.1,
+              "hex": "#101828"
+            },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 1, "unit": "px" },
+            "blur": { "value": 3, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          }
+        ],
+        "$description": "Kit contract: card elevation. Kit default kept; shadows are not MedQuantis tokens yet (increment 07, owner decision pending)."
+      }
+    }
+  }
+}

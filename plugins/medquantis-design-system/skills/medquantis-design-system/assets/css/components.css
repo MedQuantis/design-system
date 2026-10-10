@@ -403,6 +403,36 @@
     font-size: var(--mq-font-size-label);
   }
 
+  /* Column legend beside a ring: one item per line, the value at the right edge, the
+     remainder after a rule. The legend is as wide as its widest item. */
+  :where(.mq-legend.is-column) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: fit-content;
+    gap: var(--mq-space-2);
+  }
+
+  :where(.mq-legend.is-column .mq-legend-item) {
+    display: flex;
+  }
+
+  :where(.mq-legend-value) {
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-mono);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  :where(.mq-legend.is-column .mq-legend-value) {
+    margin-left: auto;
+    padding-left: var(--mq-space-5);
+  }
+
+  :where(.mq-legend.is-column .mq-legend-item.is-rest) {
+    padding-top: var(--mq-space-2);
+    border-top: var(--mq-stroke-hairline) solid var(--mq-border);
+  }
+
   :where(.mq-swatch.is-outline) {
     border: var(--mq-stroke-hairline) solid var(--mq-border-strong);
     background-color: var(--mq-surface);

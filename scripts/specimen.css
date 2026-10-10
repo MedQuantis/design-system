@@ -252,6 +252,16 @@
     gap: var(--mq-space-6);
   }
 
+  .specimen-ring {
+    display: flex;
+    align-items: center;
+    gap: var(--mq-space-6);
+  }
+
+  .specimen-ring svg {
+    flex: none;
+  }
+
   .specimen-icon {
     flex: none;
   }

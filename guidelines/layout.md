@@ -4,7 +4,7 @@
 
 | Medium | Canvas | Layout |
 | :-- | :-- | :-- |
-| Slide | 1280 by 720 px (`--mq-slide-width`, `--mq-slide-height`, `css/slide.css`) | Fixed canvas, 72 px side margins (`--mq-space-8`), section label top left, title under it, slide number bottom right in tertiary mono |
+| Slide | 1280 by 720 px (`--mq-slide-width`, `--mq-slide-height`, `css/slide.css`) | Fixed canvas, 72 px side margins (`--mq-space-8`), section label top left, title under it, and a footer row (`mq-slide-foot`) with the legal line bottom left and the slide number bottom right, both in tertiary mono (owner ruling 11) |
 | Screen report or paper | A page that scrolls, centred, `--mq-page-width` (1040 px) wide | Flow layout: no absolute positions, no fixed heights. It is not a deck: no slide canvas inside a report |
 | A4 print | 210 by 297 mm (`--mq-a4-width`, `--mq-a4-height`, `css/print.css`) | One `mq-page` per sheet on the canvas colour; on screen the pages sit on the desk |
 
@@ -66,7 +66,8 @@ Squared-off corners read professional and institutional; pills read consumer.
 | Callout | `mq-callout` | A reservation or a point of attention: navy left tab, quiet pale fill, mono navy title. Always navy |
 | Takeaway | `mq-takeaway` | The one sentence to remember, under a navy tab, Outfit 500 |
 | Numbered rows | (pattern) | A navy circle with the number, a heading column, a body column: one line per point |
-| Footer | `mq-foot` | Sources and legal line in tertiary italic |
+| Footer | `mq-foot` | Sources and legal line in tertiary italic, in reports and papers; never inside a slide |
+| Slide footer | `mq-slide-foot` | On every slide (owner ruling 11): the legal line bottom left, the slide number bottom right, small, tertiary, Geist Mono: `<footer class="mq-slide-foot"><p>MedQuantis SA · CH-1095 Lutry · medquantis.ch</p><p class="mq-slide-number">03</p></footer>` |
 
 ## Tables
 

@@ -164,6 +164,39 @@ ${legend}
 </div>`;
 }
 
+// Ring per guidelines/charts.md: one circle per part on pathLength 100, rotated to start at
+// the top; each arc is its value minus a one-unit gap and starts at minus the running total;
+// the remainder is a rest arc drawn over a 2 px wider series 4 arc, its outline.
+function ring(insurers) {
+  const parts = [
+    { name: insurers[0].name, value: insurers[0].share, series: "is-1", stroke: "--mq-chart-series-1" },
+    { name: insurers[1].name, value: insurers[1].share, series: "is-2", stroke: "--mq-chart-series-2" },
+    { name: "Autres assureurs", value: insurers.slice(2).reduce((sum, row) => sum + row.share, 0), series: "is-rest", stroke: "--mq-chart-rest" },
+  ];
+  const gap = 1;
+  let start = 0;
+  const arcs = parts
+    .map((part) => {
+      const dash = `stroke-dasharray="${part.value - gap} ${100 - part.value + gap}" stroke-dashoffset="${-start}"`;
+      const circle = (stroke, width, value) =>
+        `<circle cx="60" cy="60" r="44" pathLength="100" fill="none" ${dash} stroke-width="${width}" style="stroke: var(${stroke})"${value === undefined ? "" : ` data-value="${value}"`}/>`;
+      start += part.value;
+      return part.series === "is-rest" ? circle("--mq-chart-series-4", 18, undefined) + circle(part.stroke, 16, part.value) : circle(part.stroke, 16, part.value);
+    })
+    .join("");
+  const items = parts
+    .map((part) => `<li class="mq-legend-item${part.series === "is-rest" ? " is-rest" : ""}"><span class="mq-swatch ${part.series}"></span>${escape(part.name)}<span class="mq-legend-value">${formatPercent(part.value)}</span></li>`)
+    .join("\n");
+  return `<div class="specimen-ring">
+<svg viewBox="0 0 120 120" width="160" height="160" role="img" aria-label="Share of premiums by insurer, labelled in the legend"><g transform="rotate(-90 60 60)">${arcs}</g></svg>
+<ul class="mq-legend is-column">
+${items}
+</ul>
+</div>`;
+}
+
+const LEGAL = "MedQuantis SA · CH-1095 Lutry · medquantis.ch";
+
 const kpiTile = (kpi, variant = "") =>
   `<div class="mq-kpi${variant ? ` ${variant}` : ""}"><p class="mq-kpi-label">${escape(kpi.label)}</p><p class="mq-kpi-value">${formatFigure(kpi)}</p><p class="mq-kpi-caption">${escape(kpi.caption)}</p></div>`;
 
@@ -319,6 +352,8 @@ ${products
 
 <h3 class="mq-subtitle specimen-sub">Chart: distribution and legend</h3>
 ${chart(insurers)}
+<h3 class="mq-subtitle specimen-sub">Chart: ring and column legend</h3>
+${ring(insurers)}
 <p class="mq-takeaway">${escape(lead.name)} reste en tête avec ${formatPercent(lead.share)} des primes.</p>
 <p class="mq-foot">${FOOT}</p>
 </section>
@@ -346,7 +381,7 @@ ${chart(insurers)}
 ${chart(insurers)}
 ${kpiTile(kpis[0], "is-navy")}
 </div>
-<p class="mq-slide-number">03</p>
+<footer class="mq-slide-foot"><p>${LEGAL}</p><p class="mq-slide-number">03</p></footer>
 </section>
 </div>
 </section>

@@ -188,6 +188,7 @@ export const MEDIA = {
       ["charts.md", "Highlight on grey"],
       ["charts.md", "Sequential and diverging use"],
       ["charts.md", "Marks"],
+      ["charts.md", "Ring construction"],
       ["charts.md", "Legends"],
       ["charts.md", "Size and motion"],
       ["colour.md", "The medium split"],

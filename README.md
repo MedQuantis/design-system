@@ -30,7 +30,7 @@ The `mq-` component CSS serves build-less media: slides, A4 reports, papers, the
 | :-- | :-- | :-- |
 | `css/base.css` | `mq.base` | Typography roles (`mq-doc`, `mq-eyebrow`, `mq-title`, `mq-lead`, `mq-prose`, `mq-note`, `mq-figure`) |
 | `css/components.css` | `mq.components` | Card, navy panel, KPI tiles, table, badges in line-style states, callout, progress and distribution bars, legend, takeaway, footer |
-| `css/slide.css` | `mq.slide` | The 1280 x 720 slide canvas, section label, title and slide number |
+| `css/slide.css` | `mq.slide` | The 1280 x 720 slide canvas, section label, title, and the footer row with the legal line and slide number |
 | `css/print.css` | `mq.print` | A4 pages with exact colour printing |
 | `css/app.css` | `mq.app` | Status badges, for interactive apps only |
 
@@ -55,10 +55,10 @@ Every `mq-` component is `trial` until a consumer uses it in production; it beco
 | Callout | `mq-callout` (`mq-callout-title`) | `css/components.css` | trial |
 | Progress bar | `mq-progress` | `css/components.css` | trial |
 | Distribution bar | `mq-distribution`, `mq-segment` | `css/components.css` | trial |
-| Legend | `mq-legend`, `mq-swatch` | `css/components.css` | trial |
+| Legend | `mq-legend` (`is-column`, `mq-legend-value`), `mq-swatch` | `css/components.css` | trial |
 | Takeaway | `mq-takeaway` | `css/components.css` | trial |
 | Footer | `mq-foot` | `css/components.css` | trial |
-| Slide canvas | `mq-slide` (`mq-slide-label`, `-title`, `-body`, `-number`) | `css/slide.css` | trial |
+| Slide canvas | `mq-slide` (`mq-slide-label`, `-title`, `-body`, `-foot`, `-number`) | `css/slide.css` | trial |
 | A4 page and desk | `mq-page`, `mq-desk`, `mq-no-print` | `css/print.css` | trial |
 | Status badge, apps only | `mq-status` (`is-success`, `is-warning`, `is-danger`, `is-info`) | `css/app.css` | trial |
 

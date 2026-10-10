@@ -25,6 +25,8 @@ The footer of every document sent outside carries the legal line and the date of
 
 Set it in Geist Mono at the note size, tertiary text colour (`--mq-tertiary`), with the date at the right end of the same line.
 
+On slides the legal line appears on every slide, bottom left, small and in tertiary grey, with the slide number bottom right (owner ruling 11). Use the slide footer row `mq-slide-foot` of `css/slide.css`, never `mq-foot`, which flows from the top of a slide canvas.
+
 Material left with a reader (a deck after a meeting, a report sent outside) also carries a confidentiality mention and its date, in the document's language:
 
 | Medium | French | German | English | Italian |

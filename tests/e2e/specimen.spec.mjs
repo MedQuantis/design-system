@@ -208,3 +208,50 @@ test("chart marks take the four series colours and the remainder fill, in order"
     }
   }
 });
+
+test("slide footer: legal line bottom left, slide number bottom right, on screen and in print (owner ruling 11)", async ({ page }) => {
+  for (const media of ["screen", "print"]) {
+    await page.emulateMedia({ media });
+    const slide = await page.locator("#slide .mq-slide").boundingBox();
+    const foot = page.locator("#slide .mq-slide-foot");
+    await expect(foot).toHaveCount(1);
+    await expect(foot).toContainText("MedQuantis SA · CH-1095 Lutry · medquantis.ch");
+    await expect(foot).toHaveCSS("color", "rgb(112, 112, 112)");
+    const legal = await foot.locator(":scope > :first-child").boundingBox();
+    const number = await foot.locator(".mq-slide-number").boundingBox();
+    expect(Math.round(legal.x - slide.x), `${media}: legal line at the left margin`).toBe(72);
+    expect(Math.round(slide.x + slide.width - (number.x + number.width)), `${media}: number at the right margin`).toBe(72);
+    for (const box of [legal, number]) {
+      expect(box.y + box.height, `${media}: inside the canvas`).toBeLessThanOrEqual(slide.y + slide.height);
+      expect(box.y, `${media}: in the bottom band`).toBeGreaterThan(slide.y + slide.height - 72);
+    }
+    expect(Math.abs(legal.y + legal.height - (number.y + number.height)), `${media}: one row`).toBeLessThanOrEqual(3);
+  }
+});
+
+test("a column legend beside the ring: items stacked, values right-aligned in Geist Mono, the remainder after a rule", async ({ page }) => {
+  const legend = page.locator("#components .mq-legend.is-column");
+  await expect(legend).toHaveCount(1);
+  const items = await legend.locator(".mq-legend-item").all();
+  expect(items.length).toBeGreaterThanOrEqual(3);
+  const boxes = await Promise.all(items.map((item) => item.boundingBox()));
+  for (let i = 1; i < boxes.length; i += 1) {
+    expect(Math.round(boxes[i].x)).toBe(Math.round(boxes[0].x));
+    expect(boxes[i].y).toBeGreaterThan(boxes[i - 1].y + boxes[i - 1].height - 1);
+  }
+  const values = legend.locator(".mq-legend-value");
+  await expect(values).toHaveCount(items.length);
+  const rights = await values.evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().right)));
+  expect(new Set(rights).size, "values share one right edge").toBe(1);
+  expect(await values.first().evaluate((node) => getComputedStyle(node).fontFamily)).toContain("Geist Mono");
+  const rest = legend.locator(".mq-legend-item.is-rest");
+  await expect(rest).toHaveCount(1);
+  await expect(rest).toHaveCSS("border-top-style", "solid");
+  await expect(rest).toHaveCSS("border-top-width", "1px");
+  // The ring beside it follows the guideline recipe: arcs on pathLength 100 whose values sum to 100.
+  const ring = page.locator("#components .specimen-ring svg");
+  await expect(ring).toHaveCount(1);
+  const arcs = await ring.locator("circle[data-value]").evaluateAll((nodes) => nodes.map((node) => Number(node.dataset.value)));
+  expect(arcs.reduce((sum, value) => sum + value, 0)).toBe(100);
+  expect(await ring.locator('circle:not([pathLength="100"])').count()).toBe(0);
+});

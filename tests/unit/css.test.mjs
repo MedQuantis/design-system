@@ -270,3 +270,51 @@ test("base.css draws the focus ring from the focus tokens, and components.css tu
   assert.ok(navy.some((rule) => rule.selector.includes(".mq-panel")), "no focus rule inside the navy panel");
   assert.equal(decls(navy)["outline-color"], "var(--mq-focus-ring-color-on-navy)");
 });
+
+// Declarations of the rules whose selector list holds `needle` (a whole :where() selector, or a
+// substring otherwise), merged in source order.
+const declarationsOf = (file, needle) => {
+  const found = {};
+  const matches = (part) => (needle.startsWith(":where(") ? part === needle : part.includes(needle));
+  parse(file).walkRules((rule) => {
+    if (!selectorList(rule.selector).some(matches)) return;
+    rule.walkDecls((decl) => {
+      found[decl.prop] = decl.value;
+    });
+  });
+  return found;
+};
+
+test("components.css lays a legend out as a column beside a ring: right-aligned mono values, the remainder after a rule", () => {
+  const defined = classes("components.css");
+  for (const name of ["is-column", "mq-legend-value"]) assert.ok(defined.has(name), `components.css lacks .${name}`);
+  const column = declarationsOf("components.css", ".mq-legend.is-column)");
+  assert.equal(column["flex-direction"], "column", "is-column stacks the items");
+  const item = declarationsOf("components.css", ".mq-legend.is-column .mq-legend-item)");
+  assert.equal(item.display, "flex", "a column item spans the legend so its value can reach the right edge");
+  const value = declarationsOf("components.css", ".mq-legend-value");
+  assert.equal(value["font-family"], "var(--mq-font-family-mono)");
+  assert.equal(value["font-variant-numeric"], "tabular-nums");
+  assert.equal(value["text-align"], "right");
+  const pushed = declarationsOf("components.css", ".mq-legend.is-column .mq-legend-value");
+  assert.equal(pushed["margin-left"], "auto", "the value is pushed to the right edge");
+  const rest = declarationsOf("components.css", ".mq-legend.is-column .mq-legend-item.is-rest");
+  assert.match(rest["border-top"] ?? "", /var\(--mq-stroke-hairline\) solid var\(--mq-border\)/, "the remainder is separated by a hairline rule");
+});
+
+test("slide.css holds a footer row: legal line bottom left, slide number bottom right (owner ruling 11)", () => {
+  assert.ok(classes("slide.css").has("mq-slide-foot"), "slide.css lacks .mq-slide-foot");
+  const foot = declarationsOf("slide.css", ".mq-slide-foot)");
+  assert.equal(foot.position, "absolute");
+  assert.equal(foot.left, "var(--mq-space-8)");
+  assert.equal(foot.right, "var(--mq-space-8)");
+  assert.ok(foot.bottom, "the footer sits at the bottom of the canvas");
+  assert.equal(foot.display, "flex");
+  assert.equal(foot["justify-content"], "space-between");
+  assert.equal(foot.color, "var(--mq-tertiary)");
+  assert.equal(foot["font-family"], "var(--mq-font-family-mono)");
+  assert.equal(foot["font-size"], "var(--mq-font-size-note)");
+  // The number keeps working on its own and lines up inside the footer row when placed there.
+  assert.equal(declarationsOf("slide.css", ":where(.mq-slide-number)").position, "absolute");
+  assert.equal(declarationsOf("slide.css", ".mq-slide-foot .mq-slide-number").position, "static");
+});

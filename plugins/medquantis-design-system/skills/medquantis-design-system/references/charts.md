@@ -13,6 +13,7 @@ Charts and data visualisation in any medium, apps included. The sections below a
 - Highlight on grey
 - Sequential and diverging use
 - Marks
+- Ring construction
 - Legends
 - Size and motion
 - The medium split
@@ -100,11 +101,24 @@ Source: guidelines/charts.md
 
 Never: background grids, zebra bands, 3D, shadows on marks, area fills under lines, pies of more than four parts.
 
+## Ring construction
+
+Source: guidelines/charts.md
+
+Build a ring in SVG from one circle per part, so the arcs need no path arithmetic:
+
+1. Every circle has the same centre and radius, `fill="none"`, `pathLength="100"` (so lengths are percentages) and a thick stroke; wrap them in a group with `transform="rotate(-90 cx cy)"` so the first arc starts at the top.
+2. Check that the values sum to 100 before drawing.
+3. Each arc is drawn with `stroke-dasharray="L G"`, where the arc length L is its value minus the gap (1 unit) and G is 100 minus L. The arc is therefore one unit shorter than its value on purpose: that unit is the gap between arcs.
+4. Each arc starts where the previous ones end: `stroke-dashoffset` is minus the running total of the previous values (0, then minus the first value, and so on).
+5. The parts take series 1, 2, 3 in order. The remainder is two circles with the same dash: a `--mq-chart-series-4` arc 2 px wider, then a `--mq-chart-rest` arc over it, so the series 4 edge shows as its outline.
+6. Set the stroke colour with `style="stroke: var(--mq-chart-series-1)"`, never a literal value. No text in the centre; the legend sits beside the ring (`mq-legend is-column`).
+
 ## Legends
 
 Source: guidelines/charts.md
 
-The legend is HTML (`mq-legend`, `mq-legend-item`, `mq-swatch`) placed above or beside the plot, never inside it. Beside a ring, list the items in a column with their values right-aligned and the remainder separated by a rule; above a bar or line chart, use one inline row. Swatches: `is-1` to `is-4`, `is-rest`, `is-outline` and `is-dashed`.
+The legend is HTML (`mq-legend`, `mq-legend-item`, `mq-swatch`) placed above or beside the plot, never inside it. Beside a ring, use `mq-legend is-column`: the items in a column, each value in `mq-legend-value` at the right edge in Geist Mono, and the remainder item (`is-rest`) separated by a rule. Above a bar or line chart, use the plain `mq-legend`, one inline row. Swatches: `is-1` to `is-4`, `is-rest`, `is-outline` and `is-dashed`.
 
 ## Size and motion
 

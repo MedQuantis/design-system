@@ -474,3 +474,19 @@ test("SKILL.md workflow survives a permission-restricted session and delivers on
     }
   }
 });
+
+test("SKILL.md shows the slide footer and the column legend; the ring and slide rubrics state their rules", () => {
+  const text = skillText();
+  assert.match(text, /mq-slide-foot/, "SKILL.md shows the slide footer (owner ruling 11)");
+  assert.match(text, /mq-legend is-column/, "SKILL.md shows the column legend beside a ring");
+  assert.match(text, /mq-legend-value/);
+  const ring = read(`${PLUGIN}/evals/charts-ring/graders/criteria.md`);
+  assert.match(ring, /one unit shorter/i, "the judge is told the arc gaps are required");
+  assert.match(ring, /outline/i);
+  assert.match(ring, /is-column/, "the legend must be a column");
+  for (const name of ["slides-title", "slides-kpis", "slides-states"]) {
+    const rubric = read(`${PLUGIN}/evals/${name}/graders/criteria.md`);
+    assert.match(rubric, /bottom left/, `${name} rubric places the legal line (owner ruling 11)`);
+    assert.match(rubric, /bottom right/, `${name} rubric places the slide number (owner ruling 11)`);
+  }
+});

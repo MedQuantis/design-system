@@ -117,11 +117,16 @@ Use these classes before writing any local CSS; their markup is fixed:
   <div class="mq-segment is-1" style="flex: 46 1 0"></div><div class="mq-segment is-2" style="flex: 31 1 0"></div><div class="mq-segment is-rest" style="flex: 23 1 0"></div>
 </div>
 <ul class="mq-legend"><li class="mq-legend-item"><span class="mq-swatch is-1"></span>Assureur A</li></ul>
+<!-- beside a ring: one item per line, values at the right edge, the remainder after a rule -->
+<ul class="mq-legend is-column">
+  <li class="mq-legend-item"><span class="mq-swatch is-1"></span>Assureur A<span class="mq-legend-value">46&nbsp;%</span></li>
+  <li class="mq-legend-item is-rest"><span class="mq-swatch is-rest"></span>Others<span class="mq-legend-value">23&nbsp;%</span></li>
+</ul>
 
 <p class="mq-foot">Sources ... MedQuantis SA · CH-1095 Lutry · medquantis.ch · 08.10.2026</p>
 ```
 
-Slides: `mq-slide` holds `mq-slide-label`, `mq-slide-title`, `mq-slide-body`, `mq-slide-number`. A4: `<div class="mq-desk"><article class="mq-page">...</article></div>`; the desk is screen-only. App status (apps only): `<span class="mq-status is-danger"><svg class="mq-status-icon" aria-hidden="true">...</svg>Error</span>`.
+Slides: `mq-slide` holds `mq-slide-label`, `mq-slide-title`, `mq-slide-body` and, on every slide (owner ruling 11), the footer row `<footer class="mq-slide-foot"><p>MedQuantis SA · CH-1095 Lutry · medquantis.ch</p><p class="mq-slide-number">03</p></footer>`: legal line bottom left, slide number bottom right. Never put `mq-foot` inside a slide. A4: `<div class="mq-desk"><article class="mq-page">...</article></div>`; the desk is screen-only. App status (apps only): `<span class="mq-status is-danger"><svg class="mq-status-icon" aria-hidden="true">...</svg>Error</span>`.
 
 Local additions use a local prefix (`--deck-*`, `--app-*`, `.rep-*`) and reference `var(--mq-*)` only. Never redefine an `--mq-*` name, never name a `--mq-core-*` token, never write a literal colour, font, shadow, radius or spacing value.
 
@@ -129,7 +134,7 @@ Local additions use a local prefix (`--deck-*`, `--app-*`, `.rep-*`) and referen
 
 **Colour.** Semantic tokens only: `--mq-accent` (navy) for key figures, links, active states, series 1 and navy panels; `--mq-ink`, `--mq-muted`, `--mq-tertiary` for text (tertiary is the lightest text grey; `--mq-decoration` is never text); `--mq-canvas` (`#fafaf8`) as the page of every document, `--mq-surface` (white) for cards and panels, `--mq-desk` only around a page preview on screen. On navy: white titles and figures, `--mq-on-navy-secondary` and `--mq-on-navy-second-level` for smaller text. No sky blue, no gradients other than the panel tokens, one large navy block per page area.
 
-**Charts.** Series in fixed order, darkest first: `--mq-chart-series-1` (navy), `--mq-chart-series-2`, `--mq-chart-series-3`, `--mq-chart-series-4`, then `--mq-chart-rest` for the remainder (drawn with a series 4 outline). Never more than four series; group the rest as "Other". Series 3 and 4 are below 3:1 on the page, so label those marks directly or outline them. One baseline in `--mq-chart-baseline`, no background grid, axis labels in Geist Mono in `--mq-tertiary`, legend in HTML (`mq-legend`) beside or above the plot. Charts never take a status colour, not even in an app.
+**Charts.** Series in fixed order, darkest first: `--mq-chart-series-1` (navy), `--mq-chart-series-2`, `--mq-chart-series-3`, `--mq-chart-series-4`, then `--mq-chart-rest` for the remainder (drawn with a series 4 outline). Never more than four series; group the rest as "Other". Series 3 and 4 are below 3:1 on the page, so label those marks directly or outline them. One baseline in `--mq-chart-baseline`, no background grid, axis labels in Geist Mono in `--mq-tertiary`, legend in HTML (`mq-legend`) above the plot, or `mq-legend is-column` beside a ring. A ring is one circle per part on `pathLength="100"`, each arc one unit shorter than its value (the gap), the remainder a `--mq-chart-rest` arc over a 2 px wider `--mq-chart-series-4` arc (see the charts reference). Charts never take a status colour, not even in an app.
 
 **Corners (ruling 3).** `--mq-radius-small`, 3 px, for small items: tags, chips, badges, inputs, buttons, bar ends. `--mq-radius-medium`, 6 px, for cards, panels, KPI tiles, figures, slide frames; the maximum anywhere else. `--mq-radius-overlay`, 12 px, only for app dialogs, modals, side drawers and command palettes, never in documents. No pill shapes; a circle only for something round (a status dot, a numbered marker, an avatar).
 

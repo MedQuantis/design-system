@@ -180,3 +180,23 @@ test("the root README lists every mq- component with its status, trial or stable
   const missing = [...classes].filter((name) => !rows.some((row) => row.includes(`\`${name}\``) && /\b(trial|stable)\b/i.test(row)));
   assert.deepEqual(missing, [], `components without a status row: ${missing.join(", ")}`);
 });
+
+test("charts.md: a legend beside a ring is mq-legend is-column, and the ring has a construction recipe", () => {
+  const text = read("guidelines/charts.md");
+  const legends = section(text, /\sLegends$/);
+  assert.ok(legends && legends.join("\n").includes("is-column"), "the Legends section names mq-legend is-column");
+  const recipe = section(text, /ring construction/i);
+  assert.ok(recipe, "charts.md has no ring construction section");
+  const body = recipe.join("\n");
+  for (const fact of [/pathLength="100"/, /rotate/i, /gap/i, /stroke-dashoffset/, /--mq-chart-rest/, /--mq-chart-series-4/, /2 px wider/, /100/]) assert.match(body, fact);
+});
+
+test("slides carry the legal line in mq-slide-foot, bottom left, with the slide number bottom right (owner ruling 11)", () => {
+  const layout = read("guidelines/layout.md");
+  assert.match(layout, /mq-slide-foot/);
+  assert.match(layout, /ruling 11/);
+  const legal = section(read("guidelines/brand.md"), /\sLegal line$/).join("\n");
+  assert.match(legal, /mq-slide-foot/);
+  assert.match(legal, /bottom left/);
+  assert.match(legal, /ruling 11/);
+});

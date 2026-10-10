@@ -1,5 +1,6 @@
 /*
- * MedQuantis slide canvas: 1280 x 720, section label, title, body area and slide number.
+ * MedQuantis slide canvas: 1280 x 720, section label, title, body area, and a footer row with
+ * the legal line at the left and the slide number at the right (owner ruling 11).
  * In print each slide is one page of its own size (named page mq-slide); @page cannot read
  * custom properties, so its size restates the --mq-slide-width and --mq-slide-height tokens.
  */
@@ -66,6 +67,32 @@
     font-family: var(--mq-font-family-mono);
     font-size: var(--mq-font-size-eyebrow);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Footer row: legal line at the left, slide number at the right, on one baseline. */
+  :where(.mq-slide-foot) {
+    position: absolute;
+    right: var(--mq-space-8);
+    bottom: var(--mq-space-5);
+    left: var(--mq-space-8);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--mq-space-5);
+    margin: 0;
+    color: var(--mq-tertiary);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-note);
+    line-height: 1.4;
+  }
+
+  :where(.mq-slide-foot > *) {
+    margin: 0;
+  }
+
+  /* Inside the footer the number joins the row; on its own it keeps its position above. */
+  :where(.mq-slide-foot .mq-slide-number) {
+    position: static;
   }
 
   @page mq-slide {

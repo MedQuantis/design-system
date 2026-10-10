@@ -108,6 +108,10 @@
         "axis": {
           "$value": "{core.font.size.11}",
           "$description": "Chart axis labels."
+        },
+        "slide-title": {
+          "$value": "{core.font.size.36}",
+          "$description": "Slide title on the 1280 by 720 canvas (increment 07 component need)."
         }
       }
     }

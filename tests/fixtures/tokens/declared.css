@@ -6,6 +6,10 @@
     border: 1px solid var(--mq-warning);
   }
 
+  :where(.fixture-rule) {
+    border-top: var(--mq-stroke-hairline) solid var(--mq-accent);
+  }
+
   :where(.fixture-label) {
     color: var(--mq-tertiary);
   }

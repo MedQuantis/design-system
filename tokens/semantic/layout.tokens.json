@@ -9,6 +9,10 @@
       "medium": {
         "$value": "{core.radius.6}",
         "$description": "Owner ruling 3, 2026-10-09: cards and panels."
+      },
+      "overlay": {
+        "$value": "{core.radius.12}",
+        "$description": "Owner ruling 3, amended 2026-10-10: dialogs and modals, side drawers and command palettes in apps only; never in documents, slides, cards or website media."
       }
     },
     "space": {
@@ -45,6 +49,69 @@
         "$description": "Spacing step 8, 72 px."
       },
       "$type": "dimension"
+    },
+    "stroke": {
+      "$type": "dimension",
+      "hairline": {
+        "$value": "{core.stroke.1}",
+        "$description": "Hairline borders and rules (increment 07 component need)."
+      },
+      "strong": {
+        "$value": "{core.stroke.2}",
+        "$description": "Strong rule, as above a total row (increment 07 component need)."
+      },
+      "tab": {
+        "$value": "{core.stroke.3}",
+        "$description": "Navy accent tab beside a callout or takeaway (increment 07 component need)."
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "small": {
+        "$value": "{core.shadow.small}",
+        "$description": "Cards (increment 07 component need)."
+      },
+      "medium": {
+        "$value": "{core.shadow.medium}",
+        "$description": "A slide or page previewed on the desk, never in print (increment 07 component need)."
+      },
+      "panel": {
+        "$value": "{core.shadow.panel}",
+        "$description": "Navy panels (increment 07 component need)."
+      }
+    },
+    "slide": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{core.size.1280}",
+        "$description": "Slide canvas width (increment 07 component need)."
+      },
+      "height": {
+        "$value": "{core.size.720}",
+        "$description": "Slide canvas height (increment 07 component need)."
+      }
+    },
+    "page": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{core.size.1040}",
+        "$description": "Content width of a screen document (increment 07 component need)."
+      },
+      "measure": {
+        "$value": "{core.size.760}",
+        "$description": "Longest line of running text (increment 07 component need)."
+      }
+    },
+    "a4": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{core.size.a4-width}",
+        "$description": "A4 sheet width (increment 07 component need)."
+      },
+      "height": {
+        "$value": "{core.size.a4-height}",
+        "$description": "A4 sheet height (increment 07 component need)."
+      }
     }
   }
 }

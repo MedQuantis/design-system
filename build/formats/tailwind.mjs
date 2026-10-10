@@ -19,9 +19,14 @@ const FONTS = [
   ["--font-heading", "mq-font-family-heading"],
 ];
 
+// Every radius step Tailwind 4 defines (xs to 4xl, plus the deprecated bare --radius behind
+// `rounded`) is capped by owner ruling 3: 3 px up to sm, 6 px from md. rounded-full stays
+// Tailwind's own, for circles; rounded-overlay is the 12 px exception for app overlays.
 const RADII = [
-  ["--radius-sm", "mq-radius-small"],
-  ["--radius-md", "mq-radius-medium"],
+  ["--radius", "mq-radius-small"],
+  ...["xs", "sm"].map((step) => [`--radius-${step}`, "mq-radius-small"]),
+  ...["md", "lg", "xl", "2xl", "3xl", "4xl"].map((step) => [`--radius-${step}`, "mq-radius-medium"]),
+  ["--radius-overlay", "mq-radius-overlay"],
 ];
 
 const isThemeColour = (token) =>

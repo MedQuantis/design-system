@@ -130,6 +130,13 @@
           },
           "$description": "Font size 34 px (Report design system, 2026-10-08)."
         },
+        "36": {
+          "$value": {
+            "value": 36,
+            "unit": "px"
+          },
+          "$description": "Font size 36 px (increment 07 component need: the slide title, Report design system, 2026-10-08)."
+        },
         "50": {
           "$value": {
             "value": 50,

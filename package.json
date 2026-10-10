@@ -4,6 +4,16 @@
   "private": true,
   "description": "MedQuantis design tokens, shared CSS, assets, guidelines and Claude skill.",
   "type": "module",
+  "exports": {
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.json": "./dist/tokens.json",
+    "./tailwind.css": "./dist/tailwind.css",
+    "./kit-contract.css": "./dist/kit-contract.css",
+    "./css/*": "./css/*",
+    "./fonts.css": "./fonts/fonts.css",
+    "./stylelint": "./stylelint.config.mjs",
+    "./package.json": "./package.json"
+  },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": "24.x"
@@ -16,6 +26,10 @@
     "@fontsource-variable/newsreader": "5.3.0",
     "@fontsource-variable/outfit": "5.3.0",
     "lucide": "1.55.0",
-    "style-dictionary": "5.6.0"
+    "postcss": "8.5.29",
+    "style-dictionary": "5.6.0",
+    "stylelint": "17.16.0",
+    "stylelint-declaration-strict-value": "1.12.1",
+    "stylelint-value-no-unknown-custom-properties": "6.1.1"
   }
 }

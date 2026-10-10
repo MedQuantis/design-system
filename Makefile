@@ -16,9 +16,9 @@ build: node_modules/.package-lock.json
 	rm -rf dist
 	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
 
-# No linters yet; increment 07 adds stylelint.
-lint:
-	@echo "lint: nothing to lint yet"
+# Stylelint on the shared CSS; the custom-property rule reads dist/tokens.css, so build first.
+lint: build
+	node_modules/.bin/stylelint "css/**/*.css"
 
 # Same invocations as CI; actionlint calls shellcheck on every run: block.
 workflow-lint:

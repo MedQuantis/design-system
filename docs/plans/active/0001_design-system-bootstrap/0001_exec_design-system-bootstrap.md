@@ -27,7 +27,7 @@ Principles:
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
 **Overall Status:** in-progress
-**Current Increment:** 06
+**Current Increment:** 07
 
 ## Repository layout (approved 2026-10-09)
 
@@ -47,7 +47,7 @@ design-system/
 │   └── contrast-pairs.json              # allow-list of tested colour pairs
 ├── css/                                 # tokens only, one @layer mq.* per file or folder
 │   ├── base.css  slide.css  print.css  app.css
-│   └── components/                      # card, kpi, table, badge, panel, legend, ...
+│   └── components.css                   # one file: card, kpi, table, badge, panel, legend, ...
 ├── fonts/                               # Outfit, Newsreader, Geist Mono woff2, OFL.txt, fonts.css
 ├── icons/                               # pinned Lucide build and its licence
 ├── brand/                               # logos, monogram, LICENSE (all rights reserved)
@@ -261,7 +261,7 @@ Exit criteria:
 
 ### Increment 07: Component CSS (base, components, slide, print)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -514,7 +514,7 @@ Exit criteria:
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | M1: Confidentiality gate | 01-03 | done | Repo exists with a blocking leak check, locally and in CI | `make check`, actionlint, zizmor | Every leak category detected; fails closed without a deny-list | `chore(repo)`, `feat(gate)`, `ci(gate)` |
 | M2: Tokens | 04-05 | done | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
-| M3: Components and assets | 06-08 | pending | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
+| M3: Components and assets | 06-08 | in-progress | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
 | M4: Guidelines and Claude | 09-10 | pending | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
 | M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
 | M6: Consumers | 12-17 | pending | Platform, website and Paracel consume a pinned release | Each consumer's own gate | No design value defined outside the vendored release | `refactor(design-system)` per consumer PR |

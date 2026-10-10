@@ -12,13 +12,29 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `dist/tokens.json` | Scripts and pipelines that need resolved values |
 | `dist/tailwind.css` | Tailwind 4 and Nuxt UI apps (`@theme` with 50 to 950 scales); imports `tokens.css` itself |
 | `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app. Carries the latin fonts as embedded data, since the renderers inline this one file |
-| `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media |
+| `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media (see Shared CSS) |
 | `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
 
 The design system ships framework-neutral outputs only (CSS, JSON, Tailwind theme, static assets). Wiring the tokens into a component library (Nuxt UI, shadcn/ui) belongs to the consumer.
+
+## Shared CSS
+
+The `mq-` component CSS serves build-less media: slides, A4 reports, papers, the website and HTML built by Python pipelines. Load `dist/tokens.css` and `fonts/fonts.css`, then the files you need, each in its own cascade layer and every selector inside `:where()`, so a local class always wins:
+
+| File | Layer | Holds |
+| :-- | :-- | :-- |
+| `css/base.css` | `mq.base` | Typography roles (`mq-doc`, `mq-eyebrow`, `mq-title`, `mq-lead`, `mq-prose`, `mq-note`, `mq-figure`) |
+| `css/components.css` | `mq.components` | Card, navy panel, KPI tiles, table, badges in line-style states, callout, progress and distribution bars, legend, takeaway, footer |
+| `css/slide.css` | `mq.slide` | The 1280 x 720 slide canvas, section label, title and slide number |
+| `css/print.css` | `mq.print` | A4 pages with exact colour printing |
+| `css/app.css` | `mq.app` | Status badges, for interactive apps only |
+
+Documents never load `css/app.css`: they are navy-only and show states by mark style ([ADR-0004](docs/architecture/decisions/adr-0004-status-colours-in-apps-only.md)). Apps with a component library (Nuxt UI, shadcn/ui) take the tokens and the Tailwind theme only; they do not load the `mq-` component CSS.
+
+Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, and any radius other than the three `--mq-radius-*` tokens, so no pill shape can be drawn.
 
 ## Consumption
 

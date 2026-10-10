@@ -62,6 +62,10 @@
         "$value": "{core.color.grey-200}",
         "$description": "Hairlines and card borders."
       },
+      "border-strong": {
+        "$value": "{core.color.bluegrey-1}",
+        "$description": "Outline of outlined and dashed state marks in documents (badges, legend swatches), 3:1 or more on canvas and surface for WCAG 1.4.11 (increment 07 component need, ADR-0004: states by mark style)."
+      },
       "panel-start": {
         "$value": "{core.color.navy-2}",
         "$description": "Light end of the navy panel gradient; the worst case for text on navy."

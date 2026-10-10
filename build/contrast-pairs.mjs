@@ -54,15 +54,18 @@ export function isDeclared(pairs, { fg, bg, use }) {
   );
 }
 
-const FIRST_TOKEN = /var\(\s*(--mq-[\w-]+)/;
+const TOKENS = /var\(\s*(--mq-[\w-]+)/g;
 const NON_TEXT = /^(border(-[a-z]+)*|outline(-color)?|fill|stroke|text-decoration(-color)?|column-rule(-color)?)$/;
 const BACKGROUND = /^background(-color)?$/;
 const ANNOTATION = /\/\*\s*mq-bg:\s*((?:--mq-[\w-]+\s*)+)\*\//;
 
 // Pairings are read per innermost rule block. A block without its own background is checked
 // against canvas and surface, unless a `/* mq-bg: --mq-x [--mq-y] */` comment names the
-// background it sits on (layers top first), as for text inside a navy panel.
-export function findCssPairings(css) {
+// background it sits on (layers top first), as for text inside a navy panel. With a set of
+// colour token names, the first colour token of a value is used, so a border shorthand that
+// names its width token first is still read by its colour.
+export function findCssPairings(css, colours = null) {
+  const firstColour = (value) => [...value.matchAll(TOKENS)].map((m) => m[1]).find((name) => !colours || colours.has(name));
   const pairings = [];
   for (const [, selectorText, body] of css.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
     const selector = selectorText.replace(/\/\*[\s\S]*?\*\//g, "").trim();
@@ -76,7 +79,7 @@ export function findCssPairings(css) {
     let backgrounds = annotation ? [annotation[1].trim().split(/\s+/)] : null;
     const foregrounds = [];
     for (const [property, value] of declarations) {
-      const token = value.match(FIRST_TOKEN)?.[1];
+      const token = firstColour(value);
       if (!token) continue;
       if (BACKGROUND.test(property)) {
         if (!annotation) backgrounds = [[token]];

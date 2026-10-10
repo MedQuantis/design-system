@@ -9,9 +9,10 @@ const isKit = (token) => token.path[0] === "kit";
 // Kit renderers inline this file into the HTML they write elsewhere and ignore @import, so a
 // relative url() would resolve against the output, not against fonts/. The faces travel as
 // base64 data instead: the latin subset of each variable family (every weight the renderers
-// ask for, French, German and Italian included), roman only to keep the sheet small.
+// ask for, French, German and Italian included), roman, plus the Newsreader italic so the
+// renderers' italic body text is drawn rather than synthesised.
 const FONTS_DIR = new URL("../../fonts/", import.meta.url);
-const EMBEDDED = /-latin-wght-normal\.woff2$/;
+const EMBEDDED = /-latin-wght-normal\.woff2$|^\.\/newsreader\/newsreader-latin-wght-italic\.woff2$/;
 
 export const embeddedFontFaces = () =>
   [...readFileSync(new URL("fonts.css", FONTS_DIR), "utf8").matchAll(/@font-face\s*\{[^}]*\}/g)]

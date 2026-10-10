@@ -54,6 +54,19 @@
     { "fg": "--mq-chart-axis", "bg": "--mq-canvas", "use": "non-text" },
     { "fg": "--mq-chart-axis", "bg": "--mq-surface", "use": "non-text" },
     { "fg": "--mq-chart-series-1", "bg": "--mq-canvas", "use": "non-text" },
-    { "fg": "--mq-chart-series-2", "bg": "--mq-canvas", "use": "non-text" }
+    { "fg": "--mq-chart-series-2", "bg": "--mq-canvas", "use": "non-text" },
+    { "fg": "--mq-muted", "bg": "--mq-accent-pale", "use": "text", "note": "Label of a pale KPI tile" },
+    { "fg": "--mq-muted", "bg": "--mq-accent-pale-2", "use": "text", "note": "Quiet badge" },
+    { "fg": "--mq-ink", "bg": "--mq-accent-pale-2", "use": "text", "note": "Callout body" },
+    { "fg": "--mq-accent", "bg": "--mq-accent-pale-2", "use": "text", "note": "Callout title and tab" },
+    { "fg": "--mq-border-strong", "bg": "--mq-canvas", "use": "non-text", "note": "Outlined and dashed state marks (ADR-0004)" },
+    { "fg": "--mq-border-strong", "bg": "--mq-surface", "use": "non-text", "note": "Outlined and dashed state marks (ADR-0004)" },
+    { "fg": "--mq-border", "bg": "--mq-canvas", "use": "decorative", "note": "Dividers and footer rules carry no information" },
+    { "fg": "--mq-border", "bg": "--mq-surface", "use": "decorative", "note": "Dividers and footer rules carry no information" },
+    { "fg": "--mq-border", "bg": "--mq-surface-alt", "use": "decorative", "note": "Table header rule carries no information" },
+    { "fg": "--mq-border-light", "bg": "--mq-canvas", "use": "decorative", "note": "Hairlines carry no information" },
+    { "fg": "--mq-border-light", "bg": "--mq-surface", "use": "decorative", "note": "Card borders and table row hairlines carry no information" },
+    { "fg": "--mq-on-navy-title", "bg": ["--mq-on-navy-pill", "--mq-panel-start"], "use": "text", "note": "Owner ruling 2: white icon inside an icon pill on the lighter panel stop" },
+    { "fg": "--mq-chart-series-4", "bg": "--mq-chart-rest", "use": "decorative", "note": "Outline that separates the remainder fill from series 4 under colour-vision deficiency; the fill itself carries the information" }
   ]
 }

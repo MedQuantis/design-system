@@ -240,7 +240,7 @@ test("kit-only values come from the kit token tier and stay out of tokens.css an
 // Kit renderers inline docs/ux/tokens.css into the HTML they write elsewhere and ignore
 // @import, so a relative url() would resolve against the output file: fonts travel as data.
 const KIT_FONTS = { Outfit: "fonts/outfit/outfit-latin-wght-normal.woff2", Newsreader: "fonts/newsreader/newsreader-latin-wght-normal.woff2", "Geist Mono": "fonts/geist-mono/geist-mono-latin-wght-normal.woff2" };
-const KIT_CONTRACT_BUDGET = 200 * 1024;
+const KIT_CONTRACT_BUDGET = 260 * 1024;
 
 test("dist/kit-contract.css embeds the @font-face rules for the three families as data", () => {
   const css = readDist("kit-contract.css");
@@ -255,6 +255,37 @@ test("dist/kit-contract.css embeds the @font-face rules for the three families a
     assert.ok(data, `${family}: src is not a woff2 data URI`);
     assert.ok(Buffer.from(data, "base64").equals(readFileSync(join(root, file))), `${family}: embedded font is not ${file}`);
   }
+});
+
+test("dist/kit-contract.css embeds the Newsreader latin italic, so kit renderers stop synthesising it", () => {
+  const css = readDist("kit-contract.css");
+  const faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
+  const italic = faces.filter((body) => /font-family:\s*['"]?Newsreader['"]?;/.test(body) && /font-style:\s*italic;/.test(body));
+  assert.equal(italic.length, 1, "expected one Newsreader italic face");
+  const data = italic[0].match(/url\(data:font\/woff2;base64,([A-Za-z0-9+/=]+)\)/)?.[1];
+  assert.ok(data, "the italic src is not a woff2 data URI");
+  assert.ok(Buffer.from(data, "base64").equals(readFileSync(join(root, "fonts/newsreader/newsreader-latin-wght-italic.woff2"))));
+  assert.equal(faces.filter((body) => /font-style:\s*italic;/.test(body)).length, 1, "only Newsreader carries an italic");
+});
+
+// Tailwind 4.3.3 theme.css defines --radius-xs to --radius-4xl and the deprecated bare --radius
+// (the plain `rounded` class). Every one is capped by owner ruling 3; overlay is its exception.
+const TAILWIND_RADII = ["--radius", "--radius-xs", "--radius-sm", "--radius-md", "--radius-lg", "--radius-xl", "--radius-2xl", "--radius-3xl", "--radius-4xl"];
+
+test("every Tailwind radius step resolves to 3 or 6 px, rounded-overlay alone to 12 px (owner ruling 3)", () => {
+  const tokens = mqTokens();
+  const steps = new Map([...themeDeclarations("inline"), ...themeDeclarations("static")].filter(([name]) => /^--radius(-|$)/.test(name)));
+  for (const name of [...TAILWIND_RADII, "--radius-overlay"]) assert.ok(steps.has(name), `${name} is not set in tailwind.css`);
+  const px = (name) => {
+    const ref = steps.get(name).match(/^var\((--mq-[\w-]+)\)$/)?.[1];
+    assert.ok(ref, `${name} should point at an --mq- radius token`);
+    return tokens.get(ref);
+  };
+  for (const name of ["--radius", "--radius-xs", "--radius-sm"]) assert.equal(px(name), "3px", name);
+  for (const name of ["--radius-md", "--radius-lg", "--radius-xl", "--radius-2xl", "--radius-3xl", "--radius-4xl"]) assert.equal(px(name), "6px", name);
+  assert.equal(px("--radius-overlay"), "12px");
+  for (const name of steps.keys()) assert.ok([...TAILWIND_RADII, "--radius-overlay"].includes(name), `unexpected radius step ${name}`);
+  assert.doesNotMatch(readDist("tailwind.css"), /--radius-full/, "rounded-full stays Tailwind's own, for circles");
 });
 
 test("dist/kit-contract.css references no remote URL and stays within its size budget", () => {

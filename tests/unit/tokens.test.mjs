@@ -56,6 +56,8 @@ const sourceTokens = () => {
 };
 
 const ALIAS = /^\{([^{}]+)\}$/;
+// Colour tokens only: a border shorthand names its width token before its colour.
+const colourNames = () => new Set(Object.entries(builtTokens()).filter(([, token]) => token.type === "color").map(([name]) => name));
 
 test("token sources exist as DTCG files split into core and semantic tiers", () => {
   assert.ok(tokenFiles("core").length > 0, "no tokens/core/*.tokens.json");
@@ -164,12 +166,39 @@ test("on-navy values follow owner ruling 2 and no sky blue exists", () => {
   assert.doesNotMatch(readDist(distCss), /#8fc0ff/i);
 });
 
-test("radius is 3 px for small items and 6 px for cards, never more (owner ruling 3)", () => {
+test("radius is 3 px for small items and 6 px for cards, 12 px only for app overlays (owner ruling 3)", () => {
   assert.equal(value("--mq-radius-small"), "3px");
   assert.equal(value("--mq-radius-medium"), "6px");
+  assert.equal(value("--mq-radius-overlay"), "12px");
+  assert.match(builtTokens()["--mq-radius-overlay"].description, /Owner ruling 3, amended 2026-10-10/);
+  const overlay = new Set(["--mq-radius-overlay", "--mq-core-radius-12"]);
   for (const [name, token] of Object.entries(builtTokens())) {
-    if (!name.includes("radius")) continue;
+    if (!name.includes("radius") || overlay.has(name)) continue;
     assert.ok(Number.parseFloat(token.value) <= 6, `${name} is ${token.value}`);
+  }
+});
+
+test("component tokens added in increment 07: shadows, strokes, layout sizes, slide title", () => {
+  const built = builtTokens();
+  const expected = {
+    "--mq-shadow-small": "0px 1px 2px 0px rgba(0, 0, 0, 0.05)",
+    "--mq-shadow-medium": "0px 3px 12px 0px rgba(0, 0, 0, 0.07)",
+    "--mq-shadow-panel": "0px 14px 36px 0px rgba(10, 36, 99, 0.24)",
+    "--mq-stroke-hairline": "1px",
+    "--mq-stroke-strong": "2px",
+    "--mq-stroke-tab": "3px",
+    "--mq-slide-width": "1280px",
+    "--mq-slide-height": "720px",
+    "--mq-page-width": "1040px",
+    "--mq-page-measure": "760px",
+    "--mq-a4-width": "793.7px",
+    "--mq-a4-height": "1122.52px",
+    "--mq-font-size-slide-title": "36px",
+    "--mq-border-strong": "#5d6f91",
+  };
+  for (const [name, expectedValue] of Object.entries(expected)) {
+    assert.ok(built[name], `${name} is not a token`);
+    assert.equal(built[name].value, expectedValue, name);
   }
 });
 
@@ -287,13 +316,14 @@ test("white on the warning fill is never declared (owner ruling 5)", async () =>
 test("a colour pairing used in CSS without a declaration fails", async () => {
   const { loadPairs: readPairs, findCssPairings, undeclaredPairings } = await loadPairs();
   const pairs = readPairs(pairsFile);
-  const bad = undeclaredPairings(findCssPairings(readFileSync(join(fixtures, "undeclared.css"), "utf8")), pairs);
+  const colours = colourNames();
+  const bad = undeclaredPairings(findCssPairings(readFileSync(join(fixtures, "undeclared.css"), "utf8"), colours), pairs);
   assert.deepEqual(
     bad.map(({ fg, bg }) => `${fg} on ${bg.join(" over ")}`),
     ["--mq-muted on --mq-warning-fill"],
   );
-  const good = findCssPairings(readFileSync(join(fixtures, "declared.css"), "utf8"));
-  assert.ok(good.length >= 5, `expected at least five pairings, found ${good.length}`);
+  const good = findCssPairings(readFileSync(join(fixtures, "declared.css"), "utf8"), colours);
+  assert.ok(good.length >= 6, `expected at least five pairings, found ${good.length}`);
   assert.deepEqual(undeclaredPairings(good, pairs), []);
 });
 
@@ -303,7 +333,7 @@ test("every colour pairing in css/ is declared", async () => {
   const files = existsSync(cssDir) ? readdirSync(cssDir, { recursive: true }).filter((name) => name.endsWith(".css")) : [];
   const pairs = readPairs(pairsFile);
   for (const file of files) {
-    const bad = undeclaredPairings(findCssPairings(readFileSync(join(cssDir, file), "utf8")), pairs);
+    const bad = undeclaredPairings(findCssPairings(readFileSync(join(cssDir, file), "utf8"), colourNames()), pairs);
     assert.deepEqual(bad, [], `undeclared pairings in css/${file}`);
   }
 });

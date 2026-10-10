@@ -1,6 +1,6 @@
 {
   "name": "@medquantis/design-system",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MedQuantis design tokens, shared CSS, assets, guidelines and Claude skill.",
   "type": "module",
   "repository": {

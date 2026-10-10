@@ -27,7 +27,7 @@ Plan 0001, increment 11, scope item 3. The repository stays private until every 
 
 ## The real deny-list
 
-The real deny-list lives in a private MedQuantis repository named by the `MQ_DENYLIST_REPO` variable, set on 2026-10-10. Its first version lists the insurers named in the business models and the organisations named by the client deck folders; the bare abbreviation of one insurer is listed only in its company forms, because alone it is the name of the stylesheet language. Personal names are added by the owner.
+The real deny-list lives in a private MedQuantis repository named by the `MQ_DENYLIST_REPO` variable, set on 2026-10-10. It lists every Swiss basic health insurer of the public federal lists and the other organisations named by the client deck folders; a name that is also a common word, a place or a surname is listed in its company form only, and the bare abbreviation of one insurer is listed only in its company forms, because alone it is the name of the stylesheet language. Personal names are added by the owner.
 
 To close this audit:
 

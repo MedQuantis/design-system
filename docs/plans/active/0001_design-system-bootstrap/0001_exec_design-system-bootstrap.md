@@ -42,8 +42,9 @@ design-system/
 │   ├── ISSUE_TEMPLATE/  pull_request_template.md
 │   └── workflows/  ci.yml  release.yml  # release-please and npm publish in one workflow
 ├── tokens/                              # DTCG source, the only place a value is defined
-│   ├── primitive/  color, font, radius, space (*.tokens.json)
-│   └── semantic/   color, type, chart, focus (*.tokens.json)
+│   ├── core/       color, font, radius, space, stroke (*.tokens.json)
+│   ├── semantic/   color, type, chart, focus, layout (*.tokens.json)
+│   └── contrast-pairs.json              # allow-list of tested colour pairs
 ├── css/                                 # tokens only, one @layer mq.* per file or folder
 │   ├── base.css  slide.css  print.css  app.css
 │   └── components/                      # card, kpi, table, badge, panel, legend, ...
@@ -209,7 +210,7 @@ Prediction:
 
 Scope:
 
-1. **Write first, expect red:** tests asserting `dist/tailwind.css` contains a `@theme static` block with `--color-navy-50` to `--color-navy-950` where `-500`… resolves to the accent, plus success, warning, danger, info scales, and `--font-sans` mapped to Outfit; and that `dist/kit-contract.css` defines every custom property listed in the homemade-claude-kit generic contract (`tokens.template.css`, list vendored as `tests/fixtures/kit-contract-names.txt` with its kit version, including `--font-heading`, which the kit fallback lacks) with **literal values**, never `var()`: the release-note chart reads `--accent`, `--ink` and `--surface` as hex and silently falls back to the kit's blue otherwise. The kit `--warning` maps to `#a06400` because kit renderers put white text on it. Fonts are embedded as `@font-face` in the sheet, since kit renderers ignore `@import`.
+1. **Write first, expect red:** tests asserting `dist/tailwind.css` contains a `@theme static` block with `--color-navy-50` to `--color-navy-950` where `-500`… resolves to the accent, plus success, warning, danger, info scales, and `--font-sans` mapped to Outfit; and that `dist/kit-contract.css` defines every custom property listed in the homemade-claude-kit generic contract (`tokens.template.css`, list vendored as `tests/fixtures/kit-contract-names.txt` with its kit version, including `--font-heading`, which the kit fallback lacks) with **literal values**, never `var()`: the release-note chart reads `--accent`, `--ink` and `--surface` as hex and silently falls back to the kit's blue otherwise. The kit `--warning` maps to `#a06400` because kit renderers put white text on it. The `@font-face` rules are added in increment 06, once the font files exist.
 2. Style Dictionary formats for both outputs; the navy scale is derived deterministically in OKLCH (fixed hue, stepped lightness, documented algorithm, not hand-picked). Scales go in `@theme static`; any Tailwind value that points at a `--mq-*` variable goes in `@theme inline` so runtime overrides reach the utilities. No `--ui-*` or Nuxt-specific names (framework neutrality); the Nuxt UI `danger` to `error` mapping lives in the Paracel app.
 3. `dist/kit-contract.css` starts with a header comment stating it is for kit renderers only and must never be loaded in an app, because its unprefixed names collide with Tailwind and Nuxt UI.
 
@@ -240,6 +241,7 @@ Scope:
 2. Fonts from fontsource packages (Outfit, Newsreader, Geist Mono), copied by a build script, with licences.
 3. Logo wordmark, monogram, logo on light and on navy in `brand/` (all rights reserved, its own `LICENSE`): redrawn clean SVGs (text outlined for print variants, live-text variants kept for screen).
 4. Lucide pinned build in `icons/` with its licence.
+5. `dist/kit-contract.css` embeds the `@font-face` rules for the three families (kit renderers ignore `@import`), with a test asserting they are present and reference no remote URL.
 
 Primary files:
 
@@ -265,7 +267,8 @@ Scope:
 2. `css/base.css` (typography roles), `css/components.css` (`mq-` card, navy panel, KPI tile variants, table, badges in line-style states, callout, progress and distribution bars, legend, takeaway, footer), rewritten from the report design system using tokens only.
 3. `css/slide.css` (1280×720 canvas, section label, slide title, slide number) and `css/print.css` (A4, `print-color-adjust: exact`).
 4. Status-colour badges live in an `css/app.css` layer only (ADR-0004), not in `components.css`.
-5. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
+5. Token gaps found in increment 04: shadows, gradients, motion and layout widths are not tokens yet; add any the components need to `tokens/` first (never a literal in `css/`). Text on a navy panel declares its background with a `/* mq-bg: --mq-x */` comment so the contrast test can check the pair.
+6. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
 
 Primary files:
 
@@ -309,7 +312,7 @@ Exit criteria:
 Scope:
 
 1. **Write first, expect red:** a test failing on any em or en dash in `guidelines/`, any hard-wrapped paragraph, and any hex value not present in `dist/tokens.json`.
-2. `guidelines/` (all rights reserved, its own `LICENSE`): `principles.md`, `brand.md` (name, tagline FR/DE/EN, legal footer, logo usage), `voice.md` (tone and FR/DE/IT/EN terminology), `colour.md` (incl. the medium split of ADR-0004 and the warning split), `typography.md`, `layout.md`, `charts.md` (ordered palette, at most seven hues, highlight-on-grey, sequential and diverging use), `data-patterns.md` (CHF and number formats, apostrophe thousands separator, dates, null versus zero, illustrative-data marking), `accessibility.md` (WCAG 2.2 AA target, colour never alone, focus ring, contrast pairs), `writing.md` (no em dash), `specialising.md` (framework neutrality, the four rules and the promotion tests of ADR-0002), and a component status table (trial or stable) in `README.md`.
+2. `guidelines/` (all rights reserved, its own `LICENSE`): `principles.md`, `brand.md` (name, tagline FR/DE/EN, legal footer, logo usage), `voice.md` (tone and FR/DE/IT/EN terminology), `colour.md` (incl. the medium split of ADR-0004 and the warning split), `typography.md`, `layout.md`, `charts.md` (ordered palette of four series plus the remainder fill, owner 2026-10-10; series 3 and 4 are below 3:1 on the page, so charts using them carry direct labels or an outline; highlight-on-grey, sequential and diverging use), `data-patterns.md` (CHF and number formats, apostrophe thousands separator, dates, null versus zero, illustrative-data marking), `accessibility.md` (WCAG 2.2 AA target, colour never alone, focus ring, contrast pairs), `writing.md` (no em dash), `specialising.md` (framework neutrality, the four rules and the promotion tests of ADR-0002), and a component status table (trial or stable) in `README.md`.
 3. Examples fictitious only; no consumer file paths.
 
 Primary files:

@@ -338,12 +338,12 @@ test("every colour pairing in css/ is declared", async () => {
   }
 });
 
-test("no file under dist/ names a framework (ADR-0002 framework neutrality)", () => {
-  const dist = join(root, "dist");
-  assert.ok(existsSync(dist), "dist/ is missing: run make build first");
-  for (const file of readdirSync(dist, { recursive: true })) {
-    const path = join(dist, file);
-    if (!/\.(css|json|txt|html|js|mjs)$/.test(path)) continue;
+// Framework neutrality applies to the generated CSS and JSON outputs (owner, 2026-10-10): the
+// llms files and the specimen may name frameworks as guidance on what stays local in an app.
+test("the generated tokens.css, tokens.json, tailwind.css and kit-contract.css name no framework (ADR-0002 framework neutrality)", () => {
+  for (const file of ["tokens.css", "tokens.json", "tailwind.css", "kit-contract.css"]) {
+    const path = join(root, "dist", file);
+    assert.ok(existsSync(path), `dist/${file} is missing: run make build first`);
     // Embedded font data is base64, where any three letters occur by chance.
     const text = readFileSync(path, "utf8").replace(/url\(data:[^)]*\)/g, "url(data:)");
     assert.doesNotMatch(text, /vue|nuxt|--ui-|react|jsx/i, `dist/${file} names a framework`);

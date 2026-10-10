@@ -1,0 +1,83 @@
+/*
+ * MedQuantis slide canvas: 1280 x 720, section label, title, body area and slide number.
+ * In print each slide is one page of its own size (named page mq-slide); @page cannot read
+ * custom properties, so its size restates the --mq-slide-width and --mq-slide-height tokens.
+ */
+@layer mq.base, mq.components, mq.slide, mq.print, mq.app;
+
+@layer mq.slide {
+  :where(.mq-slide) {
+    position: relative;
+    box-sizing: border-box;
+    width: var(--mq-slide-width);
+    height: var(--mq-slide-height);
+    overflow: hidden;
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-canvas);
+    box-shadow: var(--mq-shadow-medium);
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-lead);
+    line-height: 1.5;
+    page: mq-slide;
+  }
+
+  :where(.mq-slide-label) {
+    position: absolute;
+    top: var(--mq-space-7);
+    left: var(--mq-space-8);
+    margin: 0;
+    color: var(--mq-accent);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-eyebrow);
+    font-weight: var(--mq-font-weight-heading);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  :where(.mq-slide-title) {
+    position: absolute;
+    top: var(--mq-space-8);
+    right: var(--mq-space-8);
+    left: var(--mq-space-8);
+    margin: 0;
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-slide-title);
+    font-weight: var(--mq-font-weight-heading);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  :where(.mq-slide-body) {
+    position: absolute;
+    top: calc(var(--mq-space-8) * 2);
+    right: var(--mq-space-8);
+    bottom: var(--mq-space-8);
+    left: var(--mq-space-8);
+  }
+
+  :where(.mq-slide-number) {
+    position: absolute;
+    right: var(--mq-space-8);
+    bottom: var(--mq-space-5);
+    color: var(--mq-tertiary);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-eyebrow);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @page mq-slide {
+    size: 1280px 720px;
+    margin: 0;
+  }
+
+  @media print {
+    :where(.mq-slide) {
+      border-radius: 0;
+      box-shadow: none;
+      break-after: page;
+    }
+  }
+}

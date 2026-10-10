@@ -1,0 +1,439 @@
+/*
+ * MedQuantis document components: cards, navy panel, KPI tiles, table, badges, callout,
+ * progress and distribution bars, legend, takeaway and footer.
+ * Documents are navy-only (ADR-0004): states read by mark style (solid, ring, pale, outline,
+ * quiet, dashed), never by a status hue. Status badges live in app.css.
+ * Text on a navy or tinted background names it in a mq-bg comment, so the contrast test can
+ * check the pair against tokens/contrast-pairs.json.
+ */
+@layer mq.base, mq.components, mq.slide, mq.print, mq.app;
+
+@layer mq.components {
+  /* Card */
+  :where(.mq-card) {
+    box-sizing: border-box;
+    padding: var(--mq-space-5);
+    border: var(--mq-stroke-hairline) solid var(--mq-border-light);
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-surface);
+    box-shadow: var(--mq-shadow-small);
+    color: var(--mq-ink);
+  }
+
+  :where(.mq-card-title) {
+    margin: 0 0 var(--mq-space-2);
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-h3);
+    font-weight: var(--mq-font-weight-heading);
+    line-height: 1.3;
+  }
+
+  :where(.mq-card-body) {
+    margin: 0;
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-small);
+    line-height: 1.55;
+  }
+
+  /* Navy panel */
+  :where(.mq-panel) {
+    box-sizing: border-box;
+    padding: var(--mq-space-6);
+    border-radius: var(--mq-radius-medium);
+    background: linear-gradient(160deg, var(--mq-panel-start), var(--mq-panel-end));
+    box-shadow: var(--mq-shadow-panel);
+    color: var(--mq-on-navy-title);
+  }
+
+  :where(.mq-panel-kicker) {
+    /* mq-bg: --mq-panel-start */
+    margin: 0 0 var(--mq-space-2);
+    color: var(--mq-on-navy-secondary);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-eyebrow);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  :where(.mq-panel-title) {
+    /* mq-bg: --mq-panel-start */
+    margin: 0;
+    color: var(--mq-on-navy-title);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-h3);
+    font-weight: var(--mq-font-weight-heading);
+    line-height: 1.3;
+  }
+
+  :where(.mq-panel-text) {
+    /* mq-bg: --mq-panel-start */
+    margin: var(--mq-space-2) 0 0;
+    color: var(--mq-on-navy-second-level);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-small);
+    line-height: 1.55;
+  }
+
+  :where(.mq-panel-rule) {
+    /* mq-bg: --mq-panel-start */
+    margin: var(--mq-space-4) 0;
+    border: 0;
+    border-top: var(--mq-stroke-hairline) solid var(--mq-on-navy-rule);
+  }
+
+  :where(.mq-panel-icon) {
+    /* mq-bg: --mq-on-navy-pill --mq-panel-start */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--mq-space-7);
+    height: var(--mq-space-7);
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-on-navy-pill);
+    color: var(--mq-on-navy-title);
+  }
+
+  :where(.mq-panel a) {
+    /* mq-bg: --mq-panel-start */
+    color: var(--mq-on-navy-title);
+  }
+
+  :where(.mq-panel :focus-visible) {
+    /* mq-bg: --mq-panel-start */
+    outline-color: var(--mq-focus-ring-color-on-navy);
+  }
+
+  /* KPI tiles: default on surface, navy, pale */
+  :where(.mq-kpis) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--mq-space-4);
+  }
+
+  :where(.mq-kpi) {
+    box-sizing: border-box;
+    padding: var(--mq-space-4) var(--mq-space-5);
+    border: var(--mq-stroke-hairline) solid var(--mq-border-light);
+    border-radius: var(--mq-radius-medium);
+    background-color: var(--mq-surface);
+  }
+
+  :where(.mq-kpi-label) {
+    margin: 0;
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-eyebrow);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  :where(.mq-kpi-value) {
+    margin: var(--mq-space-2) 0 0;
+    color: var(--mq-accent);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-kpi);
+    font-weight: var(--mq-font-weight-heading);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  :where(.mq-kpi-caption) {
+    margin: var(--mq-space-1) 0 0;
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-note);
+  }
+
+  :where(.mq-kpi.is-navy) {
+    border-color: transparent;
+    background: linear-gradient(160deg, var(--mq-panel-start), var(--mq-panel-end));
+  }
+
+  :where(.mq-kpi.is-navy .mq-kpi-label, .mq-kpi.is-navy .mq-kpi-caption) {
+    /* mq-bg: --mq-panel-start */
+    color: var(--mq-on-navy-secondary);
+  }
+
+  :where(.mq-kpi.is-navy .mq-kpi-value) {
+    /* mq-bg: --mq-panel-start */
+    color: var(--mq-on-navy-title);
+  }
+
+  :where(.mq-kpi.is-pale) {
+    border-color: transparent;
+    background-color: var(--mq-accent-pale);
+  }
+
+  :where(.mq-kpi.is-pale .mq-kpi-label, .mq-kpi.is-pale .mq-kpi-caption) {
+    /* mq-bg: --mq-accent-pale */
+    color: var(--mq-muted);
+  }
+
+  :where(.mq-kpi.is-pale .mq-kpi-value) {
+    /* mq-bg: --mq-accent-pale */
+    color: var(--mq-accent);
+  }
+
+  /* Table */
+  :where(.mq-table) {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-table-text);
+  }
+
+  :where(.mq-table th) {
+    padding: var(--mq-space-2) var(--mq-space-3);
+    border-bottom: var(--mq-stroke-hairline) solid var(--mq-border);
+    background-color: var(--mq-surface-alt);
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-table-header);
+    font-weight: var(--mq-font-weight-heading);
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  :where(.mq-table td) {
+    padding: var(--mq-space-2) var(--mq-space-3);
+    border-bottom: var(--mq-stroke-hairline) solid var(--mq-border-light);
+    color: var(--mq-ink);
+    vertical-align: top;
+  }
+
+  :where(.mq-table .mq-num) {
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-table-cell);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  :where(.mq-table .is-key) {
+    color: var(--mq-accent);
+    font-weight: var(--mq-font-weight-heading);
+  }
+
+  :where(.mq-table tr.is-highlight > td) {
+    background-color: var(--mq-accent-pale);
+  }
+
+  :where(.mq-table tr.is-total > td) {
+    border-top: var(--mq-stroke-strong) solid var(--mq-accent);
+    border-bottom: 0;
+    font-weight: var(--mq-font-weight-heading);
+  }
+
+  /* Badges: state by mark style, never by hue */
+  :where(.mq-badge) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mq-space-1);
+    box-sizing: border-box;
+    padding: 0 var(--mq-space-2);
+    border: var(--mq-stroke-hairline) solid transparent;
+    border-radius: var(--mq-radius-small);
+    font-family: var(--mq-font-family-ui);
+    font-size: var(--mq-font-size-eyebrow);
+    font-weight: var(--mq-font-weight-heading);
+    line-height: 1.8;
+    white-space: nowrap;
+  }
+
+  :where(.mq-badge.is-solid) {
+    background-color: var(--mq-accent);
+    color: var(--mq-on-accent);
+  }
+
+  :where(.mq-badge.is-ring) {
+    border-color: var(--mq-accent);
+    background-color: var(--mq-surface);
+    color: var(--mq-accent);
+  }
+
+  :where(.mq-badge.is-pale) {
+    background-color: var(--mq-accent-pale);
+    color: var(--mq-accent);
+  }
+
+  :where(.mq-badge.is-outline) {
+    border-color: var(--mq-border-strong);
+    background-color: var(--mq-surface);
+    color: var(--mq-ink);
+  }
+
+  :where(.mq-badge.is-quiet) {
+    background-color: var(--mq-accent-pale-2);
+    color: var(--mq-muted);
+  }
+
+  :where(.mq-badge.is-dashed) {
+    border-style: dashed;
+    border-color: var(--mq-border-strong);
+    background-color: var(--mq-surface);
+    color: var(--mq-muted);
+  }
+
+  /* Callout */
+  :where(.mq-callout) {
+    box-sizing: border-box;
+    padding: var(--mq-space-4) var(--mq-space-5);
+    border-left: var(--mq-stroke-tab) solid var(--mq-accent);
+    border-radius: 0 var(--mq-radius-small) var(--mq-radius-small) 0;
+    background-color: var(--mq-accent-pale-2);
+    color: var(--mq-ink);
+  }
+
+  :where(.mq-callout-title) {
+    /* mq-bg: --mq-accent-pale-2 */
+    margin: 0 0 var(--mq-space-1);
+    color: var(--mq-accent);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-eyebrow);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Progress bar */
+  :where(.mq-progress) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--mq-space-1) var(--mq-space-3);
+  }
+
+  :where(.mq-progress-label) {
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-ui);
+    font-size: var(--mq-font-size-label);
+  }
+
+  :where(.mq-progress-value) {
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-mono);
+    font-size: var(--mq-font-size-table-cell);
+    font-variant-numeric: tabular-nums;
+  }
+
+  :where(.mq-progress-track) {
+    grid-column: 1 / -1;
+    height: var(--mq-space-2);
+    overflow: hidden;
+    border-radius: var(--mq-radius-small);
+    background-color: var(--mq-accent-pale-2);
+  }
+
+  :where(.mq-progress-fill) {
+    height: 100%;
+    background-color: var(--mq-accent);
+  }
+
+  /* Distribution bar: parts of a whole in the ordered chart palette */
+  :where(.mq-distribution) {
+    display: flex;
+    gap: var(--mq-space-1);
+    height: var(--mq-space-3);
+  }
+
+  :where(.mq-segment) {
+    height: 100%;
+    background-color: var(--mq-chart-series-1);
+  }
+
+  :where(.mq-segment:first-child) {
+    border-radius: var(--mq-radius-small) 0 0 var(--mq-radius-small);
+  }
+
+  :where(.mq-segment:last-child) {
+    border-radius: 0 var(--mq-radius-small) var(--mq-radius-small) 0;
+  }
+
+  /* Legend swatch base; it precedes the series rules, which share its zero specificity. */
+  :where(.mq-swatch) {
+    flex: none;
+    box-sizing: border-box;
+    width: var(--mq-space-3);
+    height: var(--mq-space-3);
+    border-radius: var(--mq-radius-small);
+    background-color: var(--mq-chart-series-1);
+  }
+
+  :where(.mq-segment.is-1, .mq-swatch.is-1) {
+    background-color: var(--mq-chart-series-1);
+  }
+
+  :where(.mq-segment.is-2, .mq-swatch.is-2) {
+    background-color: var(--mq-chart-series-2);
+  }
+
+  :where(.mq-segment.is-3, .mq-swatch.is-3) {
+    background-color: var(--mq-chart-series-3);
+  }
+
+  :where(.mq-segment.is-4, .mq-swatch.is-4) {
+    background-color: var(--mq-chart-series-4);
+  }
+
+  :where(.mq-segment.is-rest, .mq-swatch.is-rest) {
+    box-sizing: border-box;
+    border: var(--mq-stroke-hairline) solid var(--mq-chart-series-4);
+    background-color: var(--mq-chart-rest);
+  }
+
+  /* Legend */
+  :where(.mq-legend) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mq-space-2) var(--mq-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.mq-legend-item) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mq-space-2);
+    color: var(--mq-muted);
+    font-family: var(--mq-font-family-ui);
+    font-size: var(--mq-font-size-label);
+  }
+
+  :where(.mq-swatch.is-outline) {
+    border: var(--mq-stroke-hairline) solid var(--mq-border-strong);
+    background-color: var(--mq-surface);
+  }
+
+  :where(.mq-swatch.is-dashed) {
+    border: var(--mq-stroke-hairline) dashed var(--mq-border-strong);
+    background-color: var(--mq-surface);
+  }
+
+  /* Takeaway under a figure */
+  :where(.mq-takeaway) {
+    margin: var(--mq-space-4) 0 0;
+    padding: 0 0 0 var(--mq-space-3);
+    border-left: var(--mq-stroke-tab) solid var(--mq-accent);
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-heading);
+    font-size: var(--mq-font-size-takeaway);
+    font-weight: var(--mq-font-weight-heading);
+    line-height: 1.4;
+  }
+
+  /* Footer: sources, legal line, illustrative-data note */
+  :where(.mq-foot) {
+    margin: var(--mq-space-6) 0 0;
+    padding: var(--mq-space-3) 0 0;
+    border-top: var(--mq-stroke-hairline) solid var(--mq-border);
+    color: var(--mq-tertiary);
+    font-family: var(--mq-font-family-body);
+    font-size: var(--mq-font-size-note);
+    font-style: italic;
+    line-height: 1.5;
+  }
+}

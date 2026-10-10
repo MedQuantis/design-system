@@ -1,0 +1,17 @@
+{
+  "name": "medquantis",
+  "description": "MedQuantis Claude Code plugins: the design-system skill for on-brand slides, reports, web pages, apps and charts.",
+  "version": "0.0.0",
+  "owner": {
+    "name": "MedQuantis SA",
+    "url": "https://medquantis.ch"
+  },
+  "plugins": [
+    {
+      "name": "medquantis-design-system",
+      "source": "./plugins/medquantis-design-system",
+      "description": "On-brand MedQuantis output from the design-system tokens, with a validator that fails any colour outside the token set.",
+      "category": "design"
+    }
+  ]
+}

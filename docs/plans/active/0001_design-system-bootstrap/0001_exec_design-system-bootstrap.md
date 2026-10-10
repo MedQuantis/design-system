@@ -27,7 +27,7 @@ Principles:
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
 **Overall Status:** in-progress
-**Current Increment:** 09
+**Current Increment:** 10
 
 ## Repository layout (approved 2026-10-09)
 
@@ -335,13 +335,14 @@ Exit criteria:
 
 ### Increment 10: Claude skill and plugin
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** tests asserting the skill frontmatter has `name` (without the reserved words `claude` or `anthropic`), `description`, `version`; `SKILL.md` is under 500 lines and references are one level deep; every referenced file exists; the plugin and marketplace manifests parse and their versions equal `package.json`'s; the validator script fails on a fixture HTML using a colour outside the token set and passes on a clean one.
 2. `plugins/medquantis-design-system/skills/medquantis-design-system/SKILL.md` (when to use, medium split, how to load tokens and components into a page or deck), `references/` per medium (slides, a4-report, web, app, charts) generated from `guidelines/`, not duplicated, and `scripts/` with a token lookup and a validator that fails generated HTML or CSS containing any colour outside the token set.
 3. Evals: at least three tasks per medium, run on Haiku, Sonnet and Opus, recorded in the skill's `evals/`.
+3b. Eval runs held back by the owner (2026-10-10): tasks and runner are committed; runs on Haiku, Sonnet and Opus happen as a separate step after owner approval.
 4. `dist/llms.txt` and `dist/llms-full.txt` generated from `guidelines/` and the token list, served through the CDN.
 5. `scripts/sync-skill-assets.mjs` copies the built `tokens.css`, `kit-contract.css` and fonts into the skill's `assets/` (the plugin cache cannot reach `dist/`); a test fails when the committed copy differs from a fresh build.
 6. `plugins/medquantis-design-system/.claude-plugin/plugin.json` and the root `.claude-plugin/marketplace.json` so the repo is installable as a Claude Code marketplace; a zipped skill build for claude.ai upload via `make skill-zip`.
@@ -520,6 +521,6 @@ Exit criteria:
 | M1: Confidentiality gate | 01-03 | done | Repo exists with a blocking leak check, locally and in CI | `make check`, actionlint, zizmor | Every leak category detected; fails closed without a deny-list | `chore(repo)`, `feat(gate)`, `ci(gate)` |
 | M2: Tokens | 04-05 | done | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
 | M3: Components and assets | 06-08 | done | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
-| M4: Guidelines and Claude | 09-10 | in-progress | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
+| M4: Guidelines and Claude | 09-10 | done | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
 | M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
 | M6: Consumers | 12-17 | pending | Platform, website and Paracel consume a pinned release | Each consumer's own gate | No design value defined outside the vendored release | `refactor(design-system)` per consumer PR |

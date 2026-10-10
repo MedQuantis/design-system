@@ -7,3 +7,5 @@ zizmor = "1.30.1"
 shellcheck = "0.11.0"
 # make brand and make brand-check run the fontTools outline script through uv; not in make check.
 uv = "0.11.29"
+# Skill scripts run in claude.ai and API containers on Python 3.11; tests run them on the same version.
+python = "3.11.17"

@@ -1,4 +1,4 @@
-.PHONY: check test test-unit test-e2e specimen browsers build lint workflow-lint confidentiality-check assets brand brand-check
+.PHONY: check test test-unit test-e2e specimen browsers build lint workflow-lint confidentiality-check assets brand brand-check skill skill-zip skill-evals plugin-validate
 
 # Single local entry point; CI runs the same target.
 check: lint workflow-lint build test confidentiality-check
@@ -28,10 +28,12 @@ browsers: node_modules/.package-lock.json
 node_modules/.package-lock.json: package-lock.json
 	npm ci --ignore-scripts
 
-# dist/ is generated from tokens/ and never committed; rebuilt from scratch every time.
+# dist/ is generated from tokens/ and never committed; rebuilt from scratch every time. The llms
+# files are generated from guidelines/ and the token build.
 build: node_modules/.package-lock.json
 	rm -rf dist
 	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
+	node scripts/build-llms.mjs
 
 # Stylelint on the shared CSS; the custom-property rule reads dist/tokens.css, so build first.
 lint: build
@@ -64,3 +66,37 @@ brand: node_modules/.package-lock.json
 
 brand-check: node_modules/.package-lock.json
 	uv run --quiet scripts/outline-brand.py --check $(OUTFIT_VARIABLE) brand
+
+# The Claude skill (plugins/medquantis-design-system) is committed, because a plugin cache or a
+# claude.ai upload cannot reach dist/. This regenerates its references and eval graders from
+# guidelines/ and the tokens, and copies the built assets; the unit tests fail on any drift.
+SKILL_DIR := plugins/medquantis-design-system/skills/medquantis-design-system
+
+skill: build
+	node scripts/build-skill.mjs
+	node scripts/sync-skill-assets.mjs
+
+# Zip for claude.ai upload (Settings, Features), without the eval tasks.
+skill-zip: skill
+	python3 scripts/skill-zip.py $(SKILL_DIR) dist/medquantis-design-system-skill.zip
+
+# Local manifest check with the Claude Code CLI (no model call); not in make check, because CI has
+# no claude CLI. The manifest unit test is the CI gate.
+plugin-validate:
+	claude plugin validate .
+	claude plugin validate plugins/medquantis-design-system
+
+# Eval runs call models on the owner's account and cost money: run only with the owner's approval,
+# never from make check. Each model runs every case three times with the plugin and three times
+# without it; results land in dist/skill-evals/<model>/ (report.html, aggregate-result.json).
+# Bash runs under Claude Code's sandbox, which needs bubblewrap and socat on Linux.
+SKILL_EVAL_MODELS ?= haiku sonnet opus
+SKILL_EVAL_JUDGE ?= sonnet
+SKILL_EVAL_MAX_COST ?= 30
+
+skill-evals:
+	for model in $(SKILL_EVAL_MODELS); do \
+		claude plugin eval plugins/medquantis-design-system --model $$model --judge-model $(SKILL_EVAL_JUDGE) \
+			--max-cost-usd $(SKILL_EVAL_MAX_COST) --trust-plugin --no-publish --output-dir dist/skill-evals/$$model \
+			--allow-tools Write Edit "Bash(python3 *)" "Bash(cp *)" "Bash(mkdir *)" || exit $$?; \
+	done

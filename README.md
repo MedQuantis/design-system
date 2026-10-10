@@ -17,6 +17,8 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
+| `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |
+| `plugins/medquantis-design-system/` | The Claude skill, as a Claude Code plugin and as a zip for claude.ai (see Claude skill) |
 
 The design system ships framework-neutral outputs only (CSS, JSON, Tailwind theme, static assets). Wiring the tokens into a component library (Nuxt UI, shadcn/ui) belongs to the consumer.
 
@@ -68,6 +70,17 @@ The specimen is the visual reference of the design system: every colour token wi
 
 `make test` runs the unit tests, then Playwright and axe on the specimen: WCAG 2.2 AA with no serious or critical violation, no request outside the folder, a tagged PDF export, and screenshot baselines of each part of the page (header, every section, footer) and of the focus ring in `tests/e2e/specimen.spec.mjs-snapshots/`. The browser is Playwright's own Chromium headless shell, whose build is pinned by the exact `@playwright/test` version; `make browsers` installs it locally and CI installs the same build, so the baselines compare like with like. After a deliberate visual change, regenerate the baselines with `node_modules/.bin/playwright test --update-snapshots` and review the new images in the PR. When the CI job fails, it uploads Playwright's `test-results/` (actual, expected and diff images) as the `playwright-test-results` artifact, kept for 7 days.
 
+## Claude skill
+
+The skill `medquantis-design-system` teaches Claude to build on-brand slides, A4 reports, web pages, app screens and charts from the tokens and the `mq-` components, then to check the result with its validator, which fails any colour outside the token set, a status colour in a document, an unknown `--mq-*` token and an em or en dash. It lives in `plugins/medquantis-design-system/skills/medquantis-design-system/`: `SKILL.md`, one reference per medium generated from `guidelines/`, a token lookup and the validator in `scripts/` (Python 3.11 standard library, so they run in a claude.ai container too), and a copy of the built tokens, CSS, fonts and brand files in `assets/`, because an installed plugin cannot reach `dist/`.
+
+- **Claude Code:** this repository is a plugin marketplace named `medquantis`. Add it with `/plugin marketplace add MedQuantis/design-system`, then `/plugin install medquantis-design-system@medquantis`.
+- **claude.ai:** `make skill-zip` writes `dist/medquantis-design-system-skill.zip`; upload it under Settings, Features. Each member uploads it once.
+
+`make skill` regenerates the references and the generated eval graders and copies the built assets; the unit tests fail when the committed skill differs from a fresh build, so a token or guideline change needs `make skill` in the same PR. The plugin, the marketplace and the skill carry the package version. `make plugin-validate` runs `claude plugin validate` locally (no model call); CI relies on the manifest unit test.
+
+The eval tasks (`evals/`, three or more per medium, run by `claude plugin eval`) call models on the owner's account, so they never run in `make check`. `make skill-evals` runs them on Haiku, Sonnet and Opus with a cost ceiling (`SKILL_EVAL_MAX_COST`, USD per model) and writes the reports to `dist/skill-evals/<model>/`; Linux needs `bubblewrap` and `socat` for Claude Code's sandbox.
+
 ## Consumption
 
 - **Node consumers** install `@medquantis/design-system` at an exact version and let Dependabot propose bumps.
@@ -84,13 +97,15 @@ The specimen is the visual reference of the design system: every colour token wi
 ## Development
 
 ```sh
-mise install      # Node, gitleaks, actionlint, zizmor, shellcheck and uv, pinned in mise.toml
+mise install      # Node, Python, gitleaks, actionlint, zizmor, shellcheck and uv, pinned in mise.toml
 make check        # lint, workflow lint, build, tests and the confidentiality check
 make specimen     # generate the specimen page into dist/specimen/index.html
 make test         # unit tests, then Playwright and axe on the specimen (installs the pinned browser)
 make assets       # refresh fonts/ and icons/ from their pinned npm packages
 make brand        # re-outline the monogram and wordmark SVGs from the pinned Outfit font
 make brand-check  # prove the committed brand SVGs reproduce byte for byte (Python, not in make check)
+make skill        # regenerate the Claude skill's references, eval graders and assets
+make skill-zip    # zip the skill for claude.ai into dist/
 ```
 
 `fonts/` and `icons/` are committed copies of exact-pinned packages because they ship in the npm package; a unit test fails when they drift, so a Dependabot bump of a font or of Lucide needs `make assets` in the same PR. The screen wordmarks use live text, which renders in Outfit only where the page loads `fonts.css` (inline SVG); in an `<img>` use the `-print` variant.

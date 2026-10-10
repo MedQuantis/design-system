@@ -137,13 +137,16 @@ const LICENCE_FILE = /(?:^|\/)(?:OFL\.txt|LICENSE)$/;
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const CDN_HOST = /fonts\.googleapis\.com|fonts\.gstatic\.com|unpkg\.com|jsdelivr\.net|cdnjs\.cloudflare\.com/i;
 const TEXT_EXTENSIONS = new Set([".css", ".json", ".js", ".mjs", ".svg", ".html", ".txt", ".md", ""]);
+// The llms files are documentation for language models: their links point readers at the CDN
+// release and are never loaded by a page.
+const LLM_DOCS = new Set(["dist/llms.txt", "dist/llms-full.txt"]);
 
 test("no shipped file requests a remote font, icon or stylesheet", () => {
   const files = ["fonts", "icons", "brand", "css", "dist"].flatMap((dir) => walk(at(dir)));
   assert.ok(files.some((file) => file.startsWith(at("fonts"))), "fonts/ is empty");
   for (const file of files) {
     const name = relative(root, file);
-    if (!TEXT_EXTENSIONS.has(extname(file))) continue;
+    if (!TEXT_EXTENSIONS.has(extname(file)) || LLM_DOCS.has(name)) continue;
     const text = readFileSync(file, "utf8");
     assert.doesNotMatch(text, CDN_HOST, `${name} names a font or script CDN`);
     for (const [, url] of text.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) assert.ok(!isRemote(url), `${name}: remote url(${url.slice(0, 60)})`);

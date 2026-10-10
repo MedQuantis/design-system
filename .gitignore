@@ -5,3 +5,6 @@ playwright-report/
 *.tgz
 .env
 .DS_Store
+# claude plugin eval writes its results next to the cases unless --output-dir is given.
+plugins/**/evals/results/
+__pycache__/

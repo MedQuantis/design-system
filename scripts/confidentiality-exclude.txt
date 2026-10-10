@@ -4,6 +4,7 @@ tests/fixtures/denylist.txt
 tests/fixtures/confidentiality/deny-term.md
 tests/fixtures/confidentiality/chf-amount.md
 tests/fixtures/confidentiality/examples/unmarked-percentage.md
+tests/fixtures/confidentiality/examples/unmarked-nbsp-figures.md
 tests/fixtures/confidentiality/sharepoint-url.md
 tests/fixtures/confidentiality/crm-path.md
 tests/fixtures/confidentiality/svg-metadata.svg

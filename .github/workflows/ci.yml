@@ -53,3 +53,15 @@ jobs:
           echo "MQ_DENYLIST=${RUNNER_TEMP}/denylist.txt" >> "$GITHUB_ENV"
 
       - run: make check
+
+      # On failure only: Playwright's actual, expected and diff images, so baselines can be
+      # checked (or regenerated once, plan increment 11) from the runner's own rendering.
+      # The artifact token is the runner's own; no permission is added.
+      - name: Upload Playwright test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-test-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7

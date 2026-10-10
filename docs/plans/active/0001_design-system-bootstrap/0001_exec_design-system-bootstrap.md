@@ -372,7 +372,7 @@ Scope:
 4. Owner steps (manual, listed not automated): the private GitHub repo `MedQuantis/design-system` exists since 2026-10-09; create the `@medquantis` npm organisation, add the deny-list secret, protect `main`, configure the npm trusted publisher, switch visibility to public only after the audit is green.
 5. `README.md` documents CDN use with an exact version and an SRI hash (`https://cdn.jsdelivr.net/npm/@medquantis/design-system@X.Y.Z/dist/tokens.css`), never a range or a `gh/` URL.
 
-6. Screenshot baselines on CI (owner, 2026-10-10): if the first GitHub run fails only on the specimen screenshots, regenerate the baselines once from the `test-results` artifact the CI job uploads on failure, commit them, and keep this machine's runs within the configured tolerance; never loosen the tolerance to make CI pass.
+6. Screenshot baselines on CI (owner, 2026-10-10): if the first GitHub run fails only on the specimen screenshots, regenerate the baselines once from the `playwright-test-results` artifact the CI job uploads on failure (step added in the increment 08 follow-up), commit them, and keep this machine's runs within the configured tolerance; never loosen the tolerance to make CI pass.
 
 Primary files:
 

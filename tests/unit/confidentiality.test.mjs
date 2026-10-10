@@ -37,6 +37,12 @@ test("unmarked percentage inside examples/ is reported", () => {
   assert.deepEqual(rulesFor("examples/unmarked-percentage.md"), ["unmarked-figure"]);
 });
 
+test("figures written with a non-breaking space (owner ruling 8) are still reported", () => {
+  const findings = findingsFor("examples/unmarked-nbsp-figures.md");
+  assert.deepEqual(findings.map((f) => [f.rule, f.line]), [["unmarked-figure", 3], ["unmarked-figure", 4]]);
+  assert.equal(scanText("Budget CHF\u00a02'460'000 per year."), "currency-amount"); // mq:illustrative
+});
+
 test("SharePoint URL is reported", () => {
   assert.deepEqual(rulesFor("sharepoint-url.md"), ["internal-host"]);
 });

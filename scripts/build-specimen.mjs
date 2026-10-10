@@ -11,15 +11,15 @@ import { evaluatePair, loadPairs, THRESHOLDS } from "../build/contrast-pairs.mjs
 const root = fileURLToPath(new URL("..", import.meta.url));
 const NBSP = " ";
 
-// Owner ruling 8: straight apostrophe thousands separator, decimal point, a space before %,
-// currency first and joined to the amount by a non-breaking space.
+// Owner ruling 8: straight apostrophe thousands separator, decimal point, currency first; the
+// space after CHF and the one before % are non-breaking, so a figure never wraps from its unit.
 export function formatNumber(value, decimals = 0) {
   const [integer, fraction] = Math.abs(value).toFixed(decimals).split(".");
   const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
   return `${value < 0 ? "-" : ""}${grouped}${fraction ? `.${fraction}` : ""}`;
 }
 export const formatChf = (value) => `CHF${NBSP}${formatNumber(value)}`;
-export const formatPercent = (value, decimals = 1) => `${formatNumber(value, decimals)} %`;
+export const formatPercent = (value, decimals = 1) => `${formatNumber(value, decimals)}${NBSP}%`;
 
 const formatFigure = ({ value, format }) => {
   if (format === "chf") return formatChf(value);

@@ -142,8 +142,9 @@ test("figures follow owner ruling 8 and are marked illustrative", async ({ page 
   const text = await page.locator("body").evaluate((body) => body.textContent);
   expect(text).toMatch(/CHF \d{1,3}(?:'\d{3})+/);
   expect(text).not.toMatch(/CHF \d/);
-  expect(text).toMatch(/\d %/);
-  expect(text).not.toMatch(/\d%/);
+  // Amended ruling 8: the space before % is non-breaking, like the one after CHF.
+  expect(text).toMatch(/\d\u00a0%/);
+  expect(text).not.toMatch(/\d[ ]?%/);
   expect(text).not.toMatch(/’|\d,\d{3}/);
   await expect(page.locator(".mq-foot").first()).toContainText(/illustrative/i);
 });
@@ -156,9 +157,23 @@ test("no serious or critical accessibility violation (axe, WCAG 2.2 AA)", async 
   expect(blocking).toEqual([]);
 });
 
-test("page screenshot matches the baseline", async ({ page }) => {
-  await expect(page).toHaveScreenshot("specimen.png", { fullPage: true });
+// One baseline per part of the page, so a change shows up in the section it touches and the
+// baselines stay small; the focus section is covered by the two forced focus shots below.
+const SCREENSHOT_PARTS = ["header", "colour", "contrast", "type", "shape", "components", "brand", "slide", "print", "app-status", "footer"];
+const partLocator = (page, part) => (["header", "footer"].includes(part) ? page.locator(`body > ${part}`) : page.locator(`section#${part}`));
+
+test("every part of the page except the focus section has a screenshot baseline", async ({ page }) => {
+  const ids = await page.locator("section.specimen-section").evaluateAll((sections) => sections.map((section) => section.id));
+  expect(ids.filter((id) => id !== "focus")).toEqual(SCREENSHOT_PARTS.filter((part) => !["header", "footer"].includes(part)));
 });
+
+for (const part of SCREENSHOT_PARTS) {
+  test(`screenshot of the ${part} part matches its baseline`, async ({ page }) => {
+    const locator = partLocator(page, part);
+    await expect(locator).toHaveCount(1);
+    await expect(locator).toHaveScreenshot(`part-${part}.png`);
+  });
+}
 
 test("forced focus state: navy ring on light, white ring on navy", async ({ page }) => {
   const section = page.locator("#focus");

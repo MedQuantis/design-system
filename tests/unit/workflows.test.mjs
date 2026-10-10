@@ -132,3 +132,16 @@ test("CI installs the Playwright browser pinned by the lockfile, with its OS lib
   assert.ok(recipe, "no browsers target");
   assert.match(recipe[1], /node_modules\/\.bin\/playwright install --only-shell \$\(PLAYWRIGHT_INSTALL_FLAGS\) chromium/);
 });
+
+test("CI uploads Playwright's test-results/ only when the job fails, SHA-pinned and short-lived", () => {
+  const text = ci();
+  const steps = text.split(/^(?=\s+- )/m);
+  const upload = steps.find((step) => /uses:\s*actions\/upload-artifact@/.test(step));
+  assert.ok(upload, "no actions/upload-artifact step");
+  assert.match(upload, /uses:\s*actions\/upload-artifact@[0-9a-f]{40}\s+#\s*v\d+\.\d+\.\d+\s*$/m, "upload-artifact is not pinned to a commit SHA with its tag");
+  assert.match(upload, /^\s+if:\s*\$\{\{\s*failure\(\)\s*\}\}\s*$/m, "the upload must run only when the job fails");
+  assert.match(upload, /^\s+path:\s*test-results\/?\s*$/m);
+  const retention = upload.match(/^\s+retention-days:\s*(\d+)\s*$/m);
+  assert.ok(retention && Number(retention[1]) <= 7, "retention must be set to 7 days or fewer");
+  assert.ok(text.indexOf(upload) > text.search(/^\s+(?:-\s+)?run:\s*make check\s*$/m), "the upload must follow make check");
+});

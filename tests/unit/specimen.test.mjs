@@ -23,11 +23,12 @@ test("amounts follow owner ruling 8: CHF first, non-breaking space, straight apo
   assert.doesNotMatch(formatChf(1000000), /[’,]/);
 });
 
-test("percentages follow owner ruling 8: decimal point and a space before %", async () => {
+test("percentages follow owner ruling 8 as amended: decimal point and a non-breaking space before %", async () => {
   const { formatPercent } = await loadScript();
-  assert.equal(formatPercent(12.5), "12.5 %");
-  assert.equal(formatPercent(40), "40.0 %");
-  assert.equal(formatPercent(100, 0), "100 %");
+  assert.equal(formatPercent(12.5), `12.5${NBSP}%`);
+  assert.equal(formatPercent(40), `40.0${NBSP}%`);
+  assert.equal(formatPercent(100, 0), `100${NBSP}%`);
+  assert.doesNotMatch(formatPercent(7.5), / %/);
 });
 
 test("examples/ holds fictitious data only, every figure line carrying the illustrative marker", () => {

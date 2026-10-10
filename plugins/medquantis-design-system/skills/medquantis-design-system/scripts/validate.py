@@ -172,10 +172,38 @@ def check_css(report, css, base, rules):
         report.add(base + match.start(), "remote font service; load the self-hosted fonts.css")
 
 
+_SHIPPED_BUNDLES = None
+
+
+def shipped_bundles():
+    """The exact <style> bodies bundle.py writes for each shipped asset stylesheet.
+
+    A block marked data-mq-bundled is skipped only when it is byte-identical to one of these, so the
+    marker cannot hide hand-written CSS or an edited copy of a design-system sheet.
+    """
+    global _SHIPPED_BUNDLES
+    if _SHIPPED_BUNDLES is not None:
+        return _SHIPPED_BUNDLES
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import bundle
+
+    assets = Path(__file__).resolve().parent.parent / "assets"
+    _SHIPPED_BUNDLES = frozenset(
+        "\n" + bundle.inline_css(sheet.read_text(encoding="utf-8"), sheet.parent) + "\n"
+        for sheet in assets.rglob("*.css")
+    )
+    return _SHIPPED_BUNDLES
+
+
 def check_markup(report, text, rules):
     for match in re.finditer(r"<style([^>]*)>(.*?)</style>", text, flags=re.S | re.I):
-        if not re.search(r"\bdata-mq-bundled\b", match.group(1), re.I):
-            check_css(report, match.group(2), match.start(2), rules)
+        claimed = re.search(r"\bdata-mq-bundled\b", match.group(1), re.I)
+        if claimed and match.group(2) in shipped_bundles():
+            continue
+        if claimed:
+            report.add(match.start(), "data-mq-bundled block does not match a shipped asset; its CSS is checked as the page's own")
+        check_css(report, match.group(2), match.start(2), rules)
     for match in re.finditer(r"\sstyle\s*=\s*(\"([^\"]*)\"|'([^']*)')", text, flags=re.I):
         body = html.unescape(match.group(2) if match.group(2) is not None else match.group(3))
         check_css(report, "{" + body + "}", match.start() - 1, rules)

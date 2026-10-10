@@ -247,3 +247,13 @@
   - Not verified: how a regex grader scores a missing target file; validation-clean uses match contains, which cannot pass on an empty or absent file.
 - Commit: 930a2e1
 - Timestamp: 2026-10-10T11:40:00+02:00
+
+## Iteration 10c (follow-up, orchestrator)
+- Increment: 10 - validator trusts the data-mq-bundled marker only for real bundles
+- Status: done
+- Red run: `node --test tests/unit/skill.test.mjs`: "bundle.py makes output.html self-contained in place; the validator and the graders ignore the bundled system CSS" failed: a hand-written `<style data-mq-bundled>` block with `#ff0000` passed validate.py.
+- Green run: skill tests 26/26; `make build`, `make lint`, `make test` (unit 157/157, e2e 23/23), `MQ_DENYLIST=tests/fixtures/denylist.txt make check`, `make skill-zip` all EXIT=0.
+- Learnings:
+  - validate.py now skips a marked block only when its body is byte-identical to what bundle.py writes for one of the shipped asset stylesheets; a forged or edited marked block is checked as the page's own CSS and reported. The on-palette grader still trusts the marker (a regex cannot compare files); the validation-clean grader backs it up.
+  - Importing the sibling bundle.py from validate.py wrote a `__pycache__` that the local-path test caught; validate.py sets `sys.dont_write_bytecode` before the import. The standard-library import test now also accepts sibling scripts.
+- Commit: see git log

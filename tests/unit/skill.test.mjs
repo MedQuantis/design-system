@@ -252,10 +252,13 @@ test("the token lookup finds a token by name and by value", () => {
 });
 
 test("skill scripts run on Python 3.11, the claude.ai and API container version, with the standard library only", () => {
-  for (const script of walk(`${SKILL}/scripts`).filter((p) => p.endsWith(".py"))) {
+  const scripts = walk(`${SKILL}/scripts`).filter((p) => p.endsWith(".py"));
+  const siblings = new Set(scripts.map((p) => p.split("/").pop().replace(/\.py$/, "")));
+  for (const script of scripts) {
     const text = read(script);
     for (const [, module] of text.matchAll(/^\s*(?:from|import)\s+([\w.]+)/gm)) {
-      assert.ok(!module.startsWith(".") && STDLIB.has(module.split(".")[0]), `${script} imports ${module}, outside the allowed standard library`);
+      const top = module.split(".")[0];
+      assert.ok(!module.startsWith(".") && (STDLIB.has(top) || siblings.has(top)), `${script} imports ${module}, neither the standard library nor a sibling script`);
     }
   }
   assert.match(read("mise.toml"), /^python = "3\.11\.\d+"$/m, "mise.toml must pin Python 3.11 so the scripts are tested on the container version");
@@ -355,6 +358,15 @@ test("bundle.py makes output.html self-contained in place; the validator and the
   assert.doesNotMatch(text, palette, "the inlined tokens.css must not trip the on-palette grader");
   const checked = python([join(root, SKILL, "scripts/validate.py"), "output.html"], { cwd: dir });
   assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+  const forged = text.replace("</head>", '<style data-mq-bundled="assets/tokens.css">.rep-alert { color: #ff0000; }</style>\n</head>');
+  writeFileSync(join(dir, "forged.html"), forged);
+  const caught = python([join(root, SKILL, "scripts/validate.py"), "forged.html"], { cwd: dir });
+  assert.equal(caught.status, 1, "a block that only claims to be bundled must still be checked");
+  assert.match(caught.stdout + caught.stderr, /ff0000|data-mq-bundled/i);
+  const edited = text.replace(/(<style data-mq-bundled="assets\/tokens\.css">)/, "$1.rep-x { color: #ff0000; }");
+  writeFileSync(join(dir, "edited.html"), edited);
+  const tampered = python([join(root, SKILL, "scripts/validate.py"), "edited.html"], { cwd: dir });
+  assert.equal(tampered.status, 1, "an edited bundled block no longer matches the shipped asset and must be checked");
   writeFileSync(join(dir, "output.html"), text.replace("gap: var(--mq-space-5); color: var(--mq-accent);", "gap: var(--mq-space-5); color: #ff0000;"));
   assert.equal(python([join(root, SKILL, "scripts/validate.py"), "output.html"], { cwd: dir }).status, 1, "the page's own CSS is still checked");
   assert.match(readFileSync(join(dir, "output.html"), "utf8"), palette);

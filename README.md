@@ -62,7 +62,7 @@ Every `mq-` component is `trial` until a consumer uses it in production; it beco
 | A4 page and desk | `mq-page`, `mq-desk`, `mq-no-print` | `css/print.css` | trial |
 | Status badge, apps only | `mq-status` (`is-success`, `is-warning`, `is-danger`, `is-info`) | `css/app.css` | trial |
 
-Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, and any radius other than the three `--mq-radius-*` tokens, so no pill shape can be drawn.
+Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, any radius other than the three `--mq-radius-*` tokens (so no pill shape can be drawn), and a local `--app-*`, `--site-*` or `--viz-*` property set to a literal instead of a `var(--mq-*)` reference (a `calc()` that scales tokens by a plain number is allowed). The config loads two stylelint plugins that the package does not install for you, so a consumer that lints adds them as its own dev dependencies, at the versions this release is tested with: `npm install --save-dev --save-exact stylelint@17.16.0 stylelint-declaration-strict-value@1.12.1 stylelint-value-no-unknown-custom-properties@6.1.1`.
 
 ## Specimen
 
@@ -86,6 +86,25 @@ The eval tasks (`plugins/medquantis-design-system/evals/`, at the plugin root so
 - **Node consumers** install `@medquantis/design-system` at an exact version and let Dependabot propose bumps.
 - **Build-less and Python consumers** reference the CDN URL of a tagged release, or vendor a release into `vendor/medquantis-ds/` with `make design-sync`, a `VERSION` file and a CI check that the copy matches the tag.
 - Upgrades are deliberate: never a version range, never a branch URL.
+
+### CDN with an exact version and an SRI hash
+
+Each release is on npm, so jsDelivr serves its files at a fixed URL. Always name an exact version and pin the file with a Subresource Integrity hash; never use a version range (`@1`, `@^1.0.0`, `@latest`) or a GitHub-backed jsDelivr URL (`/gh/` instead of `/npm/`), which serves the repository rather than the published release.
+
+```html
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@medquantis/design-system@X.Y.Z/dist/tokens.css"
+      integrity="sha384-<hash of that exact file>"
+      crossorigin="anonymous">
+```
+
+Replace `X.Y.Z` with the release you adopt and compute the hash from that release's own file, taken from its npm tarball (`npm pack @medquantis/design-system@X.Y.Z`, then `tar -xzf` it and run the command inside `package/`):
+
+```sh
+echo "sha384-$(openssl dgst -sha384 -binary dist/tokens.css | openssl base64 -A)"
+```
+
+Every other shipped file (`css/*.css`, `fonts/fonts.css`, `dist/kit-contract.css`) works the same way, each with its own hash. Fonts referenced by `fonts.css` load relative to it, so serve the stylesheet and its fonts from the same release URL.
 
 ## Specialisation rules
 

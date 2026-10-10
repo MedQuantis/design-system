@@ -10,10 +10,6 @@ const readPackage = () => JSON.parse(readFileSync(join(root, "package.json"), "u
 // An exact pin is a bare semver version: no range operator, no tag, no URL.
 const EXACT_VERSION = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
-test("package.json pins Node 24 in engines", () => {
-  assert.match(readPackage().engines?.node ?? "", /^24(\.|$)/);
-});
-
 test("every dependency is pinned to an exact version", () => {
   const pkg = readPackage();
   for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {

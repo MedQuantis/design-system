@@ -1,9 +1,30 @@
 {
   "name": "@medquantis/design-system",
   "version": "0.0.0",
-  "private": true,
   "description": "MedQuantis design tokens, shared CSS, assets, guidelines and Claude skill.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MedQuantis/design-system.git"
+  },
+  "homepage": "https://github.com/MedQuantis/design-system#readme",
+  "bugs": {
+    "url": "https://github.com/MedQuantis/design-system/issues"
+  },
+  "files": [
+    "dist/tokens.css",
+    "dist/tokens.json",
+    "dist/tailwind.css",
+    "dist/kit-contract.css",
+    "dist/llms.txt",
+    "dist/llms-full.txt",
+    "css/",
+    "fonts/",
+    "icons/",
+    "brand/",
+    "guidelines/",
+    "stylelint.config.mjs"
+  ],
   "exports": {
     "./tokens.css": "./dist/tokens.css",
     "./tokens.json": "./dist/tokens.json",
@@ -11,12 +32,23 @@
     "./kit-contract.css": "./dist/kit-contract.css",
     "./css/*": "./css/*",
     "./fonts.css": "./fonts/fonts.css",
+    "./brand/*": "./brand/*",
     "./stylelint": "./stylelint.config.mjs",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": "24.x"
+    "node": ">=24"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.0",
+      "onFail": "error"
+    }
   },
   "scripts": {
     "test": "node --test \"tests/unit/**/*.test.mjs\""

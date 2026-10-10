@@ -352,6 +352,7 @@ export const renderEvalGraders = (root) => {
         "  path: output.html",
         "match: contains",
         "flags: i",
+        "arm: with-only",
         `pattern: ${JSON.stringify(SELF_CONTAINED_PATTERN)}`,
         "---",
         "",

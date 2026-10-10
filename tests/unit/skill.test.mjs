@@ -307,6 +307,7 @@ test("generated eval graders match the token set and the medium split", async ()
     assert.equal(graderField(contained, "type"), "regex");
     assert.match(contained, /^ {2}path: output\.html$/m);
     assert.equal(graderField(contained, "match"), "contains");
+    assert.equal(graderField(contained, "arm"), "with-only", "a model without the skill cannot know --mq-accent, so the check would only inflate the baseline gap");
     assert.ok(!existsSync(join(root, base, "validator-ran.md")), `${base}/validator-ran.md is obsolete`);
   }
 });

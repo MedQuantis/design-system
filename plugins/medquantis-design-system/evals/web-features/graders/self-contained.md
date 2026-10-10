@@ -5,6 +5,7 @@ target:
   path: output.html
 match: contains
 flags: i
+arm: with-only
 pattern: "^(?![\\s\\S]*<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet)(?=[^>]*\\bhref\\s*=\\s*[\"']?(?![a-z][a-z0-9+.-]*:|//))[^>]*>)[\\s\\S]*--mq-accent\\s*:"
 ---
 

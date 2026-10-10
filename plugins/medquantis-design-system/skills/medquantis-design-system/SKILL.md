@@ -5,7 +5,9 @@ license: Code and tokens MIT; the brand files and guideline text are all rights 
 compatibility: Needs Python 3.11 or later (standard library only) to run the scripts. Works offline.
 allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/*)
 metadata:
+  # x-release-please-start-version
   version: "0.0.0"
+  # x-release-please-end
 ---
 
 # MedQuantis design system

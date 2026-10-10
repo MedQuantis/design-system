@@ -175,3 +175,18 @@
   - npm audit still reports the stylelint braces advisory of iteration 7; Playwright and axe added nothing new.
 - Commit: 8245ee2
 - Timestamp: 2026-10-10T10:10:00+02:00
+
+## Iteration 8b (follow-up)
+- Increment: 08 - Specimen page, owner decisions of 2026-10-10 (status stays done)
+- Status: done
+- Files changed: scripts/build-specimen.mjs (formatPercent), tests/unit/specimen.test.mjs, tests/e2e/specimen.spec.mjs, tests/e2e/specimen.spec.mjs-snapshots/ (specimen-linux.png deleted, part-*-linux.png added), tests/unit/confidentiality.test.mjs, tests/fixtures/confidentiality/examples/unmarked-nbsp-figures.md, scripts/confidentiality-exclude.txt, tests/unit/workflows.test.mjs, .github/workflows/ci.yml, README.md, plan (increment 11 scope item 6 names the artifact)
+- Red run: unit 120 pass / 2 fail: "percentages follow owner ruling 8 as amended: decimal point and a non-breaking space before %"; "CI uploads Playwright's test-results/ only when the job fails, SHA-pinned and short-lived". e2e 22 pass / 1 fail: "figures follow owner ruling 8 and are marked illustrative". The 11 new "screenshot of the <part> part matches its baseline" tests passed locally at red, because updateSnapshots "missing" writes a missing baseline and passes; those premature baselines were deleted and the same tests run with CI=1 failed 11 of 11 (snapshot missing). "figures written with a non-breaking space (owner ruling 8) are still reported" passed at red: the scanner's \s already matches U+00A0, the test pins it.
+- Green run: baselines regenerated with `mise exec -- node_modules/.bin/playwright test --update-snapshots` EXIT=0 (23 passed); then `mise exec -- make build` EXIT=0; `mise exec -- make lint` EXIT=0; `mise exec -- make test` EXIT=0 (unit 122/122, e2e 23/23); `CI=1 playwright test` EXIT=0 (23 passed, no baseline written); `MQ_DENYLIST=tests/fixtures/denylist.txt mise exec -- make check` EXIT=0 (gitleaks no leaks; 117 files scanned, 9 excluded, 0 findings; zizmor no findings, 1 suppressed predates); `mise exec -- make workflow-lint` EXIT=0; `mise exec -- make brand-check` EXIT=0 (8 of 8).
+- Baselines: part-header 50 KB, part-colour 241 KB, part-contrast 436 KB, part-type 190 KB, part-shape 31 KB, part-components 292 KB, part-brand 60 KB, part-slide 73 KB, part-print 78 KB, part-app-status 161 KB, part-footer 10 KB (11 files, 1.62 MB) plus focus-on-light and focus-on-navy (56 KB each, unchanged): 1.73 MB in total, against 1.85 MB before (1.74 MB full page plus the two focus shots). The focus section has no plain shot; the two forced focus shots cover it. A test asserts the section ids of the page equal the screenshot list, so a new section without a baseline fails.
+- CI upload: `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1` (lightweight tag, the ref points at the commit), `if: ${{ failure() }}` after make check, path test-results/, artifact playwright-test-results, if-no-files-found ignore (a lint failure leaves no results), retention 7 days, no permission added. v7.0.2 (2026-10-07) was skipped: it is inside the 7-day cooldown dependabot.yml applies to github-actions.
+- Learnings:
+  - With updateSnapshots "missing" (local), a new toHaveScreenshot test is never red: Playwright writes the baseline and passes. Observe the red with CI=1, and do not keep baselines written before the implementation.
+  - --update-snapshots in 1.64 rewrites only the baselines that differ; the focus shots kept their bytes.
+  - No HTML reporter is configured (reporter list), so test-results/ is the only Playwright output worth uploading.
+- Commit: 07b47d3
+- Timestamp: 2026-10-10T10:20:00+02:00

@@ -268,7 +268,8 @@ Scope:
 3. `css/slide.css` (1280×720 canvas, section label, slide title, slide number) and `css/print.css` (A4, `print-color-adjust: exact`).
 4. Status-colour badges live in an `css/app.css` layer only (ADR-0004), not in `components.css`.
 5. Token gaps found in increment 04: shadows, gradients, motion and layout widths are not tokens yet; add any the components need to `tokens/` first (never a literal in `css/`). Text on a navy panel declares its background with a `/* mq-bg: --mq-x */` comment so the contrast test can check the pair.
-6. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
+6. Radius cap (owner, 2026-10-10, option A of ruling 3): `dist/tailwind.css` sets every Tailwind radius step, `xs` and `sm` to the 3 px token and `md` to `4xl` to the 6 px token, so no class can exceed ruling 3; `rounded-full` stays for circles. A test asserts every `--radius-*` step in `tailwind.css` resolves to 3 or 6 px. Pills are rejected by the stylelint config and named in the guidelines (increment 09).
+7. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
 
 Primary files:
 
@@ -446,7 +447,7 @@ Scope:
 
 1. **Write first, expect red:** a vitest asserting `primary` resolves to the navy scale and that `#d8232a` appears only as the danger colour; existing Playwright static tests updated for the new accent where they assert colour.
 2. `frontend/app/assets/css/main.css` imports `@medquantis/design-system/tailwind.css`; the local red palette and duplicated tokens are removed; Paracel's six limitation-annotation hues stay local as `--app-*`; the app keeps Nuxt UI components and never loads the `mq-` component CSS or `kit-contract.css`.
-3. `app/app.config.ts`: `primary: 'navy'`, `error` mapped to the danger scale (Nuxt UI names it `error`); `--ui-radius` set from the 6 px token; warning badges use the fill with ink text and `#a06400` for text, icons and borders (ruling 5).
+3. `app/app.config.ts`: `primary: 'navy'`, `error` mapped to the danger scale (Nuxt UI names it `error`); `--ui-radius` set to the 3 px token, because Nuxt UI derives its whole radius scale as multiples of it (6 px gives 9 px `md` and 12 px `lg`), and the design-system theme loaded after Nuxt UI's so every step resolves to 3 or 6 px, checked on the computed radius of a modal, a card, a button and a badge; the three pill-shaped elements counted on 2026-10-10 (two filter buttons, one version tag) move to the 3 px radius; warning badges use the fill with ink text and `#a06400` for text, icons and borders (ruling 5).
 4. Update `docs/developer/frontend-guide.md` (repo rule for theming changes).
 
 Test gate:

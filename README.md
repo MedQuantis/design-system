@@ -34,6 +34,32 @@ The `mq-` component CSS serves build-less media: slides, A4 reports, papers, the
 
 Documents never load `css/app.css`: they are navy-only and show states by mark style ([ADR-0004](docs/architecture/decisions/adr-0004-status-colours-in-apps-only.md)). Apps with a component library (Nuxt UI, shadcn/ui) take the tokens and the Tailwind theme only; they do not load the `mq-` component CSS.
 
+### Component status
+
+Every `mq-` component is `trial` until a consumer uses it in production; it becomes `stable` once a consumer depends on it and its markup has not changed for a release. A `trial` component may still change its markup or classes in a minor release. Usage rules are in [guidelines/](guidelines/README.md).
+
+| Component | Classes | File | Status |
+| :-- | :-- | :-- | :-- |
+| Document root and wrapper | `mq-doc`, `mq-wrap` | `css/base.css` | trial |
+| Headings | `mq-display`, `mq-title`, `mq-subtitle` | `css/base.css` | trial |
+| Eyebrow, lead, prose | `mq-eyebrow`, `mq-lead`, `mq-prose` | `css/base.css` | trial |
+| Label, note, mono, emphasis | `mq-label`, `mq-note`, `mq-mono`, `mq-em` | `css/base.css` | trial |
+| Hero figure | `mq-figure` | `css/base.css` | trial |
+| Card | `mq-card` (`mq-card-title`, `mq-card-body`) | `css/components.css` | trial |
+| Navy panel | `mq-panel` (`mq-panel-kicker`, `-title`, `-text`, `-rule`, `-icon`) | `css/components.css` | trial |
+| KPI tiles | `mq-kpis`, `mq-kpi` (`is-navy`, `is-pale`) | `css/components.css` | trial |
+| Table | `mq-table`, `mq-num` (`is-key`, `is-highlight`, `is-total`) | `css/components.css` | trial |
+| Badge, states by mark style | `mq-badge` (`is-solid`, `is-ring`, `is-pale`, `is-outline`, `is-quiet`, `is-dashed`) | `css/components.css` | trial |
+| Callout | `mq-callout` (`mq-callout-title`) | `css/components.css` | trial |
+| Progress bar | `mq-progress` | `css/components.css` | trial |
+| Distribution bar | `mq-distribution`, `mq-segment` | `css/components.css` | trial |
+| Legend | `mq-legend`, `mq-swatch` | `css/components.css` | trial |
+| Takeaway | `mq-takeaway` | `css/components.css` | trial |
+| Footer | `mq-foot` | `css/components.css` | trial |
+| Slide canvas | `mq-slide` (`mq-slide-label`, `-title`, `-body`, `-number`) | `css/slide.css` | trial |
+| A4 page and desk | `mq-page`, `mq-desk`, `mq-no-print` | `css/print.css` | trial |
+| Status badge, apps only | `mq-status` (`is-success`, `is-warning`, `is-danger`, `is-info`) | `css/app.css` | trial |
+
 Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, and any radius other than the three `--mq-radius-*` tokens, so no pill shape can be drawn.
 
 ## Specimen

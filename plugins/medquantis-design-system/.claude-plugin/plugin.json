@@ -10,6 +10,6 @@
   "repository": "https://github.com/MedQuantis/design-system",
   "keywords": ["design-system", "brand", "tokens", "slides", "reports", "charts"],
   "experimental": {
-    "evals": "skills/medquantis-design-system/evals"
+    "evals": "evals"
   }
 }

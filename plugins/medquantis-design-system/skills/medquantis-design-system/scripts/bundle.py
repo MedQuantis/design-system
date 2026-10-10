@@ -6,7 +6,8 @@ Usage: python3 bundle.py PAGE.html OUT.html
 Each <link rel="stylesheet" href="local.css"> becomes a <style> block; url(...) references inside
 it (the woff2 files of fonts.css) and local <img src> files become data URIs. Remote URLs are
 left alone. Use it to deliver one file (an artifact, an attachment) after building a page that
-links the skill's assets/ folder.
+links the skill's assets/ folder. OUT may be PAGE itself. Inlined sheets are marked
+data-mq-bundled so validate.py checks the page's own CSS, not the design system's.
 """
 
 import base64
@@ -53,7 +54,8 @@ def bundle(page):
         sheet = (base / href.group(1)).resolve()
         if not sheet.is_file():
             raise FileNotFoundError(f"stylesheet {href.group(1)} not found next to {page.name}")
-        return f"<style>\n{inline_css(sheet.read_text(encoding='utf-8'), sheet.parent)}\n</style>"
+        source = href.group(1).replace('"', "")
+        return f'<style data-mq-bundled="{source}">\n{inline_css(sheet.read_text(encoding="utf-8"), sheet.parent)}\n</style>'
 
     def image(match):
         ref = match.group(2)

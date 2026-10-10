@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
@@ -17,6 +17,17 @@ const UPLOAD_KEYS = ["name", "description", "license", "compatibility", "metadat
 
 // Standard-library modules the skill scripts may import (claude.ai and API containers install nothing).
 const STDLIB = new Set(["argparse", "base64", "colorsys", "html", "json", "mimetypes", "os", "pathlib", "re", "sys", "zipfile", "__future__"]);
+
+// Every eval case carries these graders, all on files the run produced except skill-fired.
+const EVAL_GRADERS = ["criteria.md", "on-palette.md", "self-contained.md", "skill-fired.md", "validation-clean.md"];
+
+// The value of one frontmatter key of a generated grader (a JSON-quoted string or a bare word).
+const graderField = (text, key) => {
+  const line = text.match(new RegExp(`^${key}: (.*)$`, "m"));
+  if (!line) return undefined;
+  return line[1].startsWith('"') ? JSON.parse(line[1]) : line[1];
+};
+const graderRegex = (text) => new RegExp(graderField(text, "pattern"), graderField(text, "flags") ?? "");
 
 const read = (path) => readFileSync(join(root, path), "utf8");
 const readJson = (path) => JSON.parse(read(path));
@@ -167,7 +178,9 @@ test("plugin and marketplace manifests parse, follow the documented schema, and 
   assert.equal(plugin.version, pkgVersion());
   assert.ok(plugin.description && plugin.author?.name, "plugin.json needs description and author.name");
   const evalDir = plugin.experimental?.evals;
-  assert.ok(evalDir && existsSync(join(root, PLUGIN, evalDir)), "plugin.json experimental.evals must name the skill's evals/ folder");
+  assert.equal(evalDir, "evals", "plugin.json experimental.evals must name the plugin-root evals/ folder");
+  assert.ok(existsSync(join(root, PLUGIN, evalDir)), `${PLUGIN}/evals is missing`);
+  assert.ok(!existsSync(join(root, SKILL, "evals")), "evals must not sit inside the skill: the model under test could read the rubrics");
 
   const market = readJson(".claude-plugin/marketplace.json");
   assert.match(market.name, /^[A-Za-z0-9][A-Za-z0-9._-]*$/);
@@ -191,6 +204,23 @@ test("the validator fails an off-token colour and passes a clean page", () => {
   for (const value of ["#ff0000", "rgb(0, 128, 0)", "tomato", "#123456"]) assert.match(off.stdout, new RegExp(value.replace(/[()]/g, "\\$&"), "i"));
   const clean = python([validator, "tests/fixtures/skill/clean.html"]);
   assert.equal(clean.status, 0, clean.stdout + clean.stderr);
+});
+
+test("validate.py --record writes the verdict and the files checked, and keeps its exit code", () => {
+  const validator = join(root, SKILL, "scripts/validate.py");
+  const dir = mkdtempSync(join(tmpdir(), "mq-record-"));
+  const clean = python([validator, "--record", join(dir, "clean.txt"), "tests/fixtures/skill/clean.html"]);
+  assert.equal(clean.status, 0, clean.stdout + clean.stderr);
+  const cleanRecord = readFileSync(join(dir, "clean.txt"), "utf8");
+  assert.match(cleanRecord, /^PASS: 1 file\(s\) clean, medium document$/m);
+  assert.match(cleanRecord, /^file: tests\/fixtures\/skill\/clean\.html$/m);
+  const off = python([validator, "--record", join(dir, "off.txt"), "tests/fixtures/skill/off-token.html"]);
+  assert.equal(off.status, 1);
+  const offRecord = readFileSync(join(dir, "off.txt"), "utf8");
+  assert.match(offRecord, /^FAIL: \d+ finding\(s\) in 1 file\(s\), medium document$/m);
+  assert.match(offRecord, /^file: tests\/fixtures\/skill\/off-token\.html$/m);
+  assert.match(offRecord, /#ff0000/i, "the record lists the findings");
+  assert.doesNotMatch(offRecord, /^PASS/m);
 });
 
 test("the validator enforces the medium split, known tokens and the no-dash rule", () => {
@@ -232,7 +262,7 @@ test("skill scripts run on Python 3.11, the claude.ai and API container version,
 });
 
 test("at least three eval tasks per medium, each with a prompt and graders on the produced file", () => {
-  const evals = `${SKILL}/evals`;
+  const evals = `${PLUGIN}/evals`;
   assert.ok(existsSync(join(root, evals)), `${evals} is missing`);
   const cases = readdirSync(join(root, evals)).filter((name) => existsSync(join(root, evals, name, "prompt.md")));
   for (const medium of MEDIA) {
@@ -246,8 +276,9 @@ test("at least three eval tasks per medium, each with a prompt and graders on th
     assert.ok(head, `${name}/prompt.md has no frontmatter`);
     for (const key of head[1].matchAll(/^([\w]+):/gm)) assert.ok(allowed.includes(key[1]), `${name}/prompt.md uses unknown key ${key[1]}`);
     assert.match(prompt, /output\.html/, `${name} does not name output.html`);
-    const graders = readdirSync(join(root, evals, name, "graders"));
-    for (const required of ["criteria.md", "on-palette.md", "skill-fired.md"]) assert.ok(graders.includes(required), `${name} lacks graders/${required}`);
+    const graders = readdirSync(join(root, evals, name, "graders")).sort();
+    // validator-ran (tool_used) counted a Bash call the permission mode had denied: graders read files, not attempts.
+    assert.deepEqual(graders, EVAL_GRADERS, `${name} must carry exactly the graders ${EVAL_GRADERS.join(", ")}`);
     assert.match(read(`${evals}/${name}/graders/criteria.md`), /^type: llm$/m);
   }
 });
@@ -259,15 +290,121 @@ test("generated eval graders match the token set and the medium split", async ()
   for (const [path, text] of rendered) assert.equal(read(path), text, `${path} differs from a fresh generation: run make skill`);
   const documentGrader = [...rendered].find(([path]) => /evals\/slides-[^/]+\/graders\/on-palette\.md$/.test(path))[1];
   assert.match(documentGrader, /success\|warning/);
+  for (const name of readdirSync(join(root, PLUGIN, "evals")).filter((n) => existsSync(join(root, PLUGIN, "evals", n, "prompt.md")))) {
+    const base = `${PLUGIN}/evals/${name}/graders`;
+    const verdict = rendered.get(`${base}/validation-clean.md`);
+    assert.ok(verdict, `${name} has no generated validation-clean grader`);
+    assert.equal(graderField(verdict, "type"), "regex");
+    assert.match(verdict, /^ {2}source: file$/m);
+    assert.match(verdict, /^ {2}path: validation\.txt$/m);
+    assert.equal(graderField(verdict, "match"), "contains");
+    assert.equal(graderField(verdict, "arm"), "with-only", "the baseline arm has no validator, so its verdict file cannot count");
+    const contained = rendered.get(`${base}/self-contained.md`);
+    assert.ok(contained, `${name} has no generated self-contained grader`);
+    assert.equal(graderField(contained, "type"), "regex");
+    assert.match(contained, /^ {2}path: output\.html$/m);
+    assert.equal(graderField(contained, "match"), "contains");
+    assert.ok(!existsSync(join(root, base, "validator-ran.md")), `${base}/validator-ran.md is obsolete`);
+  }
 });
 
-test("eval runs are a separate, owner-approved make target on Haiku, Sonnet and Opus, outside make check", () => {
+test("the validation-clean grader passes a clean recorded verdict on output.html and fails a failing or foreign one", async () => {
+  const { renderEvalGraders } = await import("../../scripts/build-skill.mjs");
+  const grader = graderRegex([...renderEvalGraders(root)].find(([path]) => path.endsWith("/validation-clean.md"))[1]);
+  const dir = mkdtempSync(join(tmpdir(), "mq-verdict-"));
+  const validator = join(root, SKILL, "scripts/validate.py");
+  copyFileSync(join(root, "tests/fixtures/skill/clean.html"), join(dir, "output.html"));
+  assert.equal(python([validator, "--record", "validation.txt", "output.html"], { cwd: dir }).status, 0);
+  assert.match(readFileSync(join(dir, "validation.txt"), "utf8"), grader);
+  copyFileSync(join(root, "tests/fixtures/skill/off-token.html"), join(dir, "output.html"));
+  assert.equal(python([validator, "--record", "validation.txt", "output.html"], { cwd: dir }).status, 1);
+  assert.doesNotMatch(readFileSync(join(dir, "validation.txt"), "utf8"), grader);
+  copyFileSync(join(root, "tests/fixtures/skill/clean.html"), join(dir, "other.html"));
+  assert.equal(python([validator, "--record", "validation.txt", "other.html"], { cwd: dir }).status, 0);
+  assert.doesNotMatch(readFileSync(join(dir, "validation.txt"), "utf8"), grader, "a clean verdict on another file is not a verdict on output.html");
+});
+
+test("bundle.py makes output.html self-contained in place; the validator and the graders ignore the bundled system CSS", async () => {
+  const { renderEvalGraders } = await import("../../scripts/build-skill.mjs");
+  const rendered = [...renderEvalGraders(root)];
+  const contained = graderRegex(rendered.find(([path]) => path.endsWith("/self-contained.md"))[1]);
+  const palette = graderRegex(rendered.find(([path]) => /evals\/a4-report-[^/]+\/graders\/on-palette\.md$/.test(path))[1]);
+  const dir = mkdtempSync(join(tmpdir(), "mq-bundle-"));
+  cpSync(join(root, SKILL, "assets"), join(dir, "assets"), { recursive: true });
+  const sheets = ["tokens.css", "fonts/fonts.css", "css/base.css", "css/components.css", "css/print.css"];
+  const page = [
+    "<!doctype html>",
+    '<html lang="en">',
+    "<head>",
+    '<meta charset="utf-8">',
+    ...sheets.map((sheet) => `<link rel="stylesheet" href="assets/${sheet}">`),
+    "<style>.rep-grid { display: grid; gap: var(--mq-space-5); color: var(--mq-accent); }</style>",
+    "</head>",
+    '<body class="mq-doc"><p class="rep-grid">Refunds 2024</p><p class="mq-foot">MedQuantis SA · CH-1095 Lutry · medquantis.ch</p></body>',
+    "</html>",
+    "",
+  ].join("\n");
+  writeFileSync(join(dir, "output.html"), page);
+  assert.doesNotMatch(page, contained, "a page that links its stylesheets is not self-contained");
+  const bundled = python([join(root, SKILL, "scripts/bundle.py"), "output.html", "output.html"], { cwd: dir });
+  assert.equal(bundled.status, 0, bundled.stdout + bundled.stderr);
+  const text = readFileSync(join(dir, "output.html"), "utf8");
+  assert.doesNotMatch(text, /<link\b[^>]*stylesheet/i);
+  assert.match(text, /--mq-accent\s*:/);
+  assert.match(text, contained);
+  assert.doesNotMatch(text, palette, "the inlined tokens.css must not trip the on-palette grader");
+  const checked = python([join(root, SKILL, "scripts/validate.py"), "output.html"], { cwd: dir });
+  assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+  writeFileSync(join(dir, "output.html"), text.replace("gap: var(--mq-space-5); color: var(--mq-accent);", "gap: var(--mq-space-5); color: #ff0000;"));
+  assert.equal(python([join(root, SKILL, "scripts/validate.py"), "output.html"], { cwd: dir }).status, 1, "the page's own CSS is still checked");
+  assert.match(readFileSync(join(dir, "output.html"), "utf8"), palette);
+});
+
+test("eval runs are a separate, owner-approved make target, Sonnet by default, outside make check", () => {
   const makefile = read("Makefile");
   assert.match(makefile, /^skill-evals:/m);
-  assert.match(makefile, /SKILL_EVAL_MODELS \?= haiku sonnet opus/);
+  assert.match(makefile, /^SKILL_EVAL_MODELS \?= sonnet$/m, "a plain make skill-evals runs Sonnet only (owner, 2026-10-10)");
   assert.match(makefile, /claude plugin eval/);
   assert.doesNotMatch(makefile.match(/^check:.*$/m)[0], /skill-evals/);
   assert.match(read(".gitignore"), /evals\/results\//);
+});
+
+test("make skill-evals runs claude with a Linux-only PATH and a temporary HOME linking only the Claude config", () => {
+  // A stub claude records what the recipe hands it; no model is called.
+  const work = mkdtempSync(join(tmpdir(), "mq-evals-"));
+  const stubs = join(work, "bin");
+  const home = join(work, "home");
+  mkdirSync(stubs);
+  mkdirSync(join(home, ".claude"), { recursive: true });
+  writeFileSync(join(home, ".claude.json"), "{}");
+  mkdirSync(join(home, ".docker"));
+  const out = join(work, "seen.txt");
+  writeFileSync(
+    join(stubs, "claude"),
+    ['#!/bin/sh', '{ echo "HOME=$HOME"; echo "PATH=$PATH"; echo "ARGS=$*"; echo "ENTRIES=$(ls -A "$HOME" | tr "\\n" " ")"; } >> "$MQ_STUB_OUT"', ""].join("\n"),
+    { mode: 0o755 },
+  );
+  const run = spawnSync("make", ["--no-print-directory", "skill-evals"], {
+    cwd: root,
+    encoding: "utf8",
+    env: { HOME: home, PATH: `${stubs}:/mnt/c/Windows/system32:/usr/local/bin:/usr/bin:/bin`, MQ_STUB_OUT: out },
+  });
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  const seen = readFileSync(join(out), "utf8");
+  const field = (key) => seen.match(new RegExp(`^${key}=(.*)$`, "m"))[1];
+  assert.match(field("ARGS"), /^plugin eval plugins\/medquantis-design-system --model sonnet /, "a plain make skill-evals runs Sonnet only");
+  assert.equal(seen.match(/^ARGS=/gm).length, 1);
+  const paths = field("PATH").split(":");
+  assert.ok(paths.includes(stubs), "the Linux PATH entries stay");
+  assert.ok(!paths.some((dir) => dir.startsWith("/mnt/")), "the WSL Windows interop entries are dropped");
+  const evalHome = field("HOME");
+  assert.notEqual(evalHome, home, "claude plugin eval must not see the real HOME");
+  assert.deepEqual(field("ENTRIES").trim().split(" ").sort(), [".claude", ".claude.json"]);
+  assert.ok(!existsSync(evalHome), "the temporary HOME is removed after the run");
+  const makefile = read("Makefile");
+  assert.match(makefile, /ln -s "\$\$HOME\/\.claude" /);
+  assert.match(makefile, /ln -s "\$\$HOME\/\.claude\.json" /);
+  assert.deepEqual(readdirSync(home).sort(), [".claude", ".claude.json", ".docker"], "the real HOME is untouched");
 });
 
 test("make skill regenerates the skill and make skill-zip builds an upload zip without evals", () => {
@@ -305,4 +442,21 @@ test("SKILL.md carries the rules every output needs", () => {
   assert.match(text, /illustrative/i);
   assert.match(text, /em dash/);
   assert.match(text, /--mq-chart-series-1/);
+});
+
+test("SKILL.md workflow survives a permission-restricted session and delivers one self-contained output.html", () => {
+  const text = skillText();
+  assert.match(text, /python3 \$\{CLAUDE_SKILL_DIR\}\/scripts\/bundle\.py output\.html output\.html/);
+  assert.match(text, /python3 \$\{CLAUDE_SKILL_DIR\}\/scripts\/validate\.py --record validation\.txt output\.html/);
+  assert.match(text, /cp -r \$\{CLAUDE_SKILL_DIR\}\/assets assets/);
+  assert.match(text, /one plain command per Bash call/i);
+  assert.match(text, /never chain/i);
+  for (const operator of ["`&&`", "`;`", "pipes", "heredocs"]) assert.ok(text.includes(operator), `SKILL.md must name ${operator} as forbidden in a Bash call`);
+  assert.match(text, /Write tool/);
+  for (const block of text.matchAll(/```bash\n([\s\S]*?)```/g)) {
+    for (const line of block[1].split("\n").filter(Boolean)) {
+      const command = line.replace(/\s+#.*$/, "");
+      assert.doesNotMatch(command, /&&|;|\||<<|>/, `SKILL.md shows a compound or redirected command: ${line}`);
+    }
+  }
 });

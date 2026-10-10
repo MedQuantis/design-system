@@ -87,16 +87,29 @@ plugin-validate:
 	claude plugin validate plugins/medquantis-design-system
 
 # Eval runs call models on the owner's account and cost money: run only with the owner's approval,
-# never from make check. Each model runs every case three times with the plugin and three times
-# without it; results land in dist/skill-evals/<model>/ (report.html, aggregate-result.json).
+# never from make check. The default is Sonnet only (owner, 2026-10-10); pass SKILL_EVAL_MODELS to add
+# haiku or opus, and --case/--runs/--ablation through the CLI for a subset. By default each model runs
+# every case three times with the plugin and three times without it; results land in dist/skill-evals/<model>/ (report.html, aggregate-result.json).
 # Bash runs under Claude Code's sandbox, which needs bubblewrap and socat on Linux.
-SKILL_EVAL_MODELS ?= haiku sonnet opus
+# Two WSL workarounds, harmless elsewhere: the sandbox refuses a PATH directory it cannot examine,
+# so the /mnt/ entries (Windows interop) are dropped; and it refuses a ~/.docker credential store
+# holding a symlink (Docker Desktop for WSL creates one), so claude runs with HOME set to a
+# temporary directory that holds only links to the real ~/.claude and ~/.claude.json. The real
+# HOME and ~/.docker are never touched; the temporary one is removed on exit.
+SKILL_EVAL_MODELS ?= sonnet
 SKILL_EVAL_JUDGE ?= sonnet
 SKILL_EVAL_MAX_COST ?= 30
 
 skill-evals:
+	@set -e; \
+	eval_home=$$(mktemp -d); \
+	trap 'rm -rf "$$eval_home"' EXIT; \
+	ln -s "$$HOME/.claude" "$$eval_home/.claude"; \
+	ln -s "$$HOME/.claude.json" "$$eval_home/.claude.json"; \
+	eval_path=$$(printf '%s\n' "$$PATH" | tr ':' '\n' | grep -v '^/mnt/' | paste -sd: -); \
 	for model in $(SKILL_EVAL_MODELS); do \
-		claude plugin eval plugins/medquantis-design-system --model $$model --judge-model $(SKILL_EVAL_JUDGE) \
-			--max-cost-usd $(SKILL_EVAL_MAX_COST) --trust-plugin --no-publish --output-dir dist/skill-evals/$$model \
-			--allow-tools Write Edit "Bash(python3 *)" "Bash(cp *)" "Bash(mkdir *)" || exit $$?; \
+		HOME="$$eval_home" PATH="$$eval_path" claude plugin eval plugins/medquantis-design-system --model $$model \
+			--judge-model $(SKILL_EVAL_JUDGE) --max-cost-usd $(SKILL_EVAL_MAX_COST) --trust-plugin --no-publish \
+			--output-dir dist/skill-evals/$$model \
+			--allow-tools Write Edit "Bash(python3 *)" "Bash(cp *)" "Bash(mkdir *)"; \
 	done

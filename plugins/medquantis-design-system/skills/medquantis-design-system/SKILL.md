@@ -20,12 +20,15 @@ Copy this checklist and work through it:
 
 ```
 - [ ] 1. Pick the medium and read its reference file
-- [ ] 2. Load the tokens, fonts and components into the page
+- [ ] 2. Copy assets/ next to the page and link the tokens, fonts and components
 - [ ] 3. Build with mq- classes and var(--mq-*) values only
 - [ ] 4. Write figures, dates and copy by the rules below
-- [ ] 5. Run validate.py and fix every finding
-- [ ] 6. Deliver (bundle.py for a single self-contained file)
+- [ ] 5. Bundle the page in place into one self-contained file
+- [ ] 6. Run validate.py --record on it and fix every finding
+- [ ] 7. Deliver the bundled file
 ```
+
+**Shell discipline.** Run one plain command per Bash call: never chain with `&&`, `;`, pipes or heredocs, and never write a file by shell redirection. Permission-restricted sessions deny a compound command outright, so the step after it silently never happens. Write and edit files with the Write and Edit tools. Every command below is one such call.
 
 ## 1. Pick the medium
 
@@ -54,7 +57,13 @@ The medium split (ADR-0004): documents (slides, reports, papers, newsletters, th
 | `assets/css/app.css` | Status badges, apps only. Never in a document |
 | `assets/brand/` | `wordmark-on-light.svg` and `wordmark-on-navy.svg` (live text, inline them in a page that loads fonts.css), the `-print` variants (outlined, for `<img>`, PDF, email) and `monogram.svg` |
 
-Copy `assets/` next to the page and link the files:
+Copy `assets/` next to the page with one command, then write the page with the Write tool and link the files:
+
+```bash
+cp -r ${CLAUDE_SKILL_DIR}/assets assets
+```
+
+If copying is not possible, link the files at `${CLAUDE_SKILL_DIR}/assets/...` by their absolute path instead; bundling (section 6) inlines them either way.
 
 ```html
 <!doctype html>
@@ -151,26 +160,28 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/tokens.py --medium document   # every token 
 python3 ${CLAUDE_SKILL_DIR}/scripts/tokens.py radius              # sizes, spacing, fonts work the same way
 ```
 
-## 6. Validate before presenting
+## 6. Bundle into one file
 
-Run the validator on every HTML, SVG or CSS file you produced, and fix each finding before showing the result:
-
-```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py output.html                 # documents (default): navy-only
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py --medium app screen.html    # apps: status colours allowed
-```
-
-It fails on any colour outside the token set (hex, `rgb()`, `hsl()` and other colour functions, named colours, in CSS, style attributes, SVG attributes and script strings), an unknown, deprecated or redefined `--mq-*` token, a status colour in a document, an em or en dash in visible text, and a remote font service. Replace each literal with the `var(--mq-*)` token that holds the value; `tokens.py` finds it. Exit 0 means clean.
-
-## 7. Deliver
-
-To hand over one self-contained file (an artifact, an attachment, a PDF source), bundle the page once it validates:
+A page that links `assets/` renders unstyled once it leaves that folder. Bundle it in place before validating and delivering:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/bundle.py output.html output-standalone.html
+python3 ${CLAUDE_SKILL_DIR}/scripts/bundle.py output.html output.html
 ```
 
-It inlines the linked stylesheets and turns the fonts and local images into data URIs. For PDF, print the page from a browser with background graphics on; `print.css` keeps the colours exact and A4 pages whole. Check a PDF page by page before sending it.
+It inlines the linked stylesheets (marked `data-mq-bundled`) and turns the fonts and local images into data URIs. Edit the bundled file directly afterwards; bundling it again is harmless.
+
+## 7. Validate, then deliver
+
+Run the validator on every HTML, SVG or CSS file you produced, with `--record` so the verdict is kept in a file, and fix each finding before showing the result:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py --record validation.txt output.html                 # documents (default): navy-only
+python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py --medium app --record validation.txt output.html    # apps: status colours allowed
+```
+
+It checks the page's own CSS and markup, not the bundled design-system sheets, and fails on any colour outside the token set (hex, `rgb()`, `hsl()` and other colour functions, named colours, in CSS, style attributes, SVG attributes and script strings), an unknown, deprecated or redefined `--mq-*` token, a status colour in a document, an em or en dash in visible text, and a remote font service. Replace each literal with the `var(--mq-*)` token that holds the value; `tokens.py` finds it. Exit 0 and a first line `PASS` in `validation.txt` mean clean; re-run it after every fix.
+
+Deliver the bundled, validated file itself (an artifact, an attachment, a PDF source): it carries its styles and fonts and opens anywhere. When the task names an output file, that file is the bundled one. For PDF, print the page from a browser with background graphics on; `print.css` keeps the colours exact and A4 pages whole. Check a PDF page by page before sending it.
 
 ## Reference files
 

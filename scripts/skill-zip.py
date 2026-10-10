@@ -3,8 +3,8 @@
 
 Usage: python3 scripts/skill-zip.py SKILL_DIR OUT.zip
 
-The archive holds one top-level folder named after the skill, as claude.ai expects. The evals/
-folder is for the repository's eval runner only and stays out. Entries are sorted and dated
+The archive holds one top-level folder named after the skill, as claude.ai expects. Evals live at the plugin root,
+outside the skill, so they are never in the archive. Entries are sorted and dated
 1980-01-01 so two builds of the same tree are byte-identical.
 """
 

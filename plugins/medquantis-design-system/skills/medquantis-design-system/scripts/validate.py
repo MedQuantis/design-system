@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check HTML, SVG or CSS output against the MedQuantis design system.
 
-Usage: python3 validate.py [--medium document|app] FILE [FILE ...]
+Usage: python3 validate.py [--medium document|app] [--record VERDICT.txt] FILE [FILE ...]
 
 Fails (exit 1) on:
   - a colour outside the token set (hex, rgb(), hsl() and other colour functions, named colours),
@@ -10,6 +10,10 @@ Fails (exit 1) on:
   - in documents (the default medium), any status colour, which is for apps only (ADR-0004);
   - an em dash or en dash in visible text;
   - a font or stylesheet loaded from a remote font service.
+Stylesheets that bundle.py inlined from the skill's assets (<style data-mq-bundled>) are the
+design system itself and are not checked; the page's own CSS is.
+--record writes the verdict line, the files checked and the findings to a text file, so a run
+leaves evidence that the check happened.
 Exit 0 when every file is clean, 2 on a usage error. Standard library only (Python 3.11).
 """
 
@@ -169,8 +173,9 @@ def check_css(report, css, base, rules):
 
 
 def check_markup(report, text, rules):
-    for match in re.finditer(r"<style[^>]*>(.*?)</style>", text, flags=re.S | re.I):
-        check_css(report, match.group(1), match.start(1), rules)
+    for match in re.finditer(r"<style([^>]*)>(.*?)</style>", text, flags=re.S | re.I):
+        if not re.search(r"\bdata-mq-bundled\b", match.group(1), re.I):
+            check_css(report, match.group(2), match.start(2), rules)
     for match in re.finditer(r"\sstyle\s*=\s*(\"([^\"]*)\"|'([^']*)')", text, flags=re.I):
         body = html.unescape(match.group(2) if match.group(2) is not None else match.group(3))
         check_css(report, "{" + body + "}", match.start() - 1, rules)
@@ -195,6 +200,7 @@ def check_markup(report, text, rules):
 def main(argv):
     parser = argparse.ArgumentParser(description="Check output against the MedQuantis design system.")
     parser.add_argument("--medium", choices=("document", "app"), default="document", help="document (default: navy-only) or app (status colours allowed)")
+    parser.add_argument("--record", type=Path, metavar="PATH", help="also write the verdict, the files checked and the findings to PATH")
     parser.add_argument("files", nargs="+", type=Path)
     args = parser.parse_args(argv)
     if not TOKENS.exists():
@@ -213,13 +219,17 @@ def main(argv):
         else:
             check_markup(report, text, rules)
         findings.extend(report.findings)
+    if findings:
+        verdict = f"FAIL: {len(findings)} finding(s) in {len(args.files)} file(s), medium {args.medium}"
+    else:
+        verdict = f"PASS: {len(args.files)} file(s) clean, medium {args.medium}"
     for finding in findings:
         print(finding)
-    if findings:
-        print(f"FAIL: {len(findings)} finding(s) in {len(args.files)} file(s), medium {args.medium}")
-        return 1
-    print(f"PASS: {len(args.files)} file(s) clean, medium {args.medium}")
-    return 0
+    print(verdict)
+    if args.record:
+        lines = [verdict, *(f"file: {path}" for path in args.files), *findings]
+        args.record.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 1 if findings else 0
 
 
 if __name__ == "__main__":

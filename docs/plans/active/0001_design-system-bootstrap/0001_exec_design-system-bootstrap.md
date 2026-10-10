@@ -85,7 +85,7 @@ These values diverged between sources; increment 04 encodes them.
 3. ~~Corner radius~~ **Ruled 2026-10-09:** 6 px maximum everywhere; two values, 3 px for small items (tags, inputs, chips) and 6 px for cards and panels; no pill shapes. **Amended 2026-10-10:** one exception, 12 px (`--mq-radius-overlay`), only for dialogs and modals, side drawers and command palettes in apps; never in documents, slides, cards or website media.
 4. ~~Heading weight~~ **Ruled 2026-10-09:** Outfit 500 for every heading, column title and hero figure; 600 only for a short highlighted word inside body text (as the bold "Med" of the logo).
 5. **Warning colour, ruled 2026-10-09 (apps only):** `#d4850a` is a fill-only token (badges, highlights) always carrying ink text (5.93:1); `#a06400` is the warning text, icon and border token (4.86:1 on white, 4.42:1 on the warning tint, so text on the tint stays ink). White on the warning fill is forbidden (2.93:1).
-6. **Wordmark, ruled 2026-10-09:** "Med" Outfit 600, "Quantis" Outfit 300 (the website treatment), navy on light backgrounds and white on navy, at every size.
+6. **Wordmark, ruled 2026-10-09:** "Med" Outfit 600, "Quantis" Outfit 300 (the website treatment), navy on light backgrounds and white on navy, at every size. Two files per background are kept (owner, 2026-10-10): live text for pages that load `fonts.css`, outlined for images, documents, email and print.
 7. **Monogram and favicon, ruled 2026-10-09:** the MQ monogram (white on navy `#0a2463`, M Outfit 700, Q Outfit 400, centred on cap height, corners 8/64) is the favicon and app icon. Draft assets in `brand/`, outlined from Outfit: `monogram.svg` (rounded), `monogram-square.svg` (for platforms that round icons themselves), `monogram-small.svg` (16 px variant, larger letters, M 800, Q 600), `favicon/` (`favicon.svg`, `favicon.ico` 16/32/48, `apple-touch-icon.png` 180, `icon-192.png`, `icon-512.png`, PNG metadata stripped). Increment 06 adds the outline script to `scripts/` so the assets are reproducible, and a test that the SVGs contain no `<text>` element.
 8. **Number format, ruled 2026-10-09:** thousands separator is the straight apostrophe (`2'460'000`), never the curly one, a space or a comma; decimal point (`12.5`); a space before `%` (`12.5 %`); currency before the amount (`CHF 2'460'000`) joined with a non-breaking space so it never wraps. Encoded in `guidelines/data-patterns.md`, the skill references and a guideline test. <!-- mq:illustrative -->
 9. **Report background, ruled 2026-10-09:** every document page (A4 report, paper, slide) uses `#fafaf8`; white `#ffffff` is for cards and panels. `#e9e8e4` becomes the `desk` token, used only on screen around a page preview and never inside a document, so printed PDFs never carry a grey sheet. The 6 platform files on `#e9e8e4` move to `#fafaf8` when migrated.
@@ -94,6 +94,8 @@ These values diverged between sources; increment 04 encodes them.
 ## Deferred out of v1 (tracked as GitHub issues)
 
 1. **Email output for HTML newsletters** (owner, 2026-10-09, [#1](https://github.com/MedQuantis/design-system/issues/1)). Needs literal resolved values with inlined styles (CSS variables are unreliable in mail clients), dark-mode-safe colours and logo variants (Gmail and Outlook invert), and a real-client test step. Until then the newsletter template is aligned by hand to the brand colours, citing the token release it copies. Source: research 0001 §6.
+
+2. **Combined logo (monogram and wordmark lockup)** (owner, 2026-10-10, [#2](https://github.com/MedQuantis/design-system/issues/2)). No surface uses one yet; design it, with an on-navy monogram variant, when a real surface asks for one.
 
 ## Increment Plan
 
@@ -269,7 +271,8 @@ Scope:
 4. Status-colour badges live in an `css/app.css` layer only (ADR-0004), not in `components.css`.
 5. Token gaps found in increment 04: shadows, gradients, motion and layout widths are not tokens yet; add any the components need to `tokens/` first (never a literal in `css/`). Text on a navy panel declares its background with a `/* mq-bg: --mq-x */` comment so the contrast test can check the pair.
 6. Radius cap (owner, 2026-10-10, option A of ruling 3): `dist/tailwind.css` sets every Tailwind radius step, `xs` and `sm` to the 3 px token and `md` to `4xl` to the 6 px token, so no class can exceed ruling 3; `rounded-full` stays for circles. The ruling 3 exception adds the 12 px `--mq-radius-overlay` token in `tokens/` and a purpose-named `--radius-overlay` step (class `rounded-overlay`), the only step allowed above 6 px. A test asserts every `--radius-*` step in `tailwind.css` resolves to 3 or 6 px, except `--radius-overlay` at 12 px. Pills are rejected by the stylelint config and named in the guidelines (increment 09).
-7. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
+7. Kit italic (owner, 2026-10-10): `dist/kit-contract.css` also embeds the Newsreader latin italic file, so kit renderers stop synthesising italic; the kit-contract size budget in the test rises from 200 KB to 260 KB.
+8. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
 
 Primary files:
 

@@ -1,0 +1,26 @@
+/* Every pairing below is declared in tokens/contrast-pairs.json. */
+@layer mq.components {
+  :where(.fixture-card) {
+    background-color: var(--mq-surface);
+    color: var(--mq-ink);
+    border: 1px solid var(--mq-warning);
+  }
+
+  :where(.fixture-rule) {
+    border-top: var(--mq-stroke-hairline) solid var(--mq-accent);
+  }
+
+  :where(.fixture-label) {
+    color: var(--mq-tertiary);
+  }
+
+  :where(.fixture-panel .fixture-kicker) {
+    /* mq-bg: --mq-accent */
+    color: var(--mq-on-navy-secondary);
+  }
+
+  :where(.fixture-panel .fixture-icon) {
+    /* mq-bg: --mq-on-navy-pill --mq-accent */
+    color: var(--mq-on-navy-title);
+  }
+}

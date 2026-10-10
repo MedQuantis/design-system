@@ -1,0 +1,28 @@
+{
+  "core": {
+    "stroke": {
+      "1": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        },
+        "$description": "Hairline stroke (Report design system, 2026-10-08)."
+      },
+      "2": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$description": "Focus ring stroke (research note 0001, section 7)."
+      },
+      "3": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "Accent tab and rule stroke, 3 px (increment 07 component need: the navy tab of calm columns, callouts and takeaways, Report design system, 2026-10-08)."
+      },
+      "$type": "dimension"
+    }
+  }
+}

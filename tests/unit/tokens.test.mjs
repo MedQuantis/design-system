@@ -1,0 +1,365 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { join, relative } from "node:path";
+
+const root = fileURLToPath(new URL("../..", import.meta.url));
+const distCss = join(root, "dist/tokens.css");
+const distJson = join(root, "dist/tokens.json");
+const pairsFile = join(root, "tokens/contrast-pairs.json");
+const fixtures = join(root, "tests/fixtures/tokens");
+
+const loadColorMath = () => import("../../build/color-math.mjs");
+const loadPairs = () => import("../../build/contrast-pairs.mjs");
+
+const readDist = (file) => {
+  assert.ok(existsSync(file), `${relative(root, file)} is missing: run make build first`);
+  return readFileSync(file, "utf8");
+};
+const builtTokens = () => JSON.parse(readDist(distJson));
+const value = (name) => {
+  const token = builtTokens()[name];
+  assert.ok(token, `${name} is not in dist/tokens.json`);
+  return token.value;
+};
+
+const tokenFiles = (tier) => {
+  const dir = join(root, "tokens", tier);
+  return existsSync(dir)
+    ? readdirSync(dir)
+        .filter((name) => name.endsWith(".tokens.json"))
+        .map((name) => join(dir, name))
+    : [];
+};
+
+// Walks a DTCG tree and yields every token with its path and the $type it inherits.
+function* walk(node, path = [], inheritedType) {
+  const type = node.$type ?? inheritedType;
+  if ("$value" in node) {
+    yield { path, token: node, type };
+    return;
+  }
+  for (const [key, child] of Object.entries(node)) {
+    if (!key.startsWith("$") && child && typeof child === "object") yield* walk(child, [...path, key], type);
+  }
+}
+
+const sourceTokens = () => {
+  const tokens = new Map();
+  for (const file of [...tokenFiles("core"), ...tokenFiles("semantic")]) {
+    for (const entry of walk(JSON.parse(readFileSync(file, "utf8")))) {
+      tokens.set(entry.path.join("."), { ...entry, file: relative(root, file) });
+    }
+  }
+  return tokens;
+};
+
+const ALIAS = /^\{([^{}]+)\}$/;
+// Colour tokens only: a border shorthand names its width token before its colour.
+const colourNames = () => new Set(Object.entries(builtTokens()).filter(([, token]) => token.type === "color").map(([name]) => name));
+
+test("token sources exist as DTCG files split into core and semantic tiers", () => {
+  assert.ok(tokenFiles("core").length > 0, "no tokens/core/*.tokens.json");
+  assert.ok(tokenFiles("semantic").length > 0, "no tokens/semantic/*.tokens.json");
+  for (const [key, { path }] of sourceTokens()) {
+    assert.ok(["core", "semantic"].includes(path[0]), `${key} is outside the core and semantic groups`);
+  }
+});
+
+test("$type is set at group level and every token carries a $description", () => {
+  const tokens = sourceTokens();
+  assert.ok(tokens.size > 0, "no tokens found");
+  for (const [key, { token, type }] of tokens) {
+    assert.equal(token.$type, undefined, `${key} sets $type on the token instead of its group`);
+    assert.ok(type, `${key} has no inherited $type`);
+    assert.ok(typeof token.$description === "string" && token.$description.length > 0, `${key} has no $description`);
+  }
+});
+
+test("core colours are DTCG colour objects with colorSpace, components and hex", () => {
+  const tokens = sourceTokens();
+  assert.ok([...tokens.values()].some(({ path, type }) => path[0] === "core" && type === "color"), "no core colour");
+  for (const [key, { path, token, type }] of tokens) {
+    if (path[0] !== "core" || type !== "color") continue;
+    const color = token.$value;
+    assert.equal(typeof color, "object", `${key} is not a colour object`);
+    assert.equal(color.colorSpace, "srgb", `${key} colorSpace`);
+    assert.equal(color.components.length, 3, `${key} components`);
+    assert.match(color.hex, /^#[0-9a-f]{6}$/, `${key} hex`);
+    const fromComponents = `#${color.components.map((c) => Math.round(c * 255).toString(16).padStart(2, "0")).join("")}`;
+    assert.equal(fromComponents, color.hex, `${key} components disagree with hex`);
+  }
+});
+
+test("every semantic token resolves to a core value", () => {
+  const tokens = sourceTokens();
+  const built = builtTokens();
+  const byPath = new Map(Object.values(built).map((token) => [token.path.join("."), token]));
+  for (const [key, { path, token }] of tokens) {
+    if (path[0] !== "semantic") continue;
+    let target = token.$value;
+    const seen = new Set([key]);
+    while (typeof target === "string" && ALIAS.test(target)) {
+      const ref = target.match(ALIAS)[1];
+      assert.ok(tokens.has(ref), `${key} references missing ${ref}`);
+      assert.ok(!seen.has(ref), `${key} has a reference cycle through ${ref}`);
+      seen.add(ref);
+      if (ref.startsWith("core.")) {
+        assert.equal(byPath.get(key)?.value, byPath.get(ref)?.value, `${key} does not resolve to the value of ${ref}`);
+        target = null;
+        break;
+      }
+      target = tokens.get(ref).token.$value;
+    }
+    assert.equal(target, null, `${key} does not resolve to a core token`);
+  }
+});
+
+test("dist/tokens.css defines --mq-accent as navy #0a2463", () => {
+  assert.match(readDist(distCss), /--mq-accent:\s*#0a2463;/);
+});
+
+test("every custom property in dist/tokens.css carries the --mq- prefix", () => {
+  const names = [...readDist(distCss).matchAll(/(--[\w-]+)\s*:/g)].map((match) => match[1]);
+  assert.ok(names.length > 0, "no custom properties found");
+  for (const name of names) assert.match(name, /^--mq-/, `${name} lacks the --mq- prefix`);
+});
+
+test("dist/tokens.json lists every CSS property with the same value", () => {
+  const built = builtTokens();
+  const css = readDist(distCss);
+  for (const [name, token] of Object.entries(built)) {
+    const declared = css.match(new RegExp(`${name}:\\s*([^;]+);`));
+    assert.ok(declared, `${name} is missing from dist/tokens.css`);
+    assert.equal(declared[1].trim(), String(token.value), `${name} differs between CSS and JSON`);
+  }
+});
+
+test("status colours are exactly success, warning, danger and info (ADR-0004)", () => {
+  const tokens = sourceTokens();
+  const status = [...tokens.values()]
+    .filter(({ path }) => path[0] === "semantic" && path[1] === "color" && path[2] === "status")
+    .map(({ path }) => path.slice(3).join("."));
+  assert.deepEqual(status.sort(), ["danger", "info", "success", "warning"]);
+});
+
+test("ruled colour values: danger, tertiary, decoration, warning split and document backgrounds", () => {
+  assert.equal(value("--mq-danger"), "#d8232a");
+  assert.equal(value("--mq-tertiary"), "#707070", "owner ruling 1: tertiary text");
+  assert.equal(value("--mq-decoration"), "#8c8c8c", "owner ruling 1: non-text decoration");
+  assert.equal(value("--mq-warning"), "#a06400", "owner ruling 5: warning text, icon and border");
+  assert.equal(value("--mq-warning-fill"), "#d4850a", "owner ruling 5: warning fill");
+  assert.equal(value("--mq-canvas"), "#fafaf8", "owner ruling 9: document page");
+  assert.equal(value("--mq-surface"), "#ffffff", "owner ruling 9: cards and panels");
+  assert.equal(value("--mq-desk"), "#e9e8e4", "owner ruling 9: on-screen desk");
+});
+
+test("on-navy values follow owner ruling 2 and no sky blue exists", () => {
+  assert.equal(value("--mq-on-navy-title"), "#ffffff");
+  assert.equal(value("--mq-on-navy-secondary"), "rgba(255, 255, 255, 0.68)");
+  assert.equal(value("--mq-on-navy-second-level"), "#c3cbdc");
+  assert.equal(value("--mq-on-navy-accent"), "#8795b3");
+  assert.match(value("--mq-on-navy-rule"), /^rgba\(255, 255, 255, 0\.1[678]\)$/);
+  assert.equal(value("--mq-on-navy-pill"), "rgba(255, 255, 255, 0.12)");
+  assert.equal(value("--mq-on-navy-discreet"), "rgba(255, 255, 255, 0.4)");
+  assert.doesNotMatch(readDist(distCss), /#8fc0ff/i);
+});
+
+test("radius is 3 px for small items and 6 px for cards, 12 px only for app overlays (owner ruling 3)", () => {
+  assert.equal(value("--mq-radius-small"), "3px");
+  assert.equal(value("--mq-radius-medium"), "6px");
+  assert.equal(value("--mq-radius-overlay"), "12px");
+  assert.match(builtTokens()["--mq-radius-overlay"].description, /Owner ruling 3, amended 2026-10-10/);
+  const overlay = new Set(["--mq-radius-overlay", "--mq-core-radius-12"]);
+  for (const [name, token] of Object.entries(builtTokens())) {
+    if (!name.includes("radius") || overlay.has(name)) continue;
+    assert.ok(Number.parseFloat(token.value) <= 6, `${name} is ${token.value}`);
+  }
+});
+
+test("component tokens added in increment 07: shadows, strokes, layout sizes, slide title", () => {
+  const built = builtTokens();
+  const expected = {
+    "--mq-shadow-small": "0px 1px 2px 0px rgba(0, 0, 0, 0.05)",
+    "--mq-shadow-medium": "0px 3px 12px 0px rgba(0, 0, 0, 0.07)",
+    "--mq-shadow-panel": "0px 14px 36px 0px rgba(10, 36, 99, 0.24)",
+    "--mq-stroke-hairline": "1px",
+    "--mq-stroke-strong": "2px",
+    "--mq-stroke-tab": "3px",
+    "--mq-slide-width": "1280px",
+    "--mq-slide-height": "720px",
+    "--mq-page-width": "1040px",
+    "--mq-page-measure": "760px",
+    "--mq-a4-width": "793.7px",
+    "--mq-a4-height": "1122.52px",
+    "--mq-font-size-slide-title": "36px",
+    "--mq-border-strong": "#5d6f91",
+  };
+  for (const [name, expectedValue] of Object.entries(expected)) {
+    assert.ok(built[name], `${name} is not a token`);
+    assert.equal(built[name].value, expectedValue, name);
+  }
+});
+
+test("headings use Outfit 500 and 600 is kept for highlighted words (owner ruling 4)", () => {
+  assert.equal(String(value("--mq-font-weight-heading")), "500");
+  assert.equal(String(value("--mq-font-weight-emphasis")), "600");
+  assert.match(String(value("--mq-font-family-heading")), /^'?"?Outfit/);
+});
+
+test("the Quantis half of the wordmark has its own light weight token, Outfit 300 (owner ruling 6)", () => {
+  assert.equal(String(value("--mq-font-weight-light")), "300");
+  assert.match(readDist(distCss), /--mq-font-weight-light: 300;/);
+});
+
+test("the deprecation note of --mq-accent-on-dark names the replacement per use", () => {
+  const note = /--mq-on-navy-title for titles and rules.*--mq-on-navy-accent for the one-off accent/;
+  const built = builtTokens()["--mq-accent-on-dark"];
+  assert.ok(built, "--mq-accent-on-dark is not in dist/tokens.json");
+  assert.match(built.deprecated ?? "", note, "tokens.json deprecation note");
+  assert.match(readDist(distCss).split("\n").find((line) => line.includes("--mq-accent-on-dark:")) ?? "", note, "tokens.css comment");
+  assert.match(readDist(join(root, "dist/llms-full.txt")).split("\n").find((line) => line.includes("`--mq-accent-on-dark`")) ?? "", note, "llms-full.txt row");
+});
+
+test("focus ring is 2 px navy with an offset, white on navy", () => {
+  assert.equal(value("--mq-focus-ring-width"), "2px");
+  assert.equal(value("--mq-focus-ring-color"), "#0a2463");
+  assert.equal(value("--mq-focus-ring-color-on-navy"), "#ffffff");
+  assert.match(value("--mq-focus-ring-offset"), /^[1-9]\d*px$/);
+});
+
+test("owner rulings 1 to 5 and 9 are cited in token descriptions", () => {
+  const descriptions = [...sourceTokens().values()].map(({ token }) => token.$description).join("\n");
+  for (const ruling of [1, 2, 3, 4, 5, 9]) {
+    assert.match(descriptions, new RegExp(`Owner ruling ${ruling}, 2026-10-09`), `owner ruling ${ruling} is not cited`);
+  }
+});
+
+test("descriptions cite rulings or decision records, never files or paths", () => {
+  const tokens = sourceTokens();
+  assert.ok(tokens.size > 0, "no tokens found");
+  for (const [key, { token }] of tokens) {
+    assert.doesNotMatch(token.$description, /\.(md|css|html|js|ts|py|vue)\b|\/[\w-]+\//, `${key} cites a file`);
+  }
+});
+
+test("retired tokens are marked $deprecated and alias their replacement", () => {
+  const deprecated = [...sourceTokens()].filter(([, { token }]) => token.$deprecated);
+  assert.ok(deprecated.length > 0, "no deprecated token");
+  for (const [key, { token }] of deprecated) {
+    assert.match(token.$value, ALIAS, `${key} must alias its replacement`);
+    assert.equal(typeof token.$deprecated, "string", `${key} must say what replaces it`);
+  }
+});
+
+test("categorical chart palette: ordered, at most seven hues, distinct under colour-vision deficiency", async () => {
+  const { minPairwiseDistance, CVD_KINDS } = await loadColorMath();
+  const built = builtTokens();
+  const series = Object.keys(built)
+    .filter((name) => /^--mq-chart-series-\d+$/.test(name))
+    .sort((a, b) => Number(a.split("-").at(-1)) - Number(b.split("-").at(-1)));
+  assert.ok(series.length >= 3 && series.length <= 7, `${series.length} series`);
+  series.forEach((name, index) => assert.equal(name, `--mq-chart-series-${index + 1}`, "series must be numbered 1..n without gaps"));
+  assert.equal(built[series[0]].value, value("--mq-accent"), "series 1 is the navy accent");
+  // Navy and blue-grey family only: CIELCh hue between 260 and 300 and chroma no higher than
+  // navy's (43.5), which keeps out the saturated info blue (55) and every status hue.
+  const { toLch } = await loadColorMath();
+  for (const name of series) {
+    const [, chroma, hue] = toLch(built[name].value);
+    assert.ok(chroma <= 45 && hue >= 260 && hue <= 300, `${name} ${built[name].value} is outside the navy and blue-grey family`);
+  }
+  const colours = [...series.map((name) => built[name].value), value("--mq-canvas")];
+  for (const kind of ["normal", ...CVD_KINDS]) {
+    const { distance, pair } = minPairwiseDistance(colours, kind);
+    assert.ok(distance >= 10, `${kind}: ${pair.join(" and ")} are only ${distance.toFixed(2)} apart (CIEDE2000, minimum 10)`);
+  }
+});
+
+test("every declared contrast pair passes its threshold", async () => {
+  const { loadPairs: readPairs, evaluatePair } = await loadPairs();
+  const pairs = readPairs(pairsFile);
+  assert.ok(pairs.length > 0, "no contrast pair declared");
+  const built = builtTokens();
+  for (const pair of pairs) {
+    const result = evaluatePair(pair, built);
+    assert.ok(result.pass, `${pair.fg} on ${[pair.bg].flat().join(" over ")} is ${result.ratio.toFixed(2)}:1, ${pair.use} needs ${result.required}:1`);
+  }
+});
+
+test("the contrast allow-list covers every pair the plan requires", async () => {
+  const { loadPairs: readPairs, isDeclared } = await loadPairs();
+  const pairs = readPairs(pairsFile);
+  const navy = ["--mq-accent", "--mq-panel-start"];
+  const required = [
+    ...["--mq-ink", "--mq-muted", "--mq-tertiary"].flatMap((fg) => ["--mq-canvas", "--mq-surface"].map((bg) => [fg, bg, "text"])),
+    ...["title", "secondary", "second-level", "accent", "discreet"].flatMap((role) => navy.map((bg) => [`--mq-on-navy-${role}`, bg, "any"])),
+    ...["rule", "pill"].map((role) => [`--mq-on-navy-${role}`, "--mq-accent", "any"]),
+    ["--mq-ink", "--mq-warning-fill", "text"],
+    ["--mq-warning", "--mq-surface", "text"],
+    ["--mq-warning", "--mq-warning-tint", "any"],
+    ["--mq-ink", "--mq-warning-tint", "text"],
+    ...["--mq-success", "--mq-warning", "--mq-danger", "--mq-info"].map((fg) => [fg, "--mq-surface", "text"]),
+    ["--mq-focus-ring-color", "--mq-canvas", "any"],
+    ["--mq-focus-ring-color-on-navy", "--mq-accent", "any"],
+  ];
+  for (const [fg, bg, use] of required) {
+    assert.ok(isDeclared(pairs, { fg, bg: [bg], use }), `${fg} on ${bg} (${use}) is not declared`);
+  }
+});
+
+test("on-navy pairs below AA are restricted to large text or non-text use (owner ruling 2)", async () => {
+  const { loadPairs: readPairs, evaluatePair } = await loadPairs();
+  const built = builtTokens();
+  for (const pair of readPairs(pairsFile).filter((entry) => entry.fg.startsWith("--mq-on-navy-"))) {
+    const { ratio } = evaluatePair(pair, built);
+    if (ratio < 4.5) assert.notEqual(pair.use, "text", `${pair.fg} on ${pair.bg} is ${ratio.toFixed(2)}:1 but declared as text`);
+  }
+});
+
+test("white on the warning fill is never declared (owner ruling 5)", async () => {
+  const { loadPairs: readPairs, evaluatePair } = await loadPairs();
+  const forbidden = { fg: "--mq-on-accent", bg: ["--mq-warning-fill"], use: "text" };
+  assert.ok(evaluatePair({ ...forbidden, use: "non-text" }, builtTokens()).ratio < 3);
+  for (const fg of ["--mq-on-accent", "--mq-on-navy-title", "--mq-surface"]) {
+    const declared = readPairs(pairsFile).some((pair) => pair.fg === fg && [pair.bg].flat()[0] === "--mq-warning-fill");
+    assert.ok(!declared, `${fg} on --mq-warning-fill must not be declared`);
+  }
+});
+
+test("a colour pairing used in CSS without a declaration fails", async () => {
+  const { loadPairs: readPairs, findCssPairings, undeclaredPairings } = await loadPairs();
+  const pairs = readPairs(pairsFile);
+  const colours = colourNames();
+  const bad = undeclaredPairings(findCssPairings(readFileSync(join(fixtures, "undeclared.css"), "utf8"), colours), pairs);
+  assert.deepEqual(
+    bad.map(({ fg, bg }) => `${fg} on ${bg.join(" over ")}`),
+    ["--mq-muted on --mq-warning-fill"],
+  );
+  const good = findCssPairings(readFileSync(join(fixtures, "declared.css"), "utf8"), colours);
+  assert.ok(good.length >= 6, `expected at least five pairings, found ${good.length}`);
+  assert.deepEqual(undeclaredPairings(good, pairs), []);
+});
+
+test("every colour pairing in css/ is declared", async () => {
+  const { loadPairs: readPairs, findCssPairings, undeclaredPairings } = await loadPairs();
+  const cssDir = join(root, "css");
+  const files = existsSync(cssDir) ? readdirSync(cssDir, { recursive: true }).filter((name) => name.endsWith(".css")) : [];
+  const pairs = readPairs(pairsFile);
+  for (const file of files) {
+    const bad = undeclaredPairings(findCssPairings(readFileSync(join(cssDir, file), "utf8"), colourNames()), pairs);
+    assert.deepEqual(bad, [], `undeclared pairings in css/${file}`);
+  }
+});
+
+// Framework neutrality applies to the generated CSS and JSON outputs (owner, 2026-10-10): the
+// llms files and the specimen may name frameworks as guidance on what stays local in an app.
+test("the generated tokens.css, tokens.json, tailwind.css and kit-contract.css name no framework (ADR-0002 framework neutrality)", () => {
+  for (const file of ["tokens.css", "tokens.json", "tailwind.css", "kit-contract.css"]) {
+    const path = join(root, "dist", file);
+    assert.ok(existsSync(path), `dist/${file} is missing: run make build first`);
+    // Embedded font data is base64, where any three letters occur by chance.
+    const text = readFileSync(path, "utf8").replace(/url\(data:[^)]*\)/g, "url(data:)");
+    assert.doesNotMatch(text, /vue|nuxt|--ui-|react|jsx/i, `dist/${file} names a framework`);
+  }
+});

@@ -1,0 +1,149 @@
+{
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "accent": {
+        "$value": "{core.color.navy}",
+        "$description": "The single brand accent: links, active states, figures, navy panels (ADR-0003)."
+      },
+      "accent-hover": {
+        "$value": "{core.color.navy-hover}",
+        "$description": "Hover state of accent-coloured controls."
+      },
+      "accent-pale": {
+        "$value": "{core.color.pale}",
+        "$description": "Pale accent fill for a highlighted row, tag or state."
+      },
+      "accent-pale-2": {
+        "$value": "{core.color.pale-2}",
+        "$description": "Quieter pale accent fill."
+      },
+      "on-accent": {
+        "$value": "{core.color.white}",
+        "$description": "Text and icons on an accent fill, 14.53:1 on navy."
+      },
+      "ink": {
+        "$value": "{core.color.grey-950}",
+        "$description": "Primary text."
+      },
+      "muted": {
+        "$value": "{core.color.grey-700}",
+        "$description": "Secondary text."
+      },
+      "tertiary": {
+        "$value": "{core.color.grey-600}",
+        "$description": "Owner ruling 1, 2026-10-09: tertiary text, captions and footers."
+      },
+      "decoration": {
+        "$value": "{core.color.grey-500}",
+        "$description": "Owner ruling 1, 2026-10-09: non-text decoration only (axis lines, ticks, icons beside a label), never text."
+      },
+      "canvas": {
+        "$value": "{core.color.grey-50}",
+        "$description": "Owner ruling 9, 2026-10-09: background of every document page (A4 report, paper, slide)."
+      },
+      "surface": {
+        "$value": "{core.color.white}",
+        "$description": "Owner ruling 9, 2026-10-09: cards and panels on the page."
+      },
+      "surface-alt": {
+        "$value": "{core.color.grey-100}",
+        "$description": "Recessed surface: table headers, grouped areas."
+      },
+      "desk": {
+        "$value": "{core.color.grey-250}",
+        "$description": "Owner ruling 9, 2026-10-09: on screen only, around a page preview; never inside a document."
+      },
+      "border": {
+        "$value": "{core.color.grey-300}",
+        "$description": "Borders and dividers."
+      },
+      "border-light": {
+        "$value": "{core.color.grey-200}",
+        "$description": "Hairlines and card borders."
+      },
+      "border-strong": {
+        "$value": "{core.color.bluegrey-1}",
+        "$description": "Outline of outlined and dashed state marks in documents (badges, legend swatches), 3:1 or more on canvas and surface for WCAG 1.4.11 (increment 07 component need, ADR-0004: states by mark style)."
+      },
+      "panel-start": {
+        "$value": "{core.color.navy-2}",
+        "$description": "Light end of the navy panel gradient; the worst case for text on navy."
+      },
+      "panel-end": {
+        "$value": "{core.color.navy-3}",
+        "$description": "Dark end of the navy panel gradient."
+      },
+      "on-navy": {
+        "title": {
+          "$value": "{core.color.white}",
+          "$description": "Owner ruling 2, 2026-10-09: titles, figures and icons on navy."
+        },
+        "secondary": {
+          "$value": "{core.color.white-alpha-68}",
+          "$description": "Owner ruling 2, 2026-10-09: secondary text and labels on navy."
+        },
+        "second-level": {
+          "$value": "{core.color.bluegrey-3}",
+          "$description": "Owner ruling 2, 2026-10-09: second-level text on navy."
+        },
+        "accent": {
+          "$value": "{core.color.bluegrey-2}",
+          "$description": "Owner ruling 2, 2026-10-09: the one-off accent on navy; replaces the retired sky blue."
+        },
+        "rule": {
+          "$value": "{core.color.white-alpha-16}",
+          "$description": "Owner ruling 2, 2026-10-09: rules on navy (decorative)."
+        },
+        "rule-strong": {
+          "$value": "{core.color.white-alpha-18}",
+          "$description": "Owner ruling 2, 2026-10-09: stronger rules on navy (decorative)."
+        },
+        "pill": {
+          "$value": "{core.color.white-alpha-12}",
+          "$description": "Owner ruling 2, 2026-10-09: icon-pill fill on navy (decorative); the icon on it stays white."
+        },
+        "discreet": {
+          "$value": "{core.color.white-alpha-40}",
+          "$description": "Owner ruling 2, 2026-10-09: discreet numbers on navy; 3.44:1, so large text or non-text only."
+        }
+      },
+      "status": {
+        "success": {
+          "$value": "{core.color.green}",
+          "$description": "Apps only: success, always with an icon or a word (ADR-0004)."
+        },
+        "warning": {
+          "$value": "{core.color.amber-strong}",
+          "$description": "Owner ruling 5, 2026-10-09: warning text, icons and borders; apps only (ADR-0004)."
+        },
+        "danger": {
+          "$value": "{core.color.red}",
+          "$description": "Apps only: errors and destructive actions, always with an icon or a word (ADR-0003, ADR-0004)."
+        },
+        "info": {
+          "$value": "{core.color.blue}",
+          "$description": "Apps only: information, always with an icon or a word (ADR-0004)."
+        }
+      },
+      "warning-fill": {
+        "$value": "{core.color.amber}",
+        "$description": "Owner ruling 5, 2026-10-09: warning badge and highlight fill, always with ink text; white on it is forbidden (2.93:1)."
+      },
+      "warning-tint": {
+        "$value": "{core.color.amber-tint}",
+        "$description": "Owner ruling 5, 2026-10-09: warning tint behind ink text; warning strong only for icons and borders on it."
+      },
+      "dim": {
+        "$value": "{semantic.color.tertiary}",
+        "$description": "Retired name of the old tertiary grey; resolves to tertiary (Owner ruling 1, 2026-10-09).",
+        "$deprecated": "Use --mq-tertiary for text or --mq-decoration for non-text decoration."
+      },
+      "accent-on-dark": {
+        "$value": "{semantic.color.on-navy.accent}",
+        "$description": "Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent.",
+        "$deprecated": "Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent."
+      }
+    }
+  }
+}

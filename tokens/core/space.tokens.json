@@ -1,0 +1,63 @@
+{
+  "core": {
+    "space": {
+      "4": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        },
+        "$description": "Spacing step 4 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "8": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$description": "Spacing step 8 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "12": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$description": "Spacing step 12 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "16": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        },
+        "$description": "Spacing step 16 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "24": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$description": "Spacing step 24 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "32": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        },
+        "$description": "Spacing step 32 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "48": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        },
+        "$description": "Spacing step 48 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "72": {
+        "$value": {
+          "value": 72,
+          "unit": "px"
+        },
+        "$description": "Spacing step 72 px on the 4 and 8 px grid (Report design system, 2026-10-08)."
+      },
+      "$type": "dimension"
+    }
+  }
+}

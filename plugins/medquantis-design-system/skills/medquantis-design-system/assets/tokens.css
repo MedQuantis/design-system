@@ -1,0 +1,179 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --mq-core-navy: #0a2463; /** MedQuantis navy, the single brand accent everywhere (ADR-0003). */
+  --mq-core-navy-hover: #061a4d; /** Navy hover state (Report design system, 2026-10-08). */
+  --mq-core-navy-2: #0f2a5e; /** Lightest stop of the navy panel and hero gradients (Report design system, 2026-10-08). */
+  --mq-core-navy-3: #0a2047; /** Middle stop of the navy panel and hero gradients (Report design system, 2026-10-08). */
+  --mq-core-navy-4: #071733; /** Darkest stop of the hero gradient (Report design system, 2026-10-08). */
+  --mq-core-pale: #eaeef7; /** Pale navy fill for a highlighted state (Report design system, 2026-10-08). */
+  --mq-core-pale-2: #f2f4f9; /** Quieter pale navy fill (Report design system, 2026-10-08). */
+  --mq-core-bluegrey-1: #5d6f91; /** Blue-grey 1, darkest of the secondary family (Report design system, 2026-10-08). */
+  --mq-core-bluegrey-2: #8795b3; /** Blue-grey 2 (Report design system, 2026-10-08). */
+  --mq-core-bluegrey-3: #c3cbdc; /** Blue-grey 3 (Report design system, 2026-10-08). */
+  --mq-core-bluegrey-4: #dde3ee; /** Blue-grey 4, lightest of the secondary family (Report design system, 2026-10-08). */
+  --mq-core-grey-950: #1a1a1a; /** Warm near-black (Report design system, 2026-10-08). */
+  --mq-core-grey-700: #555555; /** Warm dark grey (Report design system, 2026-10-08). */
+  --mq-core-grey-600: #707070; /** Owner ruling 1, 2026-10-09: the tertiary grey for all text, 4.74:1 on canvas. */
+  --mq-core-grey-500: #8c8c8c; /** Owner ruling 1, 2026-10-09: non-text decoration only, 3.22:1 on canvas. */
+  --mq-core-grey-300: #dddbd6; /** Warm border grey (Report design system, 2026-10-08). */
+  --mq-core-grey-250: #e9e8e4; /** Owner ruling 9, 2026-10-09: the on-screen desk around a page preview. */
+  --mq-core-grey-200: #ebeae6; /** Warm hairline grey (Report design system, 2026-10-08). */
+  --mq-core-grey-100: #f5f4f1; /** Warm recessed surface (Report design system, 2026-10-08). */
+  --mq-core-grey-50: #fafaf8; /** Owner ruling 9, 2026-10-09: warm off-white of every document page. */
+  --mq-core-white: #ffffff; /** White (Report design system, 2026-10-08). */
+  --mq-core-white-alpha-68: rgba(255, 255, 255, 0.68); /** Owner ruling 2, 2026-10-09: white at 68 % for secondary text on navy. */
+  --mq-core-white-alpha-40: rgba(255, 255, 255, 0.4); /** Owner ruling 2, 2026-10-09: white at 40 % for discreet numbers on navy. */
+  --mq-core-white-alpha-18: rgba(255, 255, 255, 0.18); /** Owner ruling 2, 2026-10-09: white at 18 % for rules on navy. */
+  --mq-core-white-alpha-16: rgba(255, 255, 255, 0.16); /** Owner ruling 2, 2026-10-09: white at 16 % for rules on navy. */
+  --mq-core-white-alpha-12: rgba(255, 255, 255, 0.12); /** Owner ruling 2, 2026-10-09: white at 12 % for icon-pill fills on navy. */
+  --mq-core-green: #2e7d32; /** Success hue for interactive apps (ADR-0004). */
+  --mq-core-amber: #d4850a; /** Owner ruling 5, 2026-10-09: warning fill, always with ink text (ADR-0004). */
+  --mq-core-amber-strong: #a06400; /** Owner ruling 5, 2026-10-09: warning text, icon and border, 4.86:1 on white (ADR-0004). */
+  --mq-core-amber-tint: #fbf3e7; /** Owner ruling 5, 2026-10-09: warning tint, the warning fill at 10 % on white; warning strong on it is 4.42:1, so text on the tint stays ink. */
+  --mq-core-red: #d8232a; /** Swiss red, kept only as the danger status colour (ADR-0003, ADR-0004). */
+  --mq-core-blue: #1565c0; /** Info hue for interactive apps (ADR-0004). */
+  --mq-core-font-family-outfit: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Outfit, the sans for headings, labels and app UI (Owner ruling 10, 2026-10-09). */
+  --mq-core-font-family-newsreader: Newsreader, Georgia, 'Times New Roman', serif; /** Newsreader, the only serif; Georgia and Times New Roman are fallbacks only (Owner ruling 10, 2026-10-09). */
+  --mq-core-font-family-geist-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; /** Geist Mono for figures and codes (Owner ruling 10, 2026-10-09). */
+  --mq-core-font-weight-300: 300; /** Light weight (Owner ruling 6, 2026-10-09: the Quantis half of the wordmark). */
+  --mq-core-font-weight-400: 400; /** Regular weight for body text (Report design system, 2026-10-08). */
+  --mq-core-font-weight-500: 500; /** Owner ruling 4, 2026-10-09: medium weight for every heading, column title and hero figure. */
+  --mq-core-font-weight-600: 600; /** Owner ruling 4, 2026-10-09: semibold only for a short highlighted word inside body text. */
+  --mq-core-font-size-11: 11px; /** Font size 11 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-13: 13px; /** Font size 13 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-14: 14px; /** Font size 14 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-15: 15px; /** Font size 15 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-16: 16px; /** Font size 16 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-18: 18px; /** Font size 18 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-20: 20px; /** Font size 20 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-24: 24px; /** Font size 24 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-30: 30px; /** Font size 30 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-32: 32px; /** Font size 32 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-34: 34px; /** Font size 34 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-36: 36px; /** Font size 36 px (increment 07 component need: the slide title, Report design system, 2026-10-08). */
+  --mq-core-font-size-50: 50px; /** Font size 50 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-56: 56px; /** Font size 56 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-12-5: 12.5px; /** Font size 12.5 px (Report design system, 2026-10-08). */
+  --mq-core-font-size-16-5: 16.5px; /** Font size 16.5 px (Report design system, 2026-10-08). */
+  --mq-core-radius-3: 3px; /** Owner ruling 3, 2026-10-09: small items (tags, inputs, chips). */
+  --mq-core-radius-6: 6px; /** Owner ruling 3, 2026-10-09: cards and panels; the maximum anywhere, no pill shapes. */
+  --mq-core-radius-12: 12px; /** Owner ruling 3, amended 2026-10-10: the one exception above 6 px, for app dialogs and modals, side drawers and command palettes only; never in documents, slides, cards or website media. */
+  --mq-core-shadow-small: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /** Small elevation for cards (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** Medium elevation for a slide or page shown on the desk (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy-tinted elevation for navy panels (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-size-720: 720px; /** Slide canvas height, 720 px (increment 07 component need: the 1280 by 720 slide canvas). */
+  --mq-core-size-760: 760px; /** Reading measure, 760 px (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-size-1040: 1040px; /** Content width of a screen document, 1040 px (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-size-1280: 1280px; /** Slide canvas width, 1280 px (increment 07 component need: the 1280 by 720 slide canvas). */
+  --mq-core-size-a4-width: 793.7px; /** A4 sheet width, 210 mm at 96 px per inch (increment 07 component need: the A4 print page). */
+  --mq-core-size-a4-height: 1122.52px; /** A4 sheet height, 297 mm at 96 px per inch (increment 07 component need: the A4 print page). */
+  --mq-core-space-4: 4px; /** Spacing step 4 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-8: 8px; /** Spacing step 8 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-12: 12px; /** Spacing step 12 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-16: 16px; /** Spacing step 16 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-24: 24px; /** Spacing step 24 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-32: 32px; /** Spacing step 32 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-48: 48px; /** Spacing step 48 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-space-72: 72px; /** Spacing step 72 px on the 4 and 8 px grid (Report design system, 2026-10-08). */
+  --mq-core-stroke-1: 1px; /** Hairline stroke (Report design system, 2026-10-08). */
+  --mq-core-stroke-2: 2px; /** Focus ring stroke (research note 0001, section 7). */
+  --mq-core-stroke-3: 3px; /** Accent tab and rule stroke, 3 px (increment 07 component need: the navy tab of calm columns, callouts and takeaways, Report design system, 2026-10-08). */
+  --mq-chart-series-1: #0a2463; /** Categorical series 1 of 4, always used first; also the highlight in highlight-on-grey charts. */
+  --mq-chart-series-2: #5d6f91; /** Categorical series 2 of 4. */
+  --mq-chart-series-3: #8795b3; /** Categorical series 3 of 4. */
+  --mq-chart-series-4: #c3cbdc; /** Categorical series 4 of 4; context bars in highlight-on-grey charts. */
+  --mq-chart-rest: #dde3ee; /** Remainder or empty fill, never a categorical series; too close to series 4 under colour-vision deficiency, so draw it with a series 4 outline. */
+  --mq-chart-axis: #8c8c8c; /** Axis lines and ticks (non-text, Owner ruling 1, 2026-10-09); axis labels use tertiary. */
+  --mq-chart-baseline: #dddbd6; /** Gridlines and baselines (decorative). */
+  --mq-accent: #0a2463; /** The single brand accent: links, active states, figures, navy panels (ADR-0003). */
+  --mq-accent-hover: #061a4d; /** Hover state of accent-coloured controls. */
+  --mq-accent-pale: #eaeef7; /** Pale accent fill for a highlighted row, tag or state. */
+  --mq-accent-pale-2: #f2f4f9; /** Quieter pale accent fill. */
+  --mq-on-accent: #ffffff; /** Text and icons on an accent fill, 14.53:1 on navy. */
+  --mq-ink: #1a1a1a; /** Primary text. */
+  --mq-muted: #555555; /** Secondary text. */
+  --mq-tertiary: #707070; /** Owner ruling 1, 2026-10-09: tertiary text, captions and footers. */
+  --mq-decoration: #8c8c8c; /** Owner ruling 1, 2026-10-09: non-text decoration only (axis lines, ticks, icons beside a label), never text. */
+  --mq-canvas: #fafaf8; /** Owner ruling 9, 2026-10-09: background of every document page (A4 report, paper, slide). */
+  --mq-surface: #ffffff; /** Owner ruling 9, 2026-10-09: cards and panels on the page. */
+  --mq-surface-alt: #f5f4f1; /** Recessed surface: table headers, grouped areas. */
+  --mq-desk: #e9e8e4; /** Owner ruling 9, 2026-10-09: on screen only, around a page preview; never inside a document. */
+  --mq-border: #dddbd6; /** Borders and dividers. */
+  --mq-border-light: #ebeae6; /** Hairlines and card borders. */
+  --mq-border-strong: #5d6f91; /** Outline of outlined and dashed state marks in documents (badges, legend swatches), 3:1 or more on canvas and surface for WCAG 1.4.11 (increment 07 component need, ADR-0004: states by mark style). */
+  --mq-panel-start: #0f2a5e; /** Light end of the navy panel gradient; the worst case for text on navy. */
+  --mq-panel-end: #0a2047; /** Dark end of the navy panel gradient. */
+  --mq-on-navy-title: #ffffff; /** Owner ruling 2, 2026-10-09: titles, figures and icons on navy. */
+  --mq-on-navy-secondary: rgba(255, 255, 255, 0.68); /** Owner ruling 2, 2026-10-09: secondary text and labels on navy. */
+  --mq-on-navy-second-level: #c3cbdc; /** Owner ruling 2, 2026-10-09: second-level text on navy. */
+  --mq-on-navy-accent: #8795b3; /** Owner ruling 2, 2026-10-09: the one-off accent on navy; replaces the retired sky blue. */
+  --mq-on-navy-rule: rgba(255, 255, 255, 0.16); /** Owner ruling 2, 2026-10-09: rules on navy (decorative). */
+  --mq-on-navy-rule-strong: rgba(255, 255, 255, 0.18); /** Owner ruling 2, 2026-10-09: stronger rules on navy (decorative). */
+  --mq-on-navy-pill: rgba(255, 255, 255, 0.12); /** Owner ruling 2, 2026-10-09: icon-pill fill on navy (decorative); the icon on it stays white. */
+  --mq-on-navy-discreet: rgba(255, 255, 255, 0.4); /** Owner ruling 2, 2026-10-09: discreet numbers on navy; 3.44:1, so large text or non-text only. */
+  --mq-success: #2e7d32; /** Apps only: success, always with an icon or a word (ADR-0004). */
+  --mq-warning: #a06400; /** Owner ruling 5, 2026-10-09: warning text, icons and borders; apps only (ADR-0004). */
+  --mq-danger: #d8232a; /** Apps only: errors and destructive actions, always with an icon or a word (ADR-0003, ADR-0004). */
+  --mq-info: #1565c0; /** Apps only: information, always with an icon or a word (ADR-0004). */
+  --mq-warning-fill: #d4850a; /** Owner ruling 5, 2026-10-09: warning badge and highlight fill, always with ink text; white on it is forbidden (2.93:1). */
+  --mq-warning-tint: #fbf3e7; /** Owner ruling 5, 2026-10-09: warning tint behind ink text; warning strong only for icons and borders on it. */
+  --mq-dim: #707070; /** Retired name of the old tertiary grey; resolves to tertiary (Owner ruling 1, 2026-10-09). */
+  --mq-accent-on-dark: #8795b3; /** Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent. */
+  --mq-focus-ring-color: #0a2463; /** Focus ring on light backgrounds: 2 px navy with an offset, 13.90:1 on canvas (research note 0001, section 7). */
+  --mq-focus-ring-color-on-navy: #ffffff; /** Focus ring on navy backgrounds, 14.53:1. */
+  --mq-focus-ring-width: 2px; /** Focus ring width (WCAG 2.4.7 and 1.4.11). */
+  --mq-focus-ring-offset: 2px; /** Gap between the focused element and its ring. */
+  --mq-radius-small: 3px; /** Owner ruling 3, 2026-10-09: tags, inputs and chips. */
+  --mq-radius-medium: 6px; /** Owner ruling 3, 2026-10-09: cards and panels. */
+  --mq-radius-overlay: 12px; /** Owner ruling 3, amended 2026-10-10: dialogs and modals, side drawers and command palettes in apps only; never in documents, slides, cards or website media. */
+  --mq-space-1: 4px; /** Spacing step 1, 4 px. */
+  --mq-space-2: 8px; /** Spacing step 2, 8 px. */
+  --mq-space-3: 12px; /** Spacing step 3, 12 px. */
+  --mq-space-4: 16px; /** Spacing step 4, 16 px. */
+  --mq-space-5: 24px; /** Spacing step 5, 24 px. */
+  --mq-space-6: 32px; /** Spacing step 6, 32 px. */
+  --mq-space-7: 48px; /** Spacing step 7, 48 px. */
+  --mq-space-8: 72px; /** Spacing step 8, 72 px. */
+  --mq-stroke-hairline: 1px; /** Hairline borders and rules (increment 07 component need). */
+  --mq-stroke-strong: 2px; /** Strong rule, as above a total row (increment 07 component need). */
+  --mq-stroke-tab: 3px; /** Navy accent tab beside a callout or takeaway (increment 07 component need). */
+  --mq-shadow-small: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /** Cards (increment 07 component need). */
+  --mq-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** A slide or page previewed on the desk, never in print (increment 07 component need). */
+  --mq-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy panels (increment 07 component need). */
+  --mq-slide-width: 1280px; /** Slide canvas width (increment 07 component need). */
+  --mq-slide-height: 720px; /** Slide canvas height (increment 07 component need). */
+  --mq-page-width: 1040px; /** Content width of a screen document (increment 07 component need). */
+  --mq-page-measure: 760px; /** Longest line of running text (increment 07 component need). */
+  --mq-a4-width: 793.7px; /** A4 sheet width (increment 07 component need). */
+  --mq-a4-height: 1122.52px; /** A4 sheet height (increment 07 component need). */
+  --mq-font-family-heading: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Headings, column titles and hero figures (Owner ruling 4, 2026-10-09, Owner ruling 10, 2026-10-09). */
+  --mq-font-family-body: Newsreader, Georgia, 'Times New Roman', serif; /** Body text of documents and slides, regulatory text in apps (Owner ruling 10, 2026-10-09). */
+  --mq-font-family-ui: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Labels and app UI (Owner ruling 10, 2026-10-09). */
+  --mq-font-family-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; /** Figures and codes (Owner ruling 10, 2026-10-09). */
+  --mq-font-weight-heading: 500; /** Owner ruling 4, 2026-10-09: every heading, column title and hero figure. */
+  --mq-font-weight-emphasis: 600; /** Owner ruling 4, 2026-10-09: a short highlighted word inside body text, as the Med of the logo. */
+  --mq-font-weight-body: 400; /** Body text. */
+  --mq-font-weight-light: 300; /** Owner ruling 6, 2026-10-09: only the Quantis half of the wordmark; never for headings or body text. */
+  --mq-font-size-hero-min: 34px; /** Hero title at the narrowest viewport. */
+  --mq-font-size-hero-max: 56px; /** Hero title at the widest viewport. */
+  --mq-font-size-h2: 32px; /** Section title. */
+  --mq-font-size-h3: 20px; /** Subsection title. */
+  --mq-font-size-lead: 18px; /** Lead paragraph. */
+  --mq-font-size-body: 16.5px; /** Body text on screen. */
+  --mq-font-size-small: 15px; /** Small body text. */
+  --mq-font-size-label: 13px; /** Labels. */
+  --mq-font-size-eyebrow: 11px; /** Eyebrow above a title; 11 px is the floor for any text. */
+  --mq-font-size-figure: 50px; /** Hero figure. */
+  --mq-font-size-kpi: 30px; /** KPI value. */
+  --mq-font-size-stat: 24px; /** Statistic value. */
+  --mq-font-size-table-header: 11px; /** Table header cell. */
+  --mq-font-size-table-cell: 13px; /** Table cell with figures. */
+  --mq-font-size-table-text: 14px; /** Table cell with prose. */
+  --mq-font-size-takeaway: 16px; /** Takeaway line under a figure. */
+  --mq-font-size-note: 12.5px; /** Notes and sources. */
+  --mq-font-size-axis: 11px; /** Chart axis labels. */
+  --mq-font-size-slide-title: 36px; /** Slide title on the 1280 by 720 canvas (increment 07 component need). */
+}

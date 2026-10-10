@@ -29,7 +29,7 @@ Existing consumers use short names (`--accent`, `--ink`, `--canvas-bg`). Nuxt UI
 
 ## Decision Outcome
 
-Chosen option: "`--mq-` prefix as canonical, generated mapping files", decided by the owner on 2026-10-09. The build emits `dist/kit-contract.css` (short kit names pointing at `var(--mq-*)`) and `dist/tailwind.css` (`--color-*` scales for Nuxt UI). Neither is hand-edited.
+Chosen option: "`--mq-` prefix as canonical, generated mapping files", decided by the owner on 2026-10-09. The build emits `dist/kit-contract.css` (short kit names carrying the literal values of their `--mq-*` source tokens, because the kit's release-note chart reads them as hex and falls back to its own blue on a `var()`) and `dist/tailwind.css` (`--color-*` scales for Nuxt UI). Neither is hand-edited.
 
 ### Consequences
 

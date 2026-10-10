@@ -1,0 +1,172 @@
+{
+  "core": {
+    "font": {
+      "family": {
+        "$type": "fontFamily",
+        "outfit": {
+          "$value": [
+            "Outfit",
+            "system-ui",
+            "-apple-system",
+            "Segoe UI",
+            "sans-serif"
+          ],
+          "$description": "Outfit, the sans for headings, labels and app UI (Owner ruling 10, 2026-10-09)."
+        },
+        "newsreader": {
+          "$value": [
+            "Newsreader",
+            "Georgia",
+            "Times New Roman",
+            "serif"
+          ],
+          "$description": "Newsreader, the only serif; Georgia and Times New Roman are fallbacks only (Owner ruling 10, 2026-10-09)."
+        },
+        "geist-mono": {
+          "$value": [
+            "Geist Mono",
+            "ui-monospace",
+            "SF Mono",
+            "Menlo",
+            "monospace"
+          ],
+          "$description": "Geist Mono for figures and codes (Owner ruling 10, 2026-10-09)."
+        }
+      },
+      "weight": {
+        "300": {
+          "$value": 300,
+          "$description": "Light weight (Owner ruling 6, 2026-10-09: the Quantis half of the wordmark)."
+        },
+        "400": {
+          "$value": 400,
+          "$description": "Regular weight for body text (Report design system, 2026-10-08)."
+        },
+        "500": {
+          "$value": 500,
+          "$description": "Owner ruling 4, 2026-10-09: medium weight for every heading, column title and hero figure."
+        },
+        "600": {
+          "$value": 600,
+          "$description": "Owner ruling 4, 2026-10-09: semibold only for a short highlighted word inside body text."
+        },
+        "$type": "fontWeight"
+      },
+      "size": {
+        "11": {
+          "$value": {
+            "value": 11,
+            "unit": "px"
+          },
+          "$description": "Font size 11 px (Report design system, 2026-10-08)."
+        },
+        "13": {
+          "$value": {
+            "value": 13,
+            "unit": "px"
+          },
+          "$description": "Font size 13 px (Report design system, 2026-10-08)."
+        },
+        "14": {
+          "$value": {
+            "value": 14,
+            "unit": "px"
+          },
+          "$description": "Font size 14 px (Report design system, 2026-10-08)."
+        },
+        "15": {
+          "$value": {
+            "value": 15,
+            "unit": "px"
+          },
+          "$description": "Font size 15 px (Report design system, 2026-10-08)."
+        },
+        "16": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$description": "Font size 16 px (Report design system, 2026-10-08)."
+        },
+        "18": {
+          "$value": {
+            "value": 18,
+            "unit": "px"
+          },
+          "$description": "Font size 18 px (Report design system, 2026-10-08)."
+        },
+        "20": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          },
+          "$description": "Font size 20 px (Report design system, 2026-10-08)."
+        },
+        "24": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          },
+          "$description": "Font size 24 px (Report design system, 2026-10-08)."
+        },
+        "30": {
+          "$value": {
+            "value": 30,
+            "unit": "px"
+          },
+          "$description": "Font size 30 px (Report design system, 2026-10-08)."
+        },
+        "32": {
+          "$value": {
+            "value": 32,
+            "unit": "px"
+          },
+          "$description": "Font size 32 px (Report design system, 2026-10-08)."
+        },
+        "34": {
+          "$value": {
+            "value": 34,
+            "unit": "px"
+          },
+          "$description": "Font size 34 px (Report design system, 2026-10-08)."
+        },
+        "36": {
+          "$value": {
+            "value": 36,
+            "unit": "px"
+          },
+          "$description": "Font size 36 px (increment 07 component need: the slide title, Report design system, 2026-10-08)."
+        },
+        "50": {
+          "$value": {
+            "value": 50,
+            "unit": "px"
+          },
+          "$description": "Font size 50 px (Report design system, 2026-10-08)."
+        },
+        "56": {
+          "$value": {
+            "value": 56,
+            "unit": "px"
+          },
+          "$description": "Font size 56 px (Report design system, 2026-10-08)."
+        },
+        "$type": "dimension",
+        "12-5": {
+          "$value": {
+            "value": 12.5,
+            "unit": "px"
+          },
+          "$description": "Font size 12.5 px (Report design system, 2026-10-08)."
+        },
+        "16-5": {
+          "$value": {
+            "value": 16.5,
+            "unit": "px"
+          },
+          "$description": "Font size 16.5 px (Report design system, 2026-10-08)."
+        }
+      }
+    }
+  }
+}

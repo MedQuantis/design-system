@@ -1,0 +1,7 @@
+/* A muted label on the warning fill: no contrast pair declares it. */
+@layer mq.components {
+  :where(.fixture-badge) {
+    background: var(--mq-warning-fill);
+    color: var(--mq-muted);
+  }
+}

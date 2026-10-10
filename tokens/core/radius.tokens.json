@@ -1,0 +1,28 @@
+{
+  "core": {
+    "radius": {
+      "3": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "Owner ruling 3, 2026-10-09: small items (tags, inputs, chips)."
+      },
+      "6": {
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        },
+        "$description": "Owner ruling 3, 2026-10-09: cards and panels; the maximum anywhere, no pill shapes."
+      },
+      "12": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$description": "Owner ruling 3, amended 2026-10-10: the one exception above 6 px, for app dialogs and modals, side drawers and command palettes only; never in documents, slides, cards or website media."
+      },
+      "$type": "dimension"
+    }
+  }
+}

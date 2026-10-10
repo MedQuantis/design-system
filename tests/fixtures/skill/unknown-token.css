@@ -1,0 +1,7 @@
+:root {
+  --mq-accent: #0a2463;
+}
+
+.lead {
+  color: var(--mq-accent-sky);
+}

@@ -1,0 +1,49 @@
+{
+  "core": {
+    "size": {
+      "$type": "dimension",
+      "1280": {
+        "$value": {
+          "value": 1280,
+          "unit": "px"
+        },
+        "$description": "Slide canvas width, 1280 px (increment 07 component need: the 1280 by 720 slide canvas)."
+      },
+      "720": {
+        "$value": {
+          "value": 720,
+          "unit": "px"
+        },
+        "$description": "Slide canvas height, 720 px (increment 07 component need: the 1280 by 720 slide canvas)."
+      },
+      "1040": {
+        "$value": {
+          "value": 1040,
+          "unit": "px"
+        },
+        "$description": "Content width of a screen document, 1040 px (increment 07 component need, Report design system, 2026-10-08)."
+      },
+      "760": {
+        "$value": {
+          "value": 760,
+          "unit": "px"
+        },
+        "$description": "Reading measure, 760 px (increment 07 component need, Report design system, 2026-10-08)."
+      },
+      "a4-width": {
+        "$value": {
+          "value": 793.7,
+          "unit": "px"
+        },
+        "$description": "A4 sheet width, 210 mm at 96 px per inch (increment 07 component need: the A4 print page)."
+      },
+      "a4-height": {
+        "$value": {
+          "value": 1122.52,
+          "unit": "px"
+        },
+        "$description": "A4 sheet height, 297 mm at 96 px per inch (increment 07 component need: the A4 print page)."
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+/*
+ * MedQuantis A4 print: one .mq-page per sheet (named page mq-a4), colours printed exactly,
+ * motion stopped. On screen the pages sit on the desk; the desk never reaches paper
+ * (owner ruling 9: every document page is the canvas colour).
+ */
+@layer mq.base, mq.components, mq.slide, mq.print, mq.app;
+
+@layer mq.print {
+  :where(.mq-desk) {
+    padding: var(--mq-space-6);
+    background-color: var(--mq-desk);
+  }
+
+  :where(.mq-page) {
+    box-sizing: border-box;
+    width: var(--mq-a4-width);
+    min-height: var(--mq-a4-height);
+    margin: 0 auto var(--mq-space-6);
+    padding: var(--mq-space-7) var(--mq-space-8);
+    background-color: var(--mq-canvas);
+    box-shadow: var(--mq-shadow-medium);
+    color: var(--mq-ink);
+    page: mq-a4;
+  }
+
+  @page mq-a4 {
+    size: A4;
+    margin: 0;
+  }
+
+  @media print {
+    :where(html, body) {
+      margin: 0;
+      padding: 0;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    :where(.mq-desk) {
+      padding: 0;
+      background-color: transparent;
+    }
+
+    :where(.mq-page) {
+      margin: 0;
+      box-shadow: none;
+      break-after: page;
+    }
+
+    :where(.mq-page *, .mq-slide *) {
+      animation: none;
+      transition: none;
+    }
+
+    :where(.mq-no-print) {
+      display: none;
+    }
+  }
+}

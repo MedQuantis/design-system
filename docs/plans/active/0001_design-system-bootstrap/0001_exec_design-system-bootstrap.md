@@ -14,9 +14,9 @@ review_interval: 30d
 
 ## Summary
 
-Implements [ADR-0002](../../architecture/decisions/adr-0002-central-tokens-first-design-system.md) (central tokens-first repo, pinned consumption), [ADR-0003](../../architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md) (navy everywhere), [ADR-0004](../../architecture/decisions/adr-0004-status-colours-in-apps-only.md) (status colours in apps only), [ADR-0005](../../architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md) (public behind a confidentiality gate) and [ADR-0006](../../architecture/decisions/adr-0006-mq-token-prefix.md) (`--mq-` prefix). No PRD; the ADRs are the source.
+Implements [ADR-0002](../../../architecture/decisions/adr-0002-central-tokens-first-design-system.md) (central tokens-first repo, pinned consumption), [ADR-0003](../../../architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md) (navy everywhere), [ADR-0004](../../../architecture/decisions/adr-0004-status-colours-in-apps-only.md) (status colours in apps only), [ADR-0005](../../../architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md) (public behind a confidentiality gate) and [ADR-0006](../../../architecture/decisions/adr-0006-mq-token-prefix.md) (`--mq-` prefix). No PRD; the ADRs are the source.
 
-The plan has two halves. Increments 01 to 11 build this repo; nothing is pushed to a public remote before increment 11's audit passes. Increments 12 to 17 migrate one consumer each, in that consumer's own repo, through its own branch and PR, following that repo's own rules (`AGENTS.md`, CI gates, doc-sync obligations).
+The plan has two halves. Increments 01 to 11 build this repo; nothing is pushed to a public remote before increment 11's audit passes. Consumer migrations were moved out on 2026-10-10 into one plan per consumer repo (see "Consumer migrations" below); this plan ends at increment 11, the public `v1.0.0`.
 
 Principles:
 
@@ -26,8 +26,8 @@ Principles:
 4. Every value is defined once, in `tokens/`; every other file references `var(--mq-*)` or a generated output.
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
-**Overall Status:** pending
-**Current Increment:** --
+**Overall Status:** in-progress
+**Current Increment:** 11
 
 ## Repository layout (approved 2026-10-09)
 
@@ -42,11 +42,12 @@ design-system/
 │   ├── ISSUE_TEMPLATE/  pull_request_template.md
 │   └── workflows/  ci.yml  release.yml  # release-please and npm publish in one workflow
 ├── tokens/                              # DTCG source, the only place a value is defined
-│   ├── primitive/  color, font, radius, space (*.tokens.json)
-│   └── semantic/   color, type, chart, focus (*.tokens.json)
+│   ├── core/       color, font, radius, space, stroke (*.tokens.json)
+│   ├── semantic/   color, type, chart, focus, layout (*.tokens.json)
+│   └── contrast-pairs.json              # allow-list of tested colour pairs
 ├── css/                                 # tokens only, one @layer mq.* per file or folder
 │   ├── base.css  slide.css  print.css  app.css
-│   └── components/                      # card, kpi, table, badge, panel, legend, ...
+│   └── components.css                   # one file: card, kpi, table, badge, panel, legend, ...
 ├── fonts/                               # Outfit, Newsreader, Geist Mono woff2, OFL.txt, fonts.css
 ├── icons/                               # pinned Lucide build and its licence
 ├── brand/                               # logos, monogram, LICENSE (all rights reserved)
@@ -56,7 +57,7 @@ design-system/
 ├── scripts/                             # confidentiality-check, build-specimen, copy-fonts, sync-skill-assets
 ├── tests/
 │   ├── unit/  fixtures/                 # node --test
-│   └── e2e/   __screenshots__/          # Playwright and axe on the specimen, PDF export
+│   └── e2e/   specimen.spec.mjs-snapshots/  # Playwright and axe on the specimen, PDF export
 ├── plugins/medquantis-design-system/
 │   ├── .claude-plugin/plugin.json
 │   └── skills/medquantis-design-system/
@@ -81,24 +82,27 @@ These values diverged between sources; increment 04 encodes them.
 
 1. ~~Tertiary grey~~ **Ruled 2026-10-09:** `#707070` for all text (4.74:1 on canvas); `#8c8c8c` (3.22:1) only for non-text decoration.
 2. ~~Accent on navy backgrounds~~ **Ruled 2026-10-09:** the 2026-10-08 report rule, no sky blue `#8fc0ff`. On navy: titles, figures and icons `#ffffff`; secondary text and labels white at 68 % opacity; second-level text `#c3cbdc`; one-off accent `#8795b3`; rules white at 16 to 18 %; icon-pill fill white at 12 %; discreet numbers white at 40 %. Each text pair is checked by the contrast test, and any that fails AA is restricted to large or non-text use.
-3. ~~Corner radius~~ **Ruled 2026-10-09:** 6 px maximum everywhere; two values, 3 px for small items (tags, inputs, chips) and 6 px for cards and panels; no pill shapes.
+3. ~~Corner radius~~ **Ruled 2026-10-09:** 6 px maximum everywhere; two values, 3 px for small items (tags, inputs, chips) and 6 px for cards and panels; no pill shapes. **Amended 2026-10-10:** one exception, 12 px (`--mq-radius-overlay`), only for dialogs and modals, side drawers and command palettes in apps; never in documents, slides, cards or website media. Buttons are small items and take 3 px (owner, 2026-10-10).
 4. ~~Heading weight~~ **Ruled 2026-10-09:** Outfit 500 for every heading, column title and hero figure; 600 only for a short highlighted word inside body text (as the bold "Med" of the logo).
 5. **Warning colour, ruled 2026-10-09 (apps only):** `#d4850a` is a fill-only token (badges, highlights) always carrying ink text (5.93:1); `#a06400` is the warning text, icon and border token (4.86:1 on white, 4.42:1 on the warning tint, so text on the tint stays ink). White on the warning fill is forbidden (2.93:1).
-6. **Wordmark, ruled 2026-10-09:** "Med" Outfit 600, "Quantis" Outfit 300 (the website treatment), navy on light backgrounds and white on navy, at every size.
+6. **Wordmark, ruled 2026-10-09:** "Med" Outfit 600, "Quantis" Outfit 300 (the website treatment), navy on light backgrounds and white on navy, at every size. Two files per background are kept (owner, 2026-10-10): live text for pages that load `fonts.css`, outlined for images, documents, email and print.
 7. **Monogram and favicon, ruled 2026-10-09:** the MQ monogram (white on navy `#0a2463`, M Outfit 700, Q Outfit 400, centred on cap height, corners 8/64) is the favicon and app icon. Draft assets in `brand/`, outlined from Outfit: `monogram.svg` (rounded), `monogram-square.svg` (for platforms that round icons themselves), `monogram-small.svg` (16 px variant, larger letters, M 800, Q 600), `favicon/` (`favicon.svg`, `favicon.ico` 16/32/48, `apple-touch-icon.png` 180, `icon-192.png`, `icon-512.png`, PNG metadata stripped). Increment 06 adds the outline script to `scripts/` so the assets are reproducible, and a test that the SVGs contain no `<text>` element.
-8. **Number format, ruled 2026-10-09:** thousands separator is the straight apostrophe (`2'460'000`), never the curly one, a space or a comma; decimal point (`12.5`); a space before `%` (`12.5 %`); currency before the amount (`CHF 2'460'000`) joined with a non-breaking space so it never wraps. Encoded in `guidelines/data-patterns.md`, the skill references and a guideline test.
+8. **Number format, ruled 2026-10-09:** thousands separator is the straight apostrophe (`2'460'000`), never the curly one, a space or a comma; decimal point (`12.5`); a space before `%` (`12.5 %`); currency before the amount (`CHF 2'460'000`) joined with a non-breaking space so it never wraps. **Amended 2026-10-10:** the space before `%` is also non-breaking (`12.5 %`), so a figure never splits from its unit. Encoded in `guidelines/data-patterns.md`, the skill references and a guideline test. <!-- mq:illustrative -->
 9. **Report background, ruled 2026-10-09:** every document page (A4 report, paper, slide) uses `#fafaf8`; white `#ffffff` is for cards and panels. `#e9e8e4` becomes the `desk` token, used only on screen around a page preview and never inside a document, so printed PDFs never carry a grey sheet. The 6 platform files on `#e9e8e4` move to `#fafaf8` when migrated.
 10. **Fonts, ruled 2026-10-09:** Newsreader is the only serif (body text of documents, slides and regulatory text in apps); Outfit for headings, labels and app UI; Geist Mono for figures and codes. In `kit-contract.css`, `--font-body` is Newsreader, `--font-heading` Outfit, `--font-mono` Geist Mono. Georgia and Times New Roman remain fallbacks only. A repo whose dense views need a sans body overrides it locally (ADR-0002 rule 3).
+11. **Slide legal line, ruled 2026-10-10:** the legal line appears on every slide, bottom left, small and in tertiary grey, with the slide number bottom right. Encoded as the `mq-slide-foot` row of `css/slide.css`, in `guidelines/brand.md` and `guidelines/layout.md`, the skill and the slide eval rubrics.
 
 ## Deferred out of v1 (tracked as GitHub issues)
 
 1. **Email output for HTML newsletters** (owner, 2026-10-09, [#1](https://github.com/MedQuantis/design-system/issues/1)). Needs literal resolved values with inlined styles (CSS variables are unreliable in mail clients), dark-mode-safe colours and logo variants (Gmail and Outlook invert), and a real-client test step. Until then the newsletter template is aligned by hand to the brand colours, citing the token release it copies. Source: research 0001 §6.
 
+2. **Combined logo (monogram and wordmark lockup)** (owner, 2026-10-10, [#2](https://github.com/MedQuantis/design-system/issues/2)). No surface uses one yet; design it, with an on-navy monogram variant, when a real surface asks for one.
+
 ## Increment Plan
 
 ### Increment 01: Repo skeleton and toolchain
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -124,7 +128,7 @@ Exit criteria:
 
 ### Increment 02: Confidentiality scanner
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -150,23 +154,26 @@ Exit criteria:
 
 ### Increment 03: CI workflow
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** a `tests/unit/workflows.test.mjs` asserting every `uses:` is pinned to a 40-character SHA and that the confidentiality job runs on `pull_request` and on `push` of tags.
-2. `.github/workflows/ci.yml`: checkout, setup-node (SHA-pinned), `make check`; deny-list fetched from the private MedQuantis deny-list repo with a fine-grained read-only token secret (`MQ_DENYLIST_TOKEN`), written to a temp path, never echoed.
+2. `.github/workflows/ci.yml`: checkout, `jdx/mise-action` (SHA-pinned) installing Node and every tool from `mise.toml`, so local and CI versions have one declaration (no `setup-node`), then `make check`; deny-list fetched from the private MedQuantis deny-list repo with a fine-grained read-only token secret (`MQ_DENYLIST_TOKEN`), written to a temp path, never echoed.
 3. `.github/workflows/ci.yml` runs actionlint and zizmor on `.github/**`.
+4. Local mirror (CI/local parity): a `workflow-lint` Makefile target running the same `actionlint` and `zizmor --min-severity high .github/` invocations as CI, wired into `make check`; `mise.toml` pins actionlint and zizmor exactly (both are already declared in the owner's dotfiles, so no dotfiles change).
+5. `.github/dependabot.yml` for the `npm` and `github-actions` ecosystems (weekly). Dependabot has no mise ecosystem (owner, 2026-10-09: one bot, no Renovate), so `README.md` states that `mise.toml` pins are bumped by hand in a PR whose gate must pass.
 
 Primary files:
 
-1. `.github/workflows/ci.yml`
+1. `.github/workflows/ci.yml`, `.github/dependabot.yml`, `Makefile`, `mise.toml`
 2. `tests/unit/workflows.test.mjs`
 
 Test gate:
 
 1. `make test` exits 0.
-2. `actionlint` and `uvx zizmor --min-severity high .github/` exit 0.
+2. `make workflow-lint` exits 0.
+3. `make check` exits 0.
 
 Exit criteria:
 
@@ -174,7 +181,7 @@ Exit criteria:
 
 ### Increment 04: Token source and CSS output
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -202,11 +209,11 @@ Prediction:
 
 ### Increment 05: Generated mappings for Tailwind and the kit
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
-1. **Write first, expect red:** tests asserting `dist/tailwind.css` contains a `@theme static` block with `--color-navy-50` to `--color-navy-950` where `-500`… resolves to the accent, plus success, warning, danger, info scales, and `--font-sans` mapped to Outfit; and that `dist/kit-contract.css` defines every custom property listed in the homemade-claude-kit generic contract (`tokens.template.css`, list vendored as `tests/fixtures/kit-contract-names.txt` with its kit version, including `--font-heading`, which the kit fallback lacks) with **literal values**, never `var()`: the release-note chart reads `--accent`, `--ink` and `--surface` as hex and silently falls back to the kit's blue otherwise. The kit `--warning` maps to `#a06400` because kit renderers put white text on it. Fonts are embedded as `@font-face` in the sheet, since kit renderers ignore `@import`.
+1. **Write first, expect red:** tests asserting `dist/tailwind.css` contains a `@theme static` block with `--color-navy-50` to `--color-navy-950` where `-500`… resolves to the accent, plus success, warning, danger, info scales, and `--font-sans` mapped to Outfit; and that `dist/kit-contract.css` defines every custom property listed in the homemade-claude-kit generic contract (`tokens.template.css`, list vendored as `tests/fixtures/kit-contract-names.txt` with its kit version, including `--font-heading`, which the kit fallback lacks) with **literal values**, never `var()`: the release-note chart reads `--accent`, `--ink` and `--surface` as hex and silently falls back to the kit's blue otherwise. The kit `--warning` maps to `#a06400` because kit renderers put white text on it. The `@font-face` rules are added in increment 06, once the font files exist.
 2. Style Dictionary formats for both outputs; the navy scale is derived deterministically in OKLCH (fixed hue, stepped lightness, documented algorithm, not hand-picked). Scales go in `@theme static`; any Tailwind value that points at a `--mq-*` variable goes in `@theme inline` so runtime overrides reach the utilities. No `--ui-*` or Nuxt-specific names (framework neutrality); the Nuxt UI `danger` to `error` mapping lives in the Paracel app.
 3. `dist/kit-contract.css` starts with a header comment stating it is for kit renderers only and must never be loaded in an app, because its unprefixed names collide with Tailwind and Nuxt UI.
 
@@ -229,7 +236,7 @@ Prediction:
 
 ### Increment 06: Assets (fonts, logos, icons)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -237,6 +244,7 @@ Scope:
 2. Fonts from fontsource packages (Outfit, Newsreader, Geist Mono), copied by a build script, with licences.
 3. Logo wordmark, monogram, logo on light and on navy in `brand/` (all rights reserved, its own `LICENSE`): redrawn clean SVGs (text outlined for print variants, live-text variants kept for screen).
 4. Lucide pinned build in `icons/` with its licence.
+5. `dist/kit-contract.css` embeds the `@font-face` rules for the three families (kit renderers ignore `@import`), with a test asserting they are present and reference no remote URL.
 
 Primary files:
 
@@ -254,7 +262,7 @@ Exit criteria:
 
 ### Increment 07: Component CSS (base, components, slide, print)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -262,7 +270,10 @@ Scope:
 2. `css/base.css` (typography roles), `css/components.css` (`mq-` card, navy panel, KPI tile variants, table, badges in line-style states, callout, progress and distribution bars, legend, takeaway, footer), rewritten from the report design system using tokens only.
 3. `css/slide.css` (1280×720 canvas, section label, slide title, slide number) and `css/print.css` (A4, `print-color-adjust: exact`).
 4. Status-colour badges live in an `css/app.css` layer only (ADR-0004), not in `components.css`.
-5. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
+5. Token gaps found in increment 04: shadows, gradients, motion and layout widths are not tokens yet; add any the components need to `tokens/` first (never a literal in `css/`). Text on a navy panel declares its background with a `/* mq-bg: --mq-x */` comment so the contrast test can check the pair.
+6. Radius cap (owner, 2026-10-10, option A of ruling 3): `dist/tailwind.css` sets every Tailwind radius step, `xs` and `sm` to the 3 px token and `md` to `4xl` to the 6 px token, so no class can exceed ruling 3; `rounded-full` stays for circles. The ruling 3 exception adds the 12 px `--mq-radius-overlay` token in `tokens/` and a purpose-named `--radius-overlay` step (class `rounded-overlay`), the only step allowed above 6 px. A test asserts every `--radius-*` step in `tailwind.css` resolves to 3 or 6 px, except `--radius-overlay` at 12 px. Pills are rejected by the stylelint config and named in the guidelines (increment 09).
+7. Kit italic (owner, 2026-10-10): `dist/kit-contract.css` also embeds the Newsreader latin italic file, so kit renderers stop synthesising italic; the kit-contract size budget in the test rises from 200 KB to 260 KB.
+8. The `mq-` component CSS serves build-less media (slides, reports, papers, website, Python-built HTML). Apps with a component library (Nuxt UI, shadcn/ui) take tokens and the Tailwind theme only; `README.md` states this.
 
 Primary files:
 
@@ -279,12 +290,13 @@ Exit criteria:
 
 ### Increment 08: Specimen page
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** a Playwright 1.64.0 test (system Chromium) loading the generated `dist/specimen/index.html`: every component class from `css/components.css` appears at least once; `@axe-core/playwright` 4.13.0 with tags `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa` reports no serious or critical violation; `toHaveScreenshot` baselines for the page and for a forced focus state; every request outside the file origin is routed to a failure; a PDF export with `tagged: true` and `outline: true` succeeds.
 2. `scripts/build-specimen.mjs` generates the specimen from `dist/tokens.json`, `css/` and `examples/` (swatches with contrast, type scale, radius, every component, a 1280×720 slide frame, an A4 print page, the app status layer), fictitious data only. It is never hand-edited. A docs site (Starlight or VitePress) is deferred until about ten shared components or usage guidance next to examples is needed.
+3. Kit shadow (owner, 2026-10-10): the kit contract's `--shadow` maps to `--mq-shadow-small` (an alias in `tokens/kit/contract.tokens.json` instead of the kit default), emitted as a literal value in `dist/kit-contract.css` like every kit name; the mapping test asserts it.
 
 Primary files:
 
@@ -301,12 +313,12 @@ Exit criteria:
 
 ### Increment 09: Guidelines
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** a test failing on any em or en dash in `guidelines/`, any hard-wrapped paragraph, and any hex value not present in `dist/tokens.json`.
-2. `guidelines/` (all rights reserved, its own `LICENSE`): `principles.md`, `brand.md` (name, tagline FR/DE/EN, legal footer, logo usage), `voice.md` (tone and FR/DE/IT/EN terminology), `colour.md` (incl. the medium split of ADR-0004 and the warning split), `typography.md`, `layout.md`, `charts.md` (ordered palette, at most seven hues, highlight-on-grey, sequential and diverging use), `data-patterns.md` (CHF and number formats, apostrophe thousands separator, dates, null versus zero, illustrative-data marking), `accessibility.md` (WCAG 2.2 AA target, colour never alone, focus ring, contrast pairs), `writing.md` (no em dash), `specialising.md` (framework neutrality, the four rules and the promotion tests of ADR-0002), and a component status table (trial or stable) in `README.md`.
+2. `guidelines/` (all rights reserved, its own `LICENSE`): `principles.md`, `brand.md` (name, tagline FR/DE/EN, legal footer, logo usage), `voice.md` (tone and FR/DE/IT/EN terminology), `colour.md` (incl. the medium split of ADR-0004 and the warning split), `typography.md`, `layout.md`, `charts.md` (ordered palette of four series plus the remainder fill, owner 2026-10-10; series 3 and 4 are below 3:1 on the page, so charts using them carry direct labels or an outline; highlight-on-grey, sequential and diverging use), `data-patterns.md` (CHF and number formats, apostrophe thousands separator, dates, null versus zero, illustrative-data marking), `accessibility.md` (WCAG 2.2 AA target, colour never alone, focus ring, contrast pairs), `writing.md` (no em dash), `specialising.md` (framework neutrality, the four rules and the promotion tests of ADR-0002), and a component status table (trial or stable) in `README.md`.
 3. Examples fictitious only; no consumer file paths.
 
 Primary files:
@@ -324,16 +336,19 @@ Exit criteria:
 
 ### Increment 10: Claude skill and plugin
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:** tests asserting the skill frontmatter has `name` (without the reserved words `claude` or `anthropic`), `description`, `version`; `SKILL.md` is under 500 lines and references are one level deep; every referenced file exists; the plugin and marketplace manifests parse and their versions equal `package.json`'s; the validator script fails on a fixture HTML using a colour outside the token set and passes on a clean one.
 2. `plugins/medquantis-design-system/skills/medquantis-design-system/SKILL.md` (when to use, medium split, how to load tokens and components into a page or deck), `references/` per medium (slides, a4-report, web, app, charts) generated from `guidelines/`, not duplicated, and `scripts/` with a token lookup and a validator that fails generated HTML or CSS containing any colour outside the token set.
 3. Evals: at least three tasks per medium, run on Haiku, Sonnet and Opus, recorded in the skill's `evals/`.
+3b. Eval runs held back by the owner (2026-10-10): tasks and runner are committed; runs on Haiku, Sonnet and Opus happen as a separate step after owner approval.
 4. `dist/llms.txt` and `dist/llms-full.txt` generated from `guidelines/` and the token list, served through the CDN.
 5. `scripts/sync-skill-assets.mjs` copies the built `tokens.css`, `kit-contract.css` and fonts into the skill's `assets/` (the plugin cache cannot reach `dist/`); a test fails when the committed copy differs from a fresh build.
 6. `plugins/medquantis-design-system/.claude-plugin/plugin.json` and the root `.claude-plugin/marketplace.json` so the repo is installable as a Claude Code marketplace; a zipped skill build for claude.ai upload via `make skill-zip`.
+
+7. Framework-name test (owner, 2026-10-10): the increment 04 neutrality test is narrowed to the generated CSS and JSON outputs (`tokens.css`, `tokens.json`, `tailwind.css`, `kit-contract.css`), which is where framework neutrality applies; `dist/llms.txt` may name frameworks as guidance, since the guidelines explain what stays local in a Nuxt UI or React app.
 
 Primary files:
 
@@ -351,7 +366,7 @@ Exit criteria:
 
 ### Increment 11: Release pipeline and pre-public audit
 
-**Status:** pending
+**Status:** in-progress
 
 Scope:
 
@@ -360,6 +375,11 @@ Scope:
 3. Pre-public audit: gitleaks over the full history and the confidentiality scan with the real deny-list, results recorded in `docs/audits/`.
 4. Owner steps (manual, listed not automated): the private GitHub repo `MedQuantis/design-system` exists since 2026-10-09; create the `@medquantis` npm organisation, add the deny-list secret, protect `main`, configure the npm trusted publisher, switch visibility to public only after the audit is green.
 5. `README.md` documents CDN use with an exact version and an SRI hash (`https://cdn.jsdelivr.net/npm/@medquantis/design-system@X.Y.Z/dist/tokens.css`), never a range or a `gh/` URL.
+
+6. Screenshot baselines on CI (owner, 2026-10-10): if the first GitHub run fails only on the specimen screenshots, regenerate the baselines once from the `playwright-test-results` artifact the CI job uploads on failure (step added in the increment 08 follow-up), commit them, and keep this machine's runs within the configured tolerance; never loosen the tolerance to make CI pass.
+
+7. Gaps found by the consumer migration plans (2026-10-10), fixed before `v1.0.0`, each with a failing test first: `exports` exposes `./brand/*` so consumers can import the logos and favicons; `engines.node` is `>=24` instead of `24.x`, so a consumer on a later major (Node 26) installs without an engines warning, and `devEngines` pins contributors to the exact `mise.toml` version (`24.18.0`) with `onFail: error` (owner 2026-10-10: consumers stay on a recent Node, not locked to one major); a light weight token for the wordmark's "Quantis" (Outfit 300, ruling 6); the exported stylelint config rejects a local custom property (`--app-*`, `--site-*`, `--viz-*`) whose value is a literal instead of a `var(--mq-*)`; the deprecation note of `--mq-accent-on-dark` names the replacement per use (`--mq-on-navy-title` for titles and rules, `--mq-on-navy-accent` for the one-off accent).
+8. release-please bumps `plugins/medquantis-design-system/.claude-plugin/plugin.json`, the root `.claude-plugin/marketplace.json` and the SKILL.md `metadata.version` together with `package.json`, so `tests/unit/skill.test.mjs` stays green on the release PR.
 
 Primary files:
 
@@ -374,135 +394,37 @@ Exit criteria:
 
 1. `v1.0.0` tagged and published with provenance; the exact-version CDN URL of `dist/tokens.css` resolves and matches its SRI hash.
 
-### Increment 12: Platform decks consume the design system (platform repo, own PR)
+## Consumer migrations (moved out, owner 2026-10-10)
 
-**Status:** pending
+The former increments 12 to 17 were six pilots, not a migration. Each consumer now has its own plan in its own private repository, because those plans name client material that must never reach this public repository. All three start after this plan's increment 11 publishes `v1.0.0`.
 
-Scope:
+| Consumer | Plan | Replaces former increments |
+| :-- | :-- | :-- |
+| Platform repo | Plan 0001 "design-system migration" in the platform repo | 12, 13 |
+| Paracel repo | Plan 0184 "design-system migration" in the Paracel repo | 15, 16, 17 |
+| Website repo | Plan 0001 "design-system migration" in the website repo | 14 |
 
-1. **Write first, expect red:** a test in the platform repo asserting a deck built by `build.py` inlines `vendor/medquantis-ds/` CSS before the deck's local CSS, and that the deck-local CSS contains no hex value (stylelint rule from ADR-0002).
-2. `design/package.json` pins `@medquantis/design-system` at an exact version so Dependabot (npm ecosystem, `directory: /design`) proposes bumps; `make design-sync` reads that version, extracts the npm tarball into `vendor/medquantis-ds/` and writes `VERSION`; CI checks the vendored copy matches the pinned version.
-3. `build.py` inline order: design system, then `design/deck.css` (deck-specific layouts only).
-4. Pilot: migrate the single most recent deck still in edition; finished decks stay frozen on their stitched output.
-5. Update the platform's `decks/CLAUDE.md` and the `slide-deck` skill to point at the design system.
-
-Test gate:
-
-1. Platform's own lint and deck build pass; the pilot deck's PDF is visually compared with the pre-migration PDF and the differences are listed in the PR.
-
-Exit criteria:
-
-1. New decks start from the design system, not from a copied `styles.css`.
-
-### Increment 13: Platform viewer, report templates and docs (platform repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a test asserting `viewer/src/styles.css` defines no colour or font value of its own.
-2. Viewer depends on `@medquantis/design-system` at an exact version; `:root` copy removed; status colours via the app layer.
-3. The redaction answer and report templates load the vendored design system.
-4. `docs/design-system.md`, `docs/design-system-rapport.md`, `docs/brand.md`, `docs/style-guide.md` reduced to pointers to the design-system guidelines.
-
-Test gate:
-
-1. `npm run build` in `viewer/` and the platform lint pass.
-
-Exit criteria:
-
-1. No design value is defined anywhere in the platform repo outside `vendor/medquantis-ds/` and `node_modules/`.
-
-### Increment 14: Website (website repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a check that `assets/styles.css` defines no colour or font value and loads no remote font.
-2. Website loads the tagged CDN `tokens.css` and `fonts.css` (or a vendored copy, owner's choice at PR time); its `:root` removed; on-navy colour follows the ruling.
-
-Test gate:
-
-1. The website check passes and screenshots of FR, DE and EN pages at desktop and mobile width are attached to the PR.
-
-Exit criteria:
-
-1. Zero requests to Google Fonts.
-
-### Increment 15: Paracel frontend switches to navy (Paracel repo, own PR)
-
-**Status:** pending
-
-**Prerequisite:** Paracel repo issue #997 fixed and merged in its own PR first. `frontend/app.config.ts` sits outside the Nuxt 4 `app/` source directory, so Nuxt UI ignores it today (neutrals render slate, status colours render Tailwind defaults, the brand colour only reaches Nuxt UI through CSS overrides). Moving it switches the neutrals to stone, a visible change that must not ship in the same PR as the navy switch. Also before the palette swap: move the about 15 places where the accent red means "bad" (chart series, negative deltas, the 404 icon) to the error token, or they turn navy.
-
-Scope:
-
-1. **Write first, expect red:** a vitest asserting `primary` resolves to the navy scale and that `#d8232a` appears only as the danger colour; existing Playwright static tests updated for the new accent where they assert colour.
-2. `frontend/app/assets/css/main.css` imports `@medquantis/design-system/tailwind.css`; the local red palette and duplicated tokens are removed; Paracel's six limitation-annotation hues stay local as `--app-*`; the app keeps Nuxt UI components and never loads the `mq-` component CSS or `kit-contract.css`.
-3. `app/app.config.ts`: `primary: 'navy'`, `error` mapped to the danger scale (Nuxt UI names it `error`); `--ui-radius` set from the 6 px token; warning badges use the fill with ink text and `#a06400` for text, icons and borders (ruling 5).
-4. Update `docs/developer/frontend-guide.md` (repo rule for theming changes).
-
-Test gate:
-
-1. `make fe-ci-local` exits 0.
-
-Exit criteria:
-
-1. Active tab, focus ring, logo and primary buttons render navy; errors and destructive actions stay red with an icon or label.
-
-### Increment 16: Paracel docs/ux tokens and design-system doc (Paracel repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** a check that `docs/ux/tokens.css` is byte-identical to the vendored `kit-contract.css` of the pinned release.
-2. `make design-sync` in the Paracel repo writes `docs/ux/tokens.css` from the release; `docs/ux/DESIGN_SYSTEM.md` and `design-system-final.html` reduced to pointers.
-
-Test gate:
-
-1. The check passes; the docs quality gate passes.
-
-Exit criteria:
-
-1. Kit skills (`com-slide-deck`, `com-artefact-viz`) render on-brand in the Paracel repo with no renderer change.
-
-### Increment 17: Paracel slides pilot (Paracel repo, own PR)
-
-**Status:** pending
-
-Scope:
-
-1. **Write first, expect red:** the rebuilt pilot deck's stitched HTML contains `--mq-accent` and no `#d8232a` outside danger usage.
-2. Rebuild the most recently edited Paracel deck on the design system; other decks migrate when next edited.
-
-Test gate:
-
-1. The deck builds and renders to PDF.
-
-Exit criteria:
-
-1. One Paracel deck proven on the design system; the migration recipe recorded in the deck folder's README.
+Corrections carried by those plans: the former increment 17 check ("the stitched deck contains `--mq-accent`") could never pass on a kit-built deck, since the kit contract carries kit names only; Paracel Plan 0184 replaces it with a check that can pass.
 
 ## Delivery Rules
 
-1. One increment per commit in this repo; increments 12 to 17 are one PR each in their consumer repo.
-2. **Commit scope:** no capability map exists; use the area scope of each increment: `repo` (01), `gate` (02, 03), `tokens` (04, 05), `assets` (06), `css` (07), `specimen` (08), `guidelines` (09), `skill` (10), `release` (11), `design-system` (12 to 17, in the consumer repo). Plan reference in a `Refs: Plan-0001 increment NN` trailer, never in the scope.
+1. One increment per commit in this repo; consumer migrations follow their own plans in their own repos.
+2. **Commit scope:** no capability map exists; use the area scope of each increment: `repo` (01), `gate` (02, 03), `tokens` (04, 05), `assets` (06), `css` (07), `specimen` (08), `guidelines` (09), `skill` (10), `release` (11). Plan reference in a `Refs: Plan-0001 increment NN` trailer, never in the scope.
 3. Tests named in Scope are written first and observed failing before the implementation lands; `progress.txt` records the red run (failing test names) and then the green run. An increment whose tests were written after its code is not done. No exemption is declared in this plan.
 4. Nothing is pushed to a public remote before increment 11's audit is green. Until then, a private remote at most.
 5. No content is copied from a consumer repo without being rewritten with fictitious data; `make confidentiality-check` runs before every commit.
 6. Every dependency and every GitHub Action is pinned exactly (actions by full SHA).
 7. Consumer increments follow the consumer repo's own rules and gates, and ask the owner before committing.
 8. Each increment must be independently runnable and reversible.
+9. The Ralph loop in this repo runs increments 01 to 11 only. An iteration agent never edits files outside this repository, except the dotfiles declaration of increment 02, which it records in `progress.txt` as a pending owner action instead of committing when the dotfiles source is not available.
+10. Run every test gate in the foreground and end each iteration with a definitive state (done or blocked), never waiting on a background process.
 
 ## Milestone Chunks (Standalone Delivery Groups)
 
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| M1: Confidentiality gate | 01-03 | pending | Repo exists with a blocking leak check, locally and in CI | `make check`, actionlint, zizmor | Every leak category detected; fails closed without a deny-list | `chore(repo)`, `feat(gate)`, `ci(gate)` |
-| M2: Tokens | 04-05 | pending | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
-| M3: Components and assets | 06-08 | pending | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
-| M4: Guidelines and Claude | 09-10 | pending | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
-| M5: Release | 11 | pending | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |
-| M6: Consumers | 12-17 | pending | Platform, website and Paracel consume a pinned release | Each consumer's own gate | No design value defined outside the vendored release | `refactor(design-system)` per consumer PR |
+| M1: Confidentiality gate | 01-03 | done | Repo exists with a blocking leak check, locally and in CI | `make check`, actionlint, zizmor | Every leak category detected; fails closed without a deny-list | `chore(repo)`, `feat(gate)`, `ci(gate)` |
+| M2: Tokens | 04-05 | done | One token source emitting CSS, Tailwind and kit outputs | `make build && make test` | Owner rulings encoded; contrast AA; kit names complete | `feat(tokens)` |
+| M3: Components and assets | 06-08 | done | Self-hosted assets, token-only components, specimen | `make check` + Playwright + axe | No remote requests; no hex outside tokens | `feat(assets)`, `feat(css)`, `feat(specimen)` |
+| M4: Guidelines and Claude | 09-10 | done | One brand guide and an installable Claude skill | `make test` | Every legacy rule carried or listed as dropped | `docs(guidelines)`, `feat(skill)` |
+| M5: Release | 11 | in-progress | `v1.0.0` public on npm and CDN | `make check`, full-history gitleaks | Audit green before visibility switch | `ci(release)` |

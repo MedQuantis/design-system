@@ -21,8 +21,8 @@ Plan 0001, increment 11, scope item 3. The repository stays private until every 
 | Secrets in the full history | gitleaks 8.30.1, `gitleaks detect --no-banner --redact --log-opts="--all"`, rules of `.gitleaks.toml` (gitleaks defaults) | 51 commits, every branch and ref, at commit `8343991` | No leaks found, exit 0 |
 | Confidentiality scan of the tree, fixture deny-list | `MQ_DENYLIST=tests/fixtures/denylist.txt make confidentiality-check` (gitleaks on the tree, then `scripts/confidentiality-check.mjs`) | 275 tracked and untracked files, 9 excluded by `scripts/confidentiality-exclude.txt`, at commit `8343991` | 0 findings, exit 0 |
 | Fail-closed check | `CI=true make confidentiality-check` without a deny-list | same tree | Exit 2, as designed |
-| Confidentiality scan of the tree, real deny-list | `MQ_DENYLIST=<local copy> node scripts/confidentiality-check.mjs`, list of 18 organisation terms | 276 files, 9 excluded, at commit `cf3c738` | 0 findings |
-| Real deny-list over the history | `git log --all -p \| grep -i -w -F -o -f <terms of the list>` | every branch and ref, at commit `cf3c738` | No match |
+| Confidentiality scan of the tree, real deny-list | `MQ_DENYLIST=<local copy> node scripts/confidentiality-check.mjs`, list of 64 terms | 276 files, 9 excluded, at commit `183a76e` | 0 findings |
+| Real deny-list over the history | `git log --all -p \| grep -i -w -F -o -f <terms of the list>` | every branch and ref, accents folded as the scanner does, at commit `183a76e` | No match |
 | First CI run with the real deny-list | `ci.yml`, deny-list fetched with `MQ_DENYLIST_TOKEN` | first push | **Pending** |
 
 ## The real deny-list

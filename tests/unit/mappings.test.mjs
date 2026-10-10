@@ -236,3 +236,30 @@ test("kit-only values come from the kit token tier and stay out of tokens.css an
   assert.doesNotMatch(readDist("tokens.css"), /--mq-kit-/);
   assert.doesNotMatch(readDist("tokens.json"), /--mq-kit-/);
 });
+
+// Kit renderers inline docs/ux/tokens.css into the HTML they write elsewhere and ignore
+// @import, so a relative url() would resolve against the output file: fonts travel as data.
+const KIT_FONTS = { Outfit: "fonts/outfit/outfit-latin-wght-normal.woff2", Newsreader: "fonts/newsreader/newsreader-latin-wght-normal.woff2", "Geist Mono": "fonts/geist-mono/geist-mono-latin-wght-normal.woff2" };
+const KIT_CONTRACT_BUDGET = 200 * 1024;
+
+test("dist/kit-contract.css embeds the @font-face rules for the three families as data", () => {
+  const css = readDist("kit-contract.css");
+  assert.doesNotMatch(css, /@import/, "kit renderers ignore @import");
+  const faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
+  for (const [family, file] of Object.entries(KIT_FONTS)) {
+    const face = faces.find((body) => new RegExp(`font-family:\\s*['"]?${family}['"]?;`).test(body));
+    assert.ok(face, `no @font-face for ${family}`);
+    assert.match(face, /font-display:\s*swap;/, `${family}: font-display must be swap`);
+    assert.match(face, /font-weight:\s*\d+ \d+;/, `${family}: the variable weight range is declared`);
+    const data = face.match(/url\(data:font\/woff2;base64,([A-Za-z0-9+/=]+)\)/)?.[1];
+    assert.ok(data, `${family}: src is not a woff2 data URI`);
+    assert.ok(Buffer.from(data, "base64").equals(readFileSync(join(root, file))), `${family}: embedded font is not ${file}`);
+  }
+});
+
+test("dist/kit-contract.css references no remote URL and stays within its size budget", () => {
+  const css = readDist("kit-contract.css");
+  for (const [, url] of css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) assert.ok(url.startsWith("data:"), `kit-contract.css: url(${url.slice(0, 40)}) is not embedded`);
+  assert.doesNotMatch(css, /https?:\/\/|fonts\.googleapis|fonts\.gstatic/);
+  assert.ok(Buffer.byteLength(css) <= KIT_CONTRACT_BUDGET, `kit-contract.css is ${Buffer.byteLength(css)} bytes, budget ${KIT_CONTRACT_BUDGET}`);
+});

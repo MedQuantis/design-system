@@ -19,7 +19,8 @@ const HEADER_LINES = 5;
 const BINARY_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".woff", ".woff2", ".ttf", ".otf", ".pdf"]);
 
 const NUMBER = String.raw`\d[\d'’ ,.]*`;
-const CURRENCY_AMOUNT = new RegExp(String.raw`\b(?:CHF|EUR|USD|Fr\.)\s*${NUMBER}|${NUMBER}\s*(?:CHF|EUR|USD|€)|€\s*\d`, "i");
+// A code after a number must end a word, so identifiers such as "X7,Euro" are not amounts.
+const CURRENCY_AMOUNT = new RegExp(String.raw`\b(?:CHF|EUR|USD|Fr\.)\s*${NUMBER}|${NUMBER}\s*(?:(?:CHF|EUR|USD)\b|€)|€\s*\d`, "i");
 const PERCENTAGE = /\d\s*%/;
 
 const INTERNAL_PATTERNS = [

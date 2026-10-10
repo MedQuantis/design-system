@@ -2,6 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadDenylist, scan, scanPath } from "../../scripts/confidentiality-check.mjs";
 
@@ -12,6 +14,15 @@ const script = join(root, "scripts/confidentiality-check.mjs");
 
 const findingsFor = (file) => scan({ root: fixtures, files: [file], denylist });
 const rulesFor = (file) => findingsFor(file).map((finding) => finding.rule);
+const scanText = (line) => {
+  const dir = mkdtempSync(join(tmpdir(), "mq-scan-"));
+  writeFileSync(join(dir, "note.md"), `${line}\n`);
+  try {
+    return scan({ root: dir, files: ["note.md"], denylist }).map((finding) => finding.rule).join(",");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+};
 
 test("deny-list term is found case- and accent-insensitively", () => {
   const findings = findingsFor("deny-term.md");
@@ -45,6 +56,12 @@ test("JPEG carrying EXIF (author) is reported", () => {
 test("clean fixtures pass, including marked figures in examples/", () => {
   const files = ["notes.md", "examples/marked.md", "clean.svg"];
   assert.deepEqual(scan({ root: join(fixtures, "clean"), files, denylist }), []);
+});
+
+test("a currency code inside a longer word is not an amount", () => {
+  assert.deepEqual(scan({ root: join(fixtures, "clean"), files: ["currency-words.md"], denylist }), []);
+  const amounts = ["Budget 12 EUR per seat.", "Budget EUR 12 per seat.", "Budget 2'000 CHF.", "Budget 40 €."]; // mq:illustrative
+  for (const line of amounts) assert.equal(scanText(line), "currency-amount", line);
 });
 
 test("deny-list term in a file path is reported", () => {

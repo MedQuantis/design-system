@@ -11,9 +11,11 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `dist/tokens.css` | Every consumer: `--mq-*` custom properties ([ADR-0006](docs/architecture/decisions/adr-0006-mq-token-prefix.md)) |
 | `dist/tokens.json` | Scripts and pipelines that need resolved values |
 | `dist/tailwind.css` | Tailwind 4 and Nuxt UI apps (`@theme` with 50 to 950 scales); imports `tokens.css` itself |
-| `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app |
+| `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app. Carries the latin fonts as embedded data, since the renderers inline this one file |
 | `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media |
-| `fonts/`, `icons/`, `brand/` | Self-hosted fonts, a pinned Lucide build, logos and monogram |
+| `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
+| `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
+| `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
 
 The design system ships framework-neutral outputs only (CSS, JSON, Tailwind theme, static assets). Wiring the tokens into a component library (Nuxt UI, shadcn/ui) belongs to the consumer.
@@ -34,9 +36,14 @@ The design system ships framework-neutral outputs only (CSS, JSON, Tailwind them
 ## Development
 
 ```sh
-mise install   # Node, gitleaks, actionlint, zizmor and shellcheck, pinned in mise.toml
-make check     # lint, workflow lint, build, tests and the confidentiality check
+mise install      # Node, gitleaks, actionlint, zizmor, shellcheck and uv, pinned in mise.toml
+make check        # lint, workflow lint, build, tests and the confidentiality check
+make assets       # refresh fonts/ and icons/ from their pinned npm packages
+make brand        # re-outline the monogram and wordmark SVGs from the pinned Outfit font
+make brand-check  # prove the committed brand SVGs reproduce byte for byte (Python, not in make check)
 ```
+
+`fonts/` and `icons/` are committed copies of exact-pinned packages because they ship in the npm package; a unit test fails when they drift, so a Dependabot bump of a font or of Lucide needs `make assets` in the same PR. The screen wordmarks use live text, which renders in Outfit only where the page loads `fonts.css` (inline SVG); in an `<img>` use the `-print` variant.
 
 `make build` installs the npm dependencies from `package-lock.json` (`npm ci --ignore-scripts`) when the lockfile changes, then regenerates `dist/` from `tokens/` with Style Dictionary. `make check` is the single local entry point and mirrors CI, which installs the same tools from `mise.toml` and runs the same target. Locally the deny-list scan warns when `MQ_DENYLIST` is unset; point it at a copy of the deny-list (or `tests/fixtures/denylist.txt` for a dry run) to run the full check.
 

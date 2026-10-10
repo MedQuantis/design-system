@@ -1,4 +1,4 @@
-.PHONY: check test build lint workflow-lint confidentiality-check
+.PHONY: check test build lint workflow-lint confidentiality-check assets brand brand-check
 
 # Single local entry point; CI runs the same target.
 check: lint workflow-lint build test confidentiality-check
@@ -30,3 +30,20 @@ workflow-lint:
 confidentiality-check:
 	gitleaks dir --no-banner --redact --config .gitleaks.toml .
 	node scripts/confidentiality-check.mjs
+
+# fonts/ and icons/ are committed copies of exact-pinned packages (they ship in the npm tarball
+# and the CDN); the unit tests fail when they drift from node_modules. Re-run after a bump.
+assets: node_modules/.package-lock.json
+	node scripts/copy-fonts.mjs
+	node scripts/copy-icons.mjs
+
+# Monogram, favicon SVG and wordmarks outlined from the pinned Outfit variable font. Python
+# (fontTools, uv inline-script pins) stays out of make check; brand-check proves the committed
+# SVGs still reproduce byte for byte. The favicon PNG and ICO files are not regenerated here.
+OUTFIT_VARIABLE := node_modules/@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2
+
+brand: node_modules/.package-lock.json
+	uv run --quiet scripts/outline-brand.py $(OUTFIT_VARIABLE) brand
+
+brand-check: node_modules/.package-lock.json
+	uv run --quiet scripts/outline-brand.py --check $(OUTFIT_VARIABLE) brand

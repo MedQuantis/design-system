@@ -314,6 +314,8 @@ test("no file under dist/ names a framework (ADR-0002 framework neutrality)", ()
   for (const file of readdirSync(dist, { recursive: true })) {
     const path = join(dist, file);
     if (!/\.(css|json|txt|html|js|mjs)$/.test(path)) continue;
-    assert.doesNotMatch(readFileSync(path, "utf8"), /vue|nuxt|--ui-|react|jsx/i, `dist/${file} names a framework`);
+    // Embedded font data is base64, where any three letters occur by chance.
+    const text = readFileSync(path, "utf8").replace(/url\(data:[^)]*\)/g, "url(data:)");
+    assert.doesNotMatch(text, /vue|nuxt|--ui-|react|jsx/i, `dist/${file} names a framework`);
   }
 });

@@ -27,7 +27,7 @@ Principles:
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
 **Overall Status:** in-progress
-**Current Increment:** 05
+**Current Increment:** 06
 
 ## Repository layout (approved 2026-10-09)
 
@@ -233,7 +233,7 @@ Prediction:
 
 ### Increment 06: Assets (fonts, logos, icons)
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

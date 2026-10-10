@@ -1,14 +1,21 @@
 {
   "name": "medquantis-design-system",
   "displayName": "MedQuantis design system",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Builds on-brand MedQuantis slides, A4 reports, web pages, app screens and charts from the design-system tokens and components, and validates the output against the token set.",
   "author": {
     "name": "MedQuantis SA",
     "url": "https://medquantis.ch"
   },
   "repository": "https://github.com/MedQuantis/design-system",
-  "keywords": ["design-system", "brand", "tokens", "slides", "reports", "charts"],
+  "keywords": [
+    "design-system",
+    "brand",
+    "tokens",
+    "slides",
+    "reports",
+    "charts"
+  ],
   "experimental": {
     "evals": "evals"
   }

@@ -264,6 +264,6 @@
 - Red run: "SKILL.md workflow survives a permission-restricted session and delivers one self-contained output.html" failed on the `cp -r` step it now forbids.
 - Green run: skill tests 26/26; `make build`, `make lint`, `make test` (unit 157/157, e2e 23/23), `MQ_DENYLIST=tests/fixtures/denylist.txt make check`, `make plugin-validate` all EXIT=0.
 - Learnings:
-  - Smoke eval 2 (a4-report-table, Sonnet, 1 run, no ablation, score 1.00, about USD 0.65): `cp -r <skill>/assets assets` was denied in the eval sandbox even with `Bash(cp *)` allowed; the model fell back to absolute links and bundle.py, and the self-contained and validation-clean graders passed on real evidence (validation.txt read PASS).
+  - Smoke eval 2 (a4-report-table, Sonnet, 1 run, no ablation, score 1.00, about three times the cost of the first smoke run): `cp -r <skill>/assets assets` was denied in the eval sandbox even with `Bash(cp *)` allowed; the model fell back to absolute links and bundle.py, and the self-contained and validation-clean graders passed on real evidence (validation.txt read PASS).
   - The bundled output.html is about 419,000 characters, almost all embedded fonts; the llm judge read it three times (cost about triple, one of three votes FAIL; the runner warns judges are noisy on long inputs). The judge stays on output.html because a two-arm run must judge the same file in both arms: the runner has no without-only arm and no fallback for a missing focus file.
 - Commit: see git log

@@ -20,7 +20,7 @@ Copy this checklist and work through it:
 
 ```
 - [ ] 1. Pick the medium and read its reference file
-- [ ] 2. Copy assets/ next to the page and link the tokens, fonts and components
+- [ ] 2. Link the tokens, fonts and components from this skill's assets/ by absolute path
 - [ ] 3. Build with mq- classes and var(--mq-*) values only
 - [ ] 4. Write figures, dates and copy by the rules below
 - [ ] 5. Bundle the page in place into one self-contained file
@@ -57,24 +57,18 @@ The medium split (ADR-0004): documents (slides, reports, papers, newsletters, th
 | `assets/css/app.css` | Status badges, apps only. Never in a document |
 | `assets/brand/` | `wordmark-on-light.svg` and `wordmark-on-navy.svg` (live text, inline them in a page that loads fonts.css), the `-print` variants (outlined, for `<img>`, PDF, email) and `monogram.svg` |
 
-Copy `assets/` next to the page with one command, then write the page with the Write tool and link the files:
-
-```bash
-cp -r ${CLAUDE_SKILL_DIR}/assets assets
-```
-
-If copying is not possible, link the files at `${CLAUDE_SKILL_DIR}/assets/...` by their absolute path instead; bundling (section 6) inlines them either way.
+Write the page with the Write tool and link the files by the absolute path of this skill's folder (the real path behind `${CLAUDE_SKILL_DIR}`, written out in full: an HTML file cannot expand the variable). Do not copy `assets/`: bundling (section 6) inlines every linked file, and restricted sessions deny copying out of the skill folder. In the example below, replace `SKILL` with that absolute path:
 
 ```html
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/tokens.css">
-<link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/print.css">
+<link rel="stylesheet" href="SKILL/assets/tokens.css">
+<link rel="stylesheet" href="SKILL/assets/fonts/fonts.css">
+<link rel="stylesheet" href="SKILL/assets/css/base.css">
+<link rel="stylesheet" href="SKILL/assets/css/components.css">
+<link rel="stylesheet" href="SKILL/assets/css/print.css">
 <style>
   /* Local layout only, under a local prefix, built from tokens. */
   .rep-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--mq-space-5); }

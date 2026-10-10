@@ -460,7 +460,8 @@ test("SKILL.md workflow survives a permission-restricted session and delivers on
   const text = skillText();
   assert.match(text, /python3 \$\{CLAUDE_SKILL_DIR\}\/scripts\/bundle\.py output\.html output\.html/);
   assert.match(text, /python3 \$\{CLAUDE_SKILL_DIR\}\/scripts\/validate\.py --record validation\.txt output\.html/);
-  assert.match(text, /cp -r \$\{CLAUDE_SKILL_DIR\}\/assets assets/);
+  assert.doesNotMatch(text, /\bcp -r\b/, "no copy step: restricted sessions deny reading the skill folder with cp, and bundling inlines linked assets anyway");
+  assert.match(text, /absolute path of this skill/i);
   assert.match(text, /one plain command per Bash call/i);
   assert.match(text, /never chain/i);
   for (const operator of ["`&&`", "`;`", "pipes", "heredocs"]) assert.ok(text.includes(operator), `SKILL.md must name ${operator} as forbidden in a Bash call`);

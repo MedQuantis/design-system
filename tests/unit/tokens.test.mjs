@@ -208,6 +208,20 @@ test("headings use Outfit 500 and 600 is kept for highlighted words (owner rulin
   assert.match(String(value("--mq-font-family-heading")), /^'?"?Outfit/);
 });
 
+test("the Quantis half of the wordmark has its own light weight token, Outfit 300 (owner ruling 6)", () => {
+  assert.equal(String(value("--mq-font-weight-light")), "300");
+  assert.match(readDist(distCss), /--mq-font-weight-light: 300;/);
+});
+
+test("the deprecation note of --mq-accent-on-dark names the replacement per use", () => {
+  const note = /--mq-on-navy-title for titles and rules.*--mq-on-navy-accent for the one-off accent/;
+  const built = builtTokens()["--mq-accent-on-dark"];
+  assert.ok(built, "--mq-accent-on-dark is not in dist/tokens.json");
+  assert.match(built.deprecated ?? "", note, "tokens.json deprecation note");
+  assert.match(readDist(distCss).split("\n").find((line) => line.includes("--mq-accent-on-dark:")) ?? "", note, "tokens.css comment");
+  assert.match(readDist(join(root, "dist/llms-full.txt")).split("\n").find((line) => line.includes("`--mq-accent-on-dark`")) ?? "", note, "llms-full.txt row");
+});
+
 test("focus ring is 2 px navy with an offset, white on navy", () => {
   assert.equal(value("--mq-focus-ring-width"), "2px");
   assert.equal(value("--mq-focus-ring-color"), "#0a2463");

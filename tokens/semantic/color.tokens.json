@@ -141,8 +141,8 @@
       },
       "accent-on-dark": {
         "$value": "{semantic.color.on-navy.accent}",
-        "$description": "Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09).",
-        "$deprecated": "Use --mq-on-navy-accent."
+        "$description": "Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent.",
+        "$deprecated": "Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent."
       }
     }
   }

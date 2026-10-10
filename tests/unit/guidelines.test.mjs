@@ -200,3 +200,9 @@ test("slides carry the legal line in mq-slide-foot, bottom left, with the slide 
   assert.match(legal, /bottom left/);
   assert.match(legal, /ruling 11/);
 });
+
+test("typography.md names the light weight token for the Quantis half of the wordmark (owner ruling 6)", () => {
+  const row = read("guidelines/typography.md").split("\n").find((line) => line.startsWith("| Outfit 300 |"));
+  assert.ok(row, "no Outfit 300 row in the weights table");
+  assert.match(row, /`--mq-font-weight-light`/);
+});

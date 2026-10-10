@@ -121,7 +121,7 @@
   --mq-warning-fill: #d4850a; /** Owner ruling 5, 2026-10-09: warning badge and highlight fill, always with ink text; white on it is forbidden (2.93:1). */
   --mq-warning-tint: #fbf3e7; /** Owner ruling 5, 2026-10-09: warning tint behind ink text; warning strong only for icons and borders on it. */
   --mq-dim: #707070; /** Retired name of the old tertiary grey; resolves to tertiary (Owner ruling 1, 2026-10-09). */
-  --mq-accent-on-dark: #8795b3; /** Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). */
+  --mq-accent-on-dark: #8795b3; /** Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent. */
   --mq-focus-ring-color: #0a2463; /** Focus ring on light backgrounds: 2 px navy with an offset, 13.90:1 on canvas (research note 0001, section 7). */
   --mq-focus-ring-color-on-navy: #ffffff; /** Focus ring on navy backgrounds, 14.53:1. */
   --mq-focus-ring-width: 2px; /** Focus ring width (WCAG 2.4.7 and 1.4.11). */
@@ -156,6 +156,7 @@
   --mq-font-weight-heading: 500; /** Owner ruling 4, 2026-10-09: every heading, column title and hero figure. */
   --mq-font-weight-emphasis: 600; /** Owner ruling 4, 2026-10-09: a short highlighted word inside body text, as the Med of the logo. */
   --mq-font-weight-body: 400; /** Body text. */
+  --mq-font-weight-light: 300; /** Owner ruling 6, 2026-10-09: only the Quantis half of the wordmark; never for headings or body text. */
   --mq-font-size-hero-min: 34px; /** Hero title at the narrowest viewport. */
   --mq-font-size-hero-max: 56px; /** Hero title at the widest viewport. */
   --mq-font-size-h2: 32px; /** Section title. */

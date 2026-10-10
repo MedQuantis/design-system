@@ -238,7 +238,7 @@ Source: guidelines/typography.md
 | Outfit 500 | `--mq-font-weight-heading` | Every heading, column title, hero figure, KPI value, label, button label and badge (owner ruling 4) |
 | Outfit 600 | `--mq-font-weight-emphasis` | Only a short highlighted word inside body text, as the "Med" of the wordmark. Bold inside Newsreader prose switches to Outfit 600 at about 0.94 em |
 | Outfit 400 | `--mq-font-weight-body` | App UI body text |
-| Outfit 300 | | Only the "Quantis" half of the wordmark |
+| Outfit 300 | `--mq-font-weight-light` | Only the "Quantis" half of the wordmark |
 | Newsreader 400 | `--mq-font-weight-body` | Reading text, with its italic for leads and notes |
 | Geist Mono 400 and 500 | | Table figures and codes 400, eyebrows 500 |
 

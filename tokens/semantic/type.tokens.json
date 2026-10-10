@@ -33,6 +33,10 @@
         "body": {
           "$value": "{core.font.weight.400}",
           "$description": "Body text."
+        },
+        "light": {
+          "$value": "{core.font.weight.300}",
+          "$description": "Owner ruling 6, 2026-10-09: only the Quantis half of the wordmark; never for headings or body text."
         }
       },
       "size": {

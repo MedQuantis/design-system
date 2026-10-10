@@ -119,6 +119,7 @@ function typeScale(tokens) {
     ["heading", "Outfit 500 for every heading, column title and hero figure"],
     ["emphasis", "600 only for a short highlighted word"],
     ["body", "400 for body text"],
+    ["light", "300 only for the Quantis half of the wordmark"],
   ]
     .map(([weight, text]) => `<div class="specimen-type-row"><code>--mq-font-weight-${weight}</code><span class="specimen-type-sample" style="font-family: var(--mq-font-family-heading); font-size: var(--mq-font-size-h3); font-weight: var(--mq-font-weight-${weight})">${text}</span></div>`)
     .join("\n");

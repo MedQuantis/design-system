@@ -105,6 +105,23 @@ test("stylelint rejects every radius that is not a radius token, so no pill can 
   assert.deepEqual(await lint(".a { padding: 13px; }"), ["declaration-property-value-allowed-list"]);
 });
 
+test("stylelint rejects a local custom property (--app-*, --site-*, --viz-*) set to a literal instead of var(--mq-*) (ADR-0002 rule 3)", async () => {
+  for (const declaration of ["--app-gap: 12px", "--site-measure: 760px", "--viz-line-width: 2", "--app-ink: #0a2463", "--site-title: Outfit", "--viz-mix: calc(var(--mq-space-4) + 3px)", "--app-gap: var(--mq-space-2, 8px)"]) {
+    const rules = await lint(`:root { ${declaration}; }`);
+    assert.ok(rules.includes("declaration-property-value-allowed-list"), `${declaration} passes`);
+  }
+  const clean = [
+    ":root {",
+    "  --app-gap: var(--mq-space-2);",
+    "  --site-pad: var(--mq-space-2) var(--mq-space-4);",
+    "  --viz-series: var(--mq-chart-series-1);",
+    "  --app-sidebar: calc(var(--mq-space-8) * 6);",
+    "  --app-gutter: var(--app-gap);",
+    "}",
+  ].join("\n");
+  assert.deepEqual(await lint(clean), []);
+});
+
 test("stylelint accepts token-only CSS", async () => {
   const clean = [
     "@layer mq.components {",

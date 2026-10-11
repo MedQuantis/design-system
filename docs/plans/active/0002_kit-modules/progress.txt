@@ -1,3 +1,7 @@
 # Plan-0002 progress log
 
 (no iterations yet)
+
+## Peer review alignment (2026-10-11)
+
+The kit Plan-0005 peer review found this plan ahead of the kit contract on several points. Aligned: prerequisites now name kit increments 05 to 09, 11 and 12 for increment 05, and the kit's release/2.0 branch; dataviz uses the kit role names (--chart-1..4, --chart-rest, --chart-axis, --chart-grid, --chart-highlight); brand sets --brand-logo-on-light, --brand-logo-on-dark, --brand-mark and --brand-legal; guidance is one export path (dist/kit/guidance/) and informational; fonts follow the kit rule (@font-face in any provided module); the manifest is checked with ajv, pinned as a devDependency; the kit's contrast pairs must pass with this design's values; class modules use the classes listed in modules.json.

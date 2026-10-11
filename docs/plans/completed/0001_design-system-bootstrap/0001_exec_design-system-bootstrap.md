@@ -68,7 +68,7 @@ design-system/
 │       └── evals/
 ├── docs/
 │   ├── architecture/decisions/  architecture/research/
-│   ├── plans/active/  audits/
+│   ├── plans/active/  plans/completed/  audits/
 │   └── one-offs.md
 ├── dist/                                # gitignored; tokens.css/json, tailwind.css, kit-contract.css, specimen/, llms.txt
 ├── README.md  LICENSE  CHANGELOG.md  CONTRIBUTING.md  GOVERNANCE.md  SECURITY.md

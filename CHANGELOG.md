@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/MedQuantis/design-system/compare/v1.0.0...v1.0.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **licence:** copyright banner on every shipped stylesheet and npm author ([#5](https://github.com/MedQuantis/design-system/issues/5)) ([07533ea](https://github.com/MedQuantis/design-system/commit/07533ea5baa5e3fe385364b3fdd55b48efd3b3ab))
+
 ## 1.0.0 (2026-10-10)
 
 

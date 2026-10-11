@@ -31,9 +31,10 @@ Principles:
 
 ## Prerequisites
 
-1. Kit Plan-0005 increment 02 done: `modules.json` and `kit-manifest.schema.json` exist at contract version 2.0.0. Blocks increment 01.
-2. Kit Plan-0005 increment 03 done: the resolver can resolve a local folder. Blocks the exit criterion of increment 04 only.
-3. Pull request #5 (copyright banner) merged, so `1.0.1` precedes `1.1.0`.
+1. Kit Plan-0005 increment 02 done on the kit's `main`: `modules.json` and `kit-manifest.schema.json` exist at contract version 2.0.0, with the class vocabularies, brand roles and contrast pairs. Blocks increments 01 and 02.
+2. Kit Plan-0005 increment 03 done on the kit's `release/2.0` branch: the resolver can resolve a local folder. Blocks the exit criterion of increment 04 only.
+3. Kit Plan-0005 increments 05 to 09 and 11 done on `release/2.0` (increment 12, the 2.0.0 release, if the gate runs from the marketplace instead of a kit checkout). Blocks increment 05.
+4. Done: pull request #5 (copyright banner) merged and `1.0.1` released, so `1.0.1` precedes `1.1.0`.
 
 ## Increment Plan
 
@@ -43,10 +44,10 @@ Principles:
 
 Scope:
 
-1. **Write first, expect red:** `tests/unit/kit-modules.test.mjs`: for each of `core`, `dataviz`, `type`, `space-shape`, `brand` and `guidance`, `dist/kit/<module>.css` defines every role the vendored `modules.json` lists for it and nothing outside it; every value equals the value of the `--mq-*` token it maps to in `dist/tokens.json`; `dist/kit-manifest.json` validates against the vendored schema, declares `contractVersion` 2.0.0, provides those six modules under export paths that resolve in the packed tarball, and lists `document`, `slide-frame` and `print` under `omitted` until increment 02; `core` and `dataviz` values equal today's `dist/kit-contract.css` where both define a role; the `package.json` `exports` gain `./kit/*` and `./kit-manifest.json`; `npm pack --dry-run` includes them.
-2. A Style Dictionary format per module, in `build/formats/kit-modules.mjs`, fed by a mapping table from contract role to `--mq-*` token (`build/kit-roles.mjs`), so a role maps to exactly one token. `dataviz` takes the four ordered series, the remainder fill, the axis and baseline colours and the highlight of `guidelines/charts.md`. `core` keeps the embedded latin font faces `kit-contract.css` carries today.
-3. `brand` carries the logo export names (`./brand/wordmark-on-light.svg`, `./brand/wordmark-on-navy.svg`, `./brand/monogram.svg`) and the legal line of `guidelines/brand.md` as a CSS string role, generated from one source shared with the guideline.
-4. `guidance` is a short Markdown file per module generated from the guidelines (do and don't lines), referenced from the manifest.
+1. **Write first, expect red:** `tests/unit/kit-modules.test.mjs`: for each of `core`, `dataviz`, `type`, `space-shape`, `brand` and `guidance`, `dist/kit/<module>.css` defines every role the vendored `modules.json` lists for it and nothing outside it; every value equals the value of the `--mq-*` token it maps to in `dist/tokens.json`; `dist/kit-manifest.json` validates against the vendored schema, declares `contractVersion` 2.0.0, provides those six modules under export paths that resolve in the packed tarball, and lists `document`, `slide-frame` and `print` under `omitted` until increment 02; the manifest is checked by `ajv` (pinned exactly as a devDependency) against the vendored schema; every text pair the vendored `modules.json` lists under `pairs` reaches 4.5:1 with this design's values, so the kit's resolve-time contrast check accepts the package; `core` and `dataviz` values equal today's `dist/kit-contract.css` where both define a role; the `package.json` `exports` gain `./kit/*` and `./kit-manifest.json`; `npm pack --dry-run` includes them.
+2. A Style Dictionary format per module, in `build/formats/kit-modules.mjs`, fed by a mapping table from contract role to `--mq-*` token (`build/kit-roles.mjs`), so a role maps to exactly one token. `dataviz` maps the four ordered series, the remainder fill, the axis and baseline colour, the grid and the highlight of `guidelines/charts.md` to the kit roles `--chart-1` to `--chart-4`, `--chart-rest`, `--chart-axis`, `--chart-grid` and `--chart-highlight`. `type` and `space-shape` add roles and never redefine a `core` role. `core` keeps the embedded latin font faces `kit-contract.css` carries today; under the kit contract, fonts are the `@font-face` rules of any provided module.
+3. `brand` sets the kit roles `--brand-logo-on-light`, `--brand-logo-on-dark` and `--brand-mark` to the logo export names (`./brand/wordmark-on-light.svg`, `./brand/wordmark-on-navy.svg`, `./brand/monogram.svg`) as CSS strings, and `--brand-legal` to the legal line of `guidelines/brand.md`, generated from one source shared with the guideline.
+4. `guidance` is a folder `dist/kit/guidance/` with a short Markdown file per module generated from the guidelines (do and don't lines); the manifest maps `guidance` to that one export path. The kit treats it as informational (kit Plan-0005 Q-6).
 
 Primary files:
 
@@ -67,7 +68,7 @@ Exit criteria:
 
 Scope:
 
-1. **Write first, expect red:** the three module files define the class vocabulary and roles the vendored contract lists for them (the kit's document components, the slide frame with section label, footer row, legal line and slide number, the A4 print page); they reference only roles of `core`, `type`, `space-shape` and `dataviz`, never a literal and never an `--mq-*` name; the manifest moves them from `omitted` to `provides`; a fixture page rendered with each module matches a committed screenshot baseline (`tests/e2e/`), within the configured tolerance.
+1. **Write first, expect red:** the three module files define the classes the vendored `modules.json` lists under `classes` for each of them (the kit's document components, the slide frame with section label, footer row, legal line and slide number, the A4 print page); they reference only roles of `core`, `type`, `space-shape` and `dataviz`, never a literal and never an `--mq-*` name; the manifest moves them from `omitted` to `provides`; a fixture page rendered with each module matches a committed screenshot baseline (`tests/e2e/`), within the configured tolerance.
 2. Generated from `css/components.css`, `css/slide.css` and `css/print.css` by renaming their `--mq-*` references to contract roles through `build/kit-roles.mjs`; a component the contract does not list stays out, and the test names it.
 
 Primary files:
@@ -149,7 +150,7 @@ Primary files:
 Test gate:
 
 1. `make check`
-2. From a kit checkout: `ux-design-system point @medquantis/design-system@1.1.0` in a scratch project, then a deck, a view and a release note render with exit 0.
+2. From a kit checkout of `release/2.0` (or the 2.0.0 marketplace release): `ux-design-system point @medquantis/design-system@1.1.0` in a scratch project, then a deck, a view and a release note render with exit 0.
 
 Exit criteria:
 

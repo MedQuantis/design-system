@@ -3,6 +3,7 @@
 // read some of them as hex (the release-note chart) and fall back to their own defaults on var().
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { LICENCE_BANNER } from "../licence-banner.mjs";
 
 const isKit = (token) => token.path[0] === "kit";
 
@@ -28,6 +29,7 @@ export const embeddedFontFaces = () =>
 export const kitContractFormat = ({ dictionary }) => {
   const lines = dictionary.allTokens.filter(isKit).map((token) => `  --${token.path.at(-1)}: ${token.$value};`);
   return [
+    LICENCE_BANNER,
     "/*",
     " * MedQuantis values for the homemade-claude-kit token contract (delivery-comms 1.3.0),",
     " * generated from tokens/ by the design-system build. Do not edit.",

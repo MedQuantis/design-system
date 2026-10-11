@@ -2,6 +2,7 @@
 // dist/tailwind.css and dist/kit-contract.css.
 import StyleDictionary from "style-dictionary";
 import { kitContractFormat } from "./formats/kit-contract.mjs";
+import { LICENCE_BANNER } from "./licence-banner.mjs";
 import { tailwindFormat } from "./formats/tailwind.mjs";
 
 // Names drop the "semantic" tier and the grouping segments that only organise the source, so
@@ -46,6 +47,9 @@ const shadowColour = {
     }),
 };
 
+// The built-in css/variables output behind the licence banner.
+const cssVariables = async (args) => `${LICENCE_BANNER}\n${await StyleDictionary.hooks.formats["css/variables"](args)}`;
+
 // The kit tier only feeds kit-contract.css; it never becomes an --mq- token.
 const notKit = (token) => token.path[0] !== "kit";
 
@@ -61,7 +65,7 @@ export default {
   log: { verbosity: "default", warnings: "error" },
   hooks: {
     transforms: { "name/mq": nameMq, "shadow/mq-colour": shadowColour },
-    formats: { "mq/json": jsonMq, "mq/tailwind": tailwindFormat, "mq/kit-contract": kitContractFormat },
+    formats: { "mq/css-variables": cssVariables, "mq/json": jsonMq, "mq/tailwind": tailwindFormat, "mq/kit-contract": kitContractFormat },
   },
   platforms: {
     css: {
@@ -71,7 +75,7 @@ export default {
       files: [
         {
           destination: "tokens.css",
-          format: "css/variables",
+          format: "mq/css-variables",
           filter: notKit,
           options: { outputReferences: false, selector: ":root" },
         },

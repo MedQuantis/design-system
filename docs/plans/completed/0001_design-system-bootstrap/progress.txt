@@ -321,3 +321,17 @@
   - GitHub started no CI run when the draft PR was first opened; closing and reopening it did.
   - On WSL, `npm login` cannot open a browser (BROWSER is ignored in favour of sensible-browser); `npm login --browser=false` prints the link and waits. Publishing needs 2FA on the npm account.
 - Commit: see git log
+
+## Iteration 11c (closing, orchestrator)
+- Increment: 11 - release of v1.0.0 and exit criterion
+- Status: done (plan 0001 done)
+- Release: release PR #4 squash-merged (55d4a51); release.yml run 38070053916 tagged v1.0.0, created the GitHub release, passed the check job on the tag with the real deny-list, and published @medquantis/design-system@1.0.0 through the trusted publisher on the re-run of the publish job. npm shows latest = 1.0.0, published by GitHub Actions, SLSA provenance attached (transparency log index 3206501037).
+- Exit criterion: https://cdn.jsdelivr.net/npm/@medquantis/design-system@1.0.0/dist/tokens.css is byte-identical to the file in the tarball, sha384-pKXyLe1ZY0mn7K7fRg3j199B976dT9D/tpZi5hcXY0EUpFUX9xskWsG7+fjf3Ezq.
+- Placeholders 0.0.0-bootstrap.0 and 0.0.0-stage deprecated by the owner; the bootstrap dist-tag removed.
+- Follow-up in the same pull request: every shipped stylesheet opens with a /*! copyright and MIT banner, package.json names MedQuantis SA as author, release-as removed. Red run: "package names MedQuantis SA as its author" and "every shipped stylesheet starts with the copyright banner" failed. Green run: `MQ_DENYLIST=<real list> make check` EXIT=0 (unit 179/179, e2e 25/25, no leaks, 278 files scanned, 0 findings).
+- Learnings:
+  - The first publish failed with "403 OIDC permission denied for this action" after the provenance statement was signed: the trusted publisher existed but "Allow npm publish" was not ticked. Re-running only the failed job reused the checked tarball.
+  - npm answers "Your package is being processed" and the version appears about two minutes later; npm view returns 404 meanwhile.
+  - An expired npm login session makes deprecate fail with 404 Not Found, not 401; `npm whoami` tells them apart.
+- Commit: see git log
+- Timestamp: 2026-10-11T14:00:00+02:00

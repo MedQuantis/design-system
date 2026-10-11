@@ -6,7 +6,7 @@ tags: [design-system, tokens, brand]
 timestamp: 2026-10-09T19:06:23+02:00
 status: draft
 owner: Victor Hueni
-last_reviewed: 2026-10-09
+last_reviewed: 2026-10-11
 review_interval: 30d
 ---
 
@@ -26,7 +26,7 @@ Principles:
 4. Every value is defined once, in `tokens/`; every other file references `var(--mq-*)` or a generated output.
 5. Content is rewritten, never bulk-copied, from consumer repos; all examples use fictitious data.
 
-**Overall Status:** in-progress
+**Overall Status:** done
 **Current Increment:** 11
 
 ## Repository layout (approved 2026-10-09)
@@ -366,7 +366,7 @@ Exit criteria:
 
 ### Increment 11: Release pipeline and pre-public audit
 
-**Status:** in-progress
+**Status:** done
 
 Scope:
 

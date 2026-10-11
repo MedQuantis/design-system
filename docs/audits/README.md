@@ -14,12 +14,12 @@ The tag is pushed with the workflow token, which starts no other workflow; that 
 
 ## First release: steps for the owner
 
-These cannot be automated from the repository and are not done yet.
+These cannot be automated from the repository. All were done by 2026-10-11, when `v1.0.0` was published; they are kept as the record of how the trusted publisher was set up.
 
 1. **npm organisation.** Create the `@medquantis` organisation on npmjs.com.
 2. **Trusted publisher bootstrap.** npm lets a trusted publisher be configured only on a package that already exists. If that is still the case when you do this, publish a placeholder once by hand before merging the first release PR, so the real `1.0.0` comes from the workflow with provenance:
    - from an empty folder holding only a `package.json` (`"name": "@medquantis/design-system"`, `"version": "0.0.0-bootstrap.0"`) and a one-line README, run `npm publish --access public --tag bootstrap`;
-   - on npmjs.com, package settings, add a trusted publisher: GitHub Actions, organisation `MedQuantis`, repository `design-system`, workflow `release.yml`, no environment;
+   - on npmjs.com, package settings, add a trusted publisher: GitHub Actions, organisation `MedQuantis`, repository `design-system`, workflow `release.yml`, no environment, and tick "Allow npm publish" (without it the publish job fails with `403 OIDC permission denied for this action`);
    - set publishing access to require two-factor authentication and disallow tokens;
    - after `1.0.0` is out, run `npm deprecate @medquantis/design-system@0.0.0-bootstrap.0 "Placeholder for the trusted publisher set-up; use 1.0.0 or later"`.
 

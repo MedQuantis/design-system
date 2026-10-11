@@ -36,3 +36,21 @@ test("root LICENSE excludes brand/ and guidelines/", () => {
   assert.match(licence, /guidelines\//);
   assert.match(licence, /all rights reserved/i);
 });
+
+test("package names MedQuantis SA as its author", () => {
+  assert.equal(readPackage().author, "MedQuantis SA (https://medquantis.ch)");
+});
+
+// A CSS file fetched alone from a CDN must still carry the MIT notice; /*! survives minifiers.
+const BANNER = "/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */\n";
+
+test("every shipped stylesheet starts with the copyright banner", () => {
+  const sheets = [
+    ...["tokens", "tailwind", "kit-contract"].map((name) => `dist/${name}.css`),
+    ...["app", "base", "components", "print", "slide"].map((name) => `css/${name}.css`),
+    "fonts/fonts.css",
+  ];
+  for (const sheet of sheets) {
+    assert.ok(readFileSync(join(root, sheet), "utf8").startsWith(BANNER), `${sheet} lacks the banner`);
+  }
+});

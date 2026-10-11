@@ -3,6 +3,7 @@
 // variables). Everything that points at an --mq- token goes in `@theme inline`, so the
 // utilities carry var(--mq-*) and a runtime override of the token reaches them.
 import { deriveScale } from "../scales.mjs";
+import { LICENCE_BANNER } from "../licence-banner.mjs";
 
 const SCALES = [
   ["navy", "accent"],
@@ -52,6 +53,7 @@ export const tailwindFormat = ({ dictionary }) => {
     .map((token) => `  --color-${token.name.replace(/^mq-/, "")}: var(--${token.name});`);
 
   return [
+    LICENCE_BANNER,
     "/*",
     " * MedQuantis Tailwind 4 theme, generated from tokens/ by the design-system build. Do not edit.",
     " * Import it after Tailwind: @import \"tailwindcss\"; then this file. It loads tokens.css itself.",

@@ -158,7 +158,7 @@ test("the vendored kit name list names its kit plugin and version and includes -
 
 test("dist/kit-contract.css starts with a kit-renderers-only header", () => {
   const css = readDist("kit-contract.css");
-  const header = css.match(/^\/\*([\s\S]*?)\*\//)?.[1] ?? "";
+  const header = css.match(/^(?:\/\*![^\n]*\n)?\/\*([\s\S]*?)\*\//)?.[1] ?? "";
   assert.match(header, /kit renderers only/i);
   assert.match(header, /never.*load(ed)? in an app/i);
 });

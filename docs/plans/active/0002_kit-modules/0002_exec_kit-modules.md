@@ -33,7 +33,7 @@ Principles:
 
 1. Kit Plan-0005 increment 02 done on the kit's `main`: `modules.json` and `kit-manifest.schema.json` exist at contract version 2.0.0, with the class vocabularies, brand roles and contrast pairs. Blocks increments 01 and 02.
 2. Kit Plan-0005 increment 03 done on the kit's `release/2.0` branch: the resolver can resolve a local folder. Blocks the exit criterion of increment 04 only.
-3. Kit Plan-0005 increments 05 to 09 and 11 done on `release/2.0` (increment 12, the 2.0.0 release, if the gate runs from the marketplace instead of a kit checkout). Blocks increment 05.
+3. Kit Plan-0005 increments 05 to 09 and 11 done on `release/2.0` (increment 13, the 2.0.0 release, if the gate runs from the marketplace instead of a kit checkout). Blocks increment 05.
 4. Done: pull request #5 (copyright banner) merged and `1.0.1` released, so `1.0.1` precedes `1.1.0`.
 
 ## Increment Plan

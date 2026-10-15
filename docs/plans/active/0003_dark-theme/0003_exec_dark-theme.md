@@ -27,19 +27,15 @@ Source: ADR-0007 (#17); the design-pass decision log (gitignored, `var/design-pa
 | `--mq-on-warning-fill` | `--mq-ink` (5.93:1 on the fill) | `#11161f` (6.18:1) | Warm white on the amber fill is 2.67:1 (ADR-0007) |
 | `--mq-accent-highlight` | `--mq-accent` | `#9fb3e8` (8.71:1 on canvas) | Large highlighted title text; on light it is the accent itself |
 
-**Kit role mapping** (the `dark` module of kit Plan-0006 D-2, as merged; kit Plan-0006 is being reworked, and Inc 04 follows the role list of the kit 2.1.0 that merges):
+**Kit role mapping** (the `dark` module of kit Plan-0006 as reworked in kit #153: `--dark-<role>` mirrors every colour role of `core`, `dataviz`, `slide-frame`, `document` and `print`; Inc 04 follows the role list of the kit 2.1.0 that merges):
 
-| Kit role | MedQuantis dark value |
+| Kit roles | MedQuantis dark value |
 | :-- | :-- |
-| `--dark-canvas-bg`, `--dark-surface`, `--dark-surface-2` | canvas, surface, surface-alt |
-| `--dark-border` | border |
-| `--dark-ink`, `--dark-muted`, `--dark-tertiary` | ink, muted, tertiary |
-| `--dark-accent` | accent `#6f88c9` |
-| `--dark-accent-text` | accent-highlight `#9fb3e8` |
-| `--dark-accent-fill`, `--dark-accent-ink` | accent `#6f88c9`, on-accent `#11161f` (5.22:1; white is 3.48:1 and is out, owner decision of 2026-10-15) |
+| `--dark-<role>` for each mirrored role | the dark value of the semantic token that `tokens/kit/` already maps to `<role>` (for example `--dark-ink` is the dark `--mq-ink`, `--dark-chart-1` the dark `--mq-chart-series-1`); `--dark-accent-ink` is on-accent `#11161f` (5.22:1; white is 3.48:1 and is out, owner decision of 2026-10-15) |
 | `--dark-key-fill` | `linear-gradient(160deg, {panel-start} 0%, {panel-end} 100%)` in the dark theme |
-| `--dark-glow` | the dark `--mq-shadow-panel`: a 1 px light-navy outline, no glow (owner, 2026-10-15) |
-| dark chart roles, if the 2.1.0 contract carries them | the dark chart series of ADR-0007 |
+| `--dark-key-base` | panel-start `#2f4c8f`, the fill's lightest point (ink 7.48:1 on it) |
+| `--dark-key-edge` | the dark `--mq-shadow-panel`: a 1 px light-navy outline, no glow (owner, 2026-10-15) |
+| `--dark-accent-text` | accent-highlight `#9fb3e8` (8.71:1 on canvas, 7.73:1 on surface) |
 
 Principles:
 
@@ -57,7 +53,7 @@ Principles:
 ## Prerequisites
 
 1. ADR-0007 merged (#17). Blocks Inc 01.
-2. Kit delivery-comms 2.1.0 (Plan-0006, reworked) merged to the kit's `main`, with: the `dark` module and its final role list; the dark remap done by `build.py`'s own layer, never by a CSS rule (a selector-scoped rule corrupts `role_values`, `design_source.py:256`); `--slide-fg` remapped; dark chart roles or a stated rule for charts; the classification cell at the right of the footer, before the number, in the deck's `lang:` (owner, 2026-10-15). Blocks Inc 04 only.
+2. Kit delivery-comms 2.1.0 (Plan-0006 as reworked in kit #153) merged to the kit's `main`: the `dark` module as a mirror of every colour role, the remap in `build.py`'s own layer (a selector-scoped rule in module CSS corrupts `role_values`, `design_source.py:256`), `theme: dark` for whole decks and documents, and the classification at the right of the footer, before the number, in the deck's `lang:`. Blocks Inc 04 only.
 
 ## Increment Plan
 
@@ -162,7 +158,7 @@ Scope:
 
 1. **Write first, expect red:**
    - re-vendor `tests/fixtures/kit-contract/` from the kit's `main` at the 2.1.0 merge (header line names the commit). `tests/unit/kit-modules.test.mjs`: `dark` joins `CLASS_MODULES` and `READS`; `dist/kit/dark.css` defines every role the vendored `modules.json` lists for `dark` and nothing else, each value equal to its dark token per the mapping table; the role-alias test lists the dark roles; the pair test reads the `dark` module and its pair count follows the vendored contract; `kit-manifest.json` declares contract 2.1.0 and provides `dark`; `dist/kit-contract.css` byte-identical to 1.1.0.
-   - `css/kit/dark.css` (hand-written, contract roles only): the `.dark` rule the class test requires and the key element's edge under `.slide.dark .dark-key`; the fill and outline come from `--dark-key-fill` and `--dark-glow` as roles, never a competing class rule. `css/kit/slide-frame.css` styles `.slide-classification` at the right of the footer, before the number.
+   - `css/kit/dark.css` (hand-written, contract roles only): the `.dark` rule the class test requires, if the 2.1.0 class test still requires one; the kit's own layer draws the fill and outline from `--dark-key-fill` and `--dark-key-edge`; this file adds no competing rule. `css/kit/slide-frame.css` styles `.slide-classification` at the right of the footer, before the number.
    - regenerate `tests/e2e/fixtures/kit-deck.html` from a 2.1 `KIT_CHECK_OUT` render (Plan-0002 procedure), with a dark slide holding a key element and `classification: Confidential` with `lang: fr`; `tests/e2e/kit-modules.spec.mjs` splits light slides from the dark slide and asserts the computed canvas, text colour, key fill and outline; the classification reads "Confidentiel" before the number.
    - `tests/fixtures/kit-render/document/config.yaml` gains `classification:` (the running footer).
    - a negative check: a scratch design with a failing core pair still fails `make kit-check` under 2.1.

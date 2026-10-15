@@ -225,13 +225,13 @@ Exit criteria:
 | N3 pair levels | Inc 01: accent as text; pairs checked in both themes |
 | N4 ADR, warm greys, sky blue | ADR-0007; Inc 02 guideline scope and hue figures |
 | N5 classification placement | Owner: right, before the number, in the deck's language; Inc 02 guidelines, Inc 04 CSS and fixtures |
-| N6 a 2.0 kit refuses 1.2.0 | Inc 05 README and release note; open question O-1 |
+| N6 a 2.0 kit refuses 1.2.0 | Inc 05 README and release note; minor release (owner, O-1) |
 | N7 slides without the kit | The theme reaches `mq-slide` through `.dark`; Inc 02 adds the section to every medium |
 | L1 to L4 | Inc 05 gate 3 marked manual; Inc 04 gates; no gradient in DESIGN.md `colors` (Inc 02) |
 
 ## Open questions
 
-1. **O-1 (owner):** is 1.2.0 a minor release, given that a kit 2.0 consumer bumping to it gets its kit modules refused? Default: minor, since the pins are exact and only the kit modules need 2.1.0; the release note says so.
+1. **O-1, resolved (owner, 2026-10-15):** 1.2.0 is a minor release, although a kit 2.0 consumer bumping to it gets its kit modules refused: the pins are exact and only the kit modules need 2.1.0; the release note says so.
 
 ## Delivery Rules
 

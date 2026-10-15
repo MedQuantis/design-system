@@ -2,7 +2,7 @@
 
 The single source of the MedQuantis visual identity: design tokens, shared CSS, self-hosted fonts and icons, brand assets, guidelines and a Claude skill. Every value is defined once, in `tokens/`, and reaches each consumer as a generated output in its native format ([ADR-0002](docs/architecture/decisions/adr-0002-central-tokens-first-design-system.md)).
 
-> Status: bootstrap. Nothing is published yet; the repository stays private until the pre-public confidentiality audit passes ([ADR-0005](docs/architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md)).
+> Status: published on npm as `@medquantis/design-system`; the repository is public behind the confidentiality gate ([ADR-0005](docs/architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md)).
 
 ## Outputs
 
@@ -142,7 +142,7 @@ The kit lines a consumer repository adds to its `AGENTS.md` (or `CLAUDE.md`) are
 - Tools that read a DESIGN.md take the one in the pinned package (`@medquantis/design-system/DESIGN.md`), never a hand-written copy.
 ```
 
-To give every session in that repository the `medquantis-design-system` plugin, local and cloud alike, commit this `.claude/settings.json` (merge the two keys into an existing file). While this repository is private, a session needs read access to it to install the plugin.
+To give every session in that repository the `medquantis-design-system` plugin, local and cloud alike, commit this `.claude/settings.json` (merge the two keys into an existing file).
 
 ```json
 {

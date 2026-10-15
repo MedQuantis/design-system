@@ -29,12 +29,12 @@ const TOKEN_MODULES = ["core", "dataviz", "type", "space-shape", "brand"];
 const CLASS_MODULES = ["document", "slide-frame", "print"];
 const MODULES = [...TOKEN_MODULES, ...CLASS_MODULES];
 const PROVIDED = [...MODULES, "guidance"];
-// The roles a class module may read. com-release-note inlines only core, dataviz and print in the
-// report (render_pdf.py REPORT_MODULES), so the print rules read no type or space-shape role.
+// The roles a class module may read. com-release-note inlines core, dataviz, type, space-shape and
+// print in the report (render_pdf.py REPORT_MODULES, since kit #149), never document or slide-frame.
 const READS = {
   document: ["core", "type", "space-shape", "dataviz", "document"],
   "slide-frame": ["core", "type", "space-shape", "dataviz", "slide-frame"],
-  print: ["core", "dataviz", "print"],
+  print: ["core", "type", "space-shape", "dataviz", "print"],
 };
 const AA = 4.5;
 
@@ -86,10 +86,10 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.0.0 from homemade-claude-kit eb04989", () => {
+test("the vendored kit contract is 2.0.0 from homemade-claude-kit cdb01eb", () => {
   assert.equal(contract().contractVersion, "2.0.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "eb04989", "plugins/delivery-comms/contract/", "2.0.0"]) {
+  for (const fact of ["homemade-claude-kit", "cdb01eb", "plugins/delivery-comms/contract/", "2.0.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });
@@ -333,6 +333,7 @@ test("the class module roles alias semantic tokens by name, each citing its guid
     "--print-bg": "{semantic.color.canvas}",
     "--print-margin": "{semantic.space.7} {semantic.space.8}",
     "--print-page-size": "A4",
+    "--print-breaking": "{semantic.color.accent}",
   };
   assert.deepEqual([...byRole.keys()].sort(), Object.keys(expected).sort());
   for (const [role, value] of Object.entries(expected)) {
@@ -346,6 +347,9 @@ test("the class module roles alias semantic tokens by name, each citing its guid
   assert.equal(values.get("--print-page-size"), "A4");
   assert.equal(values.get("--print-margin"), "48px 72px", "the padding of mq-page in css/print.css");
   assert.equal(values.get("--doc-page-bg"), "#fafaf8", "owner ruling 9: every document page is the canvas colour");
+  const accent = declarations(moduleCss("core")).get("--accent");
+  assert.equal(values.get("--print-breaking"), accent, "documents are navy only (ADR-0004): breaking changes in the accent");
+  assert.match(byRole.get("--print-breaking").$description, /ADR-0004/);
 });
 
 test("build/kit-classes.md maps every class of the class modules to a MedQuantis rule or a guideline", () => {

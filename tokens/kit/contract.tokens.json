@@ -281,6 +281,11 @@
         "$type": "other",
         "$value": "A4",
         "$description": "Kit contract: printed page size, A4, 210 by 297 mm (guidelines/layout.md, Media). A named size, as the kit's print chrome reads it."
+      },
+      "print-breaking": {
+        "$type": "color",
+        "$value": "{semantic.color.accent}",
+        "$description": "Kit contract: the accent of breaking changes in printed reports, navy, because documents are navy only and breaking changes read by their words and a navy rule, never a status hue (ADR-0004; guidelines/colour.md, The medium split)."
       }
     },
     "brand": {

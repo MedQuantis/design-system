@@ -2,10 +2,11 @@
 /*
  * Class rules of the MedQuantis print module for the homemade-claude-kit renderers (the
  * com-release-note report; Plan-0002 increment 02). Written by hand against contract roles only.
- * The report inlines the core, dataviz and print modules alone (render_pdf.py REPORT_MODULES), so
- * these rules read no type or space-shape role: the sizes are the A4 print column of
- * guidelines/typography.md, which is not yet a token, and the weight is the heading weight 500
- * (owner ruling 4). The build copies these rules into dist/kit/print.css after the roles.
+ * The report inlines the core, dataviz, type, space-shape and print modules (render_pdf.py
+ * REPORT_MODULES, kit #149). The sizes are the A4 print column of guidelines/typography.md, which
+ * is not yet a token, and the weight is the heading weight 500 (owner ruling 4); the template's
+ * own bold text and chips read --font-weight-bold and --radius-pill from the design. The build
+ * copies these rules into dist/kit/print.css after the roles.
  * build/kit-classes.md names the MedQuantis rule each class reproduces: css/print.css (mq-page)
  * and the typography roles of css/base.css.
  *
@@ -72,8 +73,9 @@
 }
 
 /* Documents are navy only (ADR-0004, guidelines/colour.md): the breaking-changes label reads by
-   its words and a navy rule, never by a status hue. */
+   its words and a navy rule, never by a status hue. --print-breaking is the navy accent, and the
+   kit's template washes the breaking-changes panel with it too. */
 .section--breaking .section-label {
-  border-bottom-color: var(--accent);
-  color: var(--accent);
+  border-bottom-color: var(--print-breaking);
+  color: var(--print-breaking);
 }

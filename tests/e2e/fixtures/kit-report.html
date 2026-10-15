@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <!-- mq:illustrative
-Static copy of the page homemade-claude-kit 98aa290 renders for tests/fixtures/kit-render/release-note
+Static copy of the page homemade-claude-kit cdb01eb renders for tests/fixtures/kit-render/release-note
 (com-release-note render_pdf.py --html-only), taken from a make kit-check run. The kit inlines the resolved design in one style
 block, the base of each module before the package's own; here that block is replaced by links to
-dist/kit/*.css for the modules the renderer inlines (core, dataviz, print), in the kit's order, with the kit's
+dist/kit/*.css for the modules the renderer inlines (core, dataviz, type, space-shape, print), in the kit's order, with the kit's
 base slide-frame rules inline where that module is inlined, so tests/e2e/kit-modules.spec.mjs runs
 without the kit. The CSS comments of the kit's own style blocks are left out. Fictitious content.
 -->
@@ -39,7 +39,7 @@ body {
   font-size: 8pt; text-transform: uppercase; letter-spacing: 0.14em;
   color: var(--accent); margin-top: 9mm; margin-bottom: 2.5mm;
 }
-.report-title { font-size: 21pt; font-weight: 700; line-height: 1.2; margin: 0 0 2mm; }
+.report-title { font-size: 21pt; font-weight: var(--font-weight-bold); line-height: 1.2; margin: 0 0 2mm; }
 .report-framing { font-size: 10.5pt; color: var(--muted); font-style: italic; margin: 0 0 3mm; }
 .cartouche {
   background: var(--surface);
@@ -56,7 +56,7 @@ body {
   color: var(--accent);
 }
 .cart-v { color: var(--ink); overflow-wrap: anywhere; }
-.cartouche a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.cartouche a { color: var(--accent); text-decoration: none; font-weight: var(--font-weight-bold); }
 .cartouche code { font-family: var(--font-mono); font-size: 0.95em; }
 
 .recap { margin: 0 0 6mm; break-inside: avoid; }
@@ -73,7 +73,7 @@ body {
   position: absolute; inset: 6.5mm; border-radius: 50%; background: var(--surface);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.donut-total { font-size: 14pt; font-weight: 700; color: var(--ink); line-height: 1; }
+.donut-total { font-size: 14pt; font-weight: var(--font-weight-bold); color: var(--ink); line-height: 1; }
 .donut-cap {
   font-family: var(--font-mono); font-size: 6.5pt;
   color: var(--muted);
@@ -83,7 +83,7 @@ body {
 .dl-sw { width: 3mm; height: 3mm; border-radius: 1px; }
 .dl-k { font-size: 8pt; color: var(--ink); white-space: nowrap; }
 .dl-v, .dl-p { font-size: 8pt; font-variant-numeric: tabular-nums; text-align: right; }
-.dl-v { color: var(--ink); font-weight: 700; }
+.dl-v { color: var(--ink); font-weight: var(--font-weight-bold); }
 .dl-p { color: var(--muted); }
 .recap-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
 .recap-card {
@@ -92,7 +92,7 @@ body {
 }
 .recap-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .rc-k { font-size: 7.5pt; color: var(--muted); margin-bottom: 1mm; }
-.rc-v { font-size: 15pt; font-weight: 700; color: var(--ink); line-height: 1; }
+.rc-v { font-size: 15pt; font-weight: var(--font-weight-bold); color: var(--ink); line-height: 1; }
 .rc-pair { white-space: nowrap; }
 
 .section { margin-top: 9mm; margin-bottom: 5.5mm; }
@@ -100,7 +100,7 @@ body {
 .section-label {
   display: block;
   font-family: var(--kit-report-font);
-  font-size: 13pt; font-weight: 700; letter-spacing: 0.02em;
+  font-size: 13pt; font-weight: var(--font-weight-bold); letter-spacing: 0.02em;
   text-transform: uppercase; color: var(--ink);
   border-bottom: 1.2mm solid var(--accent);
   padding-bottom: 2.5mm; margin-bottom: 4mm;
@@ -115,17 +115,17 @@ body {
   padding: 3.5mm 5mm; margin-bottom: 3.5mm;
   break-inside: avoid;
 }
-.product-name { font-size: 11.5pt; font-weight: 700; margin: 0 0 2.5mm; display: flex; align-items: baseline; gap: 2.5mm; }
+.product-name { font-size: 11.5pt; font-weight: var(--font-weight-bold); margin: 0 0 2.5mm; display: flex; align-items: baseline; gap: 2.5mm; }
 .product-id {
   font-family: var(--font-mono); font-size: 8pt; font-weight: 600;
   color: var(--accent-ink); background: var(--accent);
-  border-radius: 999px; padding: 0.5mm 2.5mm;
+  border-radius: var(--radius-pill); padding: 0.5mm 2.5mm;
 }
 .capability-group + .capability-group {
   margin-top: 4mm; padding-top: 4mm; border-top: 1px solid var(--border);
 }
 .capability-label {
-  font-size: 9.5pt; font-weight: 700; margin: 0 0 1.5mm;
+  font-size: 9.5pt; font-weight: var(--font-weight-bold); margin: 0 0 1.5mm;
   display: flex; align-items: baseline; gap: 2mm;
 }
 .entry-list { list-style: none; margin: 0; padding: 0; }
@@ -146,15 +146,15 @@ body {
 .entry--titled + .entry--titled { margin-top: 4mm; padding-top: 4mm; }
 
 .section--breaking .section-label {
-  color: var(--danger);
-  border-bottom-color: var(--danger);
+  color: var(--print-breaking);
+  border-bottom-color: var(--print-breaking);
 }
 .breaking {
   border: 1px solid var(--border);
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--print-breaking) 35%, transparent);
   border-radius: var(--card-radius);
   background: var(--surface-2);
-  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  background: color-mix(in srgb, var(--print-breaking) 8%, transparent);
   padding: 3.5mm 5mm; break-inside: avoid;
 }
 .breaking .entry-list li + li { border-top-color: var(--border); }
@@ -166,6 +166,8 @@ body {
 </style>
 <link rel="stylesheet" href="../../../dist/kit/core.css">
 <link rel="stylesheet" href="../../../dist/kit/dataviz.css">
+<link rel="stylesheet" href="../../../dist/kit/type.css">
+<link rel="stylesheet" href="../../../dist/kit/space-shape.css">
 <link rel="stylesheet" href="../../../dist/kit/print.css">
 </head>
 <body>

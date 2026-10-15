@@ -2,7 +2,7 @@
 
 The homemade-claude-kit renderers emit their own class names, listed under `classes` in the kit contract (`tests/fixtures/kit-contract/modules.json`). The MedQuantis document, slide-frame and print modules restyle them by hand, in `css/kit/document.css`, `css/kit/slide-frame.css` and `css/kit/print.css`, against contract roles only (Plan-0002 increment 02, owner decision 4). This table names, for each kit class, the MedQuantis rule whose look it reproduces, or the guideline it follows where MedQuantis has no counterpart. `tests/unit/kit-modules.test.mjs` checks that every class has a row and that every named `mq-` class exists in `css/`.
 
-Where a MedQuantis value has no contract role, the closest role stands in, as noted: the 12.5 px note size `--font-size-sm` (13 px), the 18 px slide text `--font-size-md` (16.5 px), the medium shadow `--shadow` (the small one). The print rules use literal print sizes and the weight 500, because the report inlines no type role.
+Where a MedQuantis value has no contract role, the closest role stands in, as noted: the 12.5 px note size `--font-size-sm` (13 px), the 18 px slide text `--font-size-md` (16.5 px), the medium shadow `--shadow` (the small one). The print rules use the literal A4 print sizes of guidelines/typography.md, which are not yet tokens, and the heading weight 500.
 
 | Kit class | Module | Reproduces |
 | :-- | :-- | :-- |
@@ -26,6 +26,6 @@ Where a MedQuantis value has no contract role, the closest role stands in, as no
 | `report-kicker` | `print` | `mq-eyebrow`: Geist Mono 500 capitals in navy, 7.5 pt |
 | `report-title` | `print` | `mq-display`: Outfit 500 at the 26 pt print size of the hero title |
 | `section` | `print` | follows guidelines/layout.md, Widths and spacing: the space between sections |
-| `section--breaking` | `print` | follows guidelines/colour.md, The medium split: documents are navy only (ADR-0004), so the breaking-changes label is navy, not a status hue |
+| `section--breaking` | `print` | follows guidelines/colour.md, The medium split: documents are navy only (ADR-0004), so the breaking-changes label and the kit's panel take `--print-breaking`, the navy accent, not a status hue |
 | `section--page-break` | `print` | follows guidelines/layout.md, Print and PDF: a section that leads a fresh page |
 | `section-label` | `print` | `mq-subtitle` set in capitals under the 2 px navy rule of the "In brief" block (guidelines/layout.md, Report skeleton) |

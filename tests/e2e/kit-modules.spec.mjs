@@ -12,6 +12,16 @@ const fixture = (name) => pathToFileURL(join(root, "tests/e2e/fixtures", name)).
 const SIDE = 72;
 const TERTIARY = "rgb(112, 112, 112)"; // #707070, the tertiary grey (owner rulings 1 and 11)
 const CANVAS = "rgb(250, 250, 248)";
+const ACCENT = "rgb(10, 36, 99)"; // #0a2463, navy
+
+// The red, green and blue channels (0 to 255) of a computed colour, rgb()/rgba() or color(srgb ...),
+// ignoring its alpha: a color-mix of the accent with transparent keeps the accent's channels.
+const channels = (value) => {
+  const srgb = value.match(/^color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/);
+  if (srgb) return srgb.slice(1, 4).map((channel) => Math.round(Number(channel) * 255));
+  const rgb = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  return rgb ? rgb.slice(1, 4).map(Number) : value;
+};
 
 let external;
 
@@ -87,8 +97,18 @@ test("kit report: the release-note report in the MedQuantis print module", async
   await expect(report.locator(".report-title")).toHaveCSS("font-family", /Outfit/);
   await expect(report.locator(".report-title")).toHaveCSS("font-weight", "500");
   for (const label of await report.locator(".section-label").all()) await expect(label).toHaveCSS("font-weight", "500");
-  // Documents are navy only (ADR-0004): the breaking-changes label is navy, not a status hue.
-  await expect(report.locator(".section--breaking .section-label")).toHaveCSS("color", "rgb(10, 36, 99)");
+  // Documents are navy only (ADR-0004): the breaking-changes label and panel are drawn from the
+  // accent (--print-breaking), never a status hue.
+  await expect(report.locator(".section--breaking .section-label")).toHaveCSS("color", ACCENT);
+  const panel = await report.locator(".breaking").evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { border: style.borderTopColor, background: style.backgroundColor };
+  });
+  for (const [part, value] of Object.entries(panel)) {
+    expect(channels(value), `.breaking ${part} ${value} is drawn from the accent`).toEqual([10, 36, 99]);
+  }
+  // Owner ruling 3: no pill; the kit's --radius-pill is the 6 px maximum.
+  await expect(report.locator(".product-id").first()).toHaveCSS("border-radius", "6px");
   await expect(report).toHaveScreenshot("kit-report.png");
   expect(external).toEqual([]);
 });

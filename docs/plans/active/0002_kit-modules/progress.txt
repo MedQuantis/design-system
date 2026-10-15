@@ -23,3 +23,7 @@ Peer review against the kit as shipped on release/2.0 at d9254da (contract 2.0.0
 11. Chart roles map by name: --chart-axis to the axis token, --chart-grid to the baseline token, --chart-highlight to series 1, each citing guidelines/charts.md.
 12. The CLAUDE.md/AGENTS.md lines and the plugin settings snippet move from increment 04 to 05; the kit part links the kit's agents-md-block.md.
 13. DESIGN.md pins @google/design.md@0.4.0 and follows the kit's shape, without the kit: key.
+
+## Manifest location (2026-10-15)
+
+The first Increment 01 iteration stopped before code: the kit reads kit-manifest.json only at the package root (design_source.py _load_package, root / "kit-manifest.json"), never through exports, so dist/kit-manifest.json would be refused as "not a delivery-comms design system". Owner chose option (a): the build writes kit-manifest.json at the repository root, gitignored, listed in package.json files. Rejected: (b) a committed copy guarded by a drift test, (c) a kit change to read the manifest through exports. The six provided modules carry 50 roles (core 24, dataviz 8, type 9, space-shape 5, brand 4), not 46.

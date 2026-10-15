@@ -43,7 +43,7 @@ Chosen option: "A dark theme in the themes tier", because the design pass showed
 ### Mechanism
 
 - `tokens/themes/dark/` holds the dark value of each semantic role that changes; a role without a dark value keeps its light value. Core tokens gain only the new raw values.
-- Every output emits the theme under the `.dark` selector, after the light `:root` values: `tokens.css`, the Tailwind theme, the kit contract (the kit's optional `dark` module, kit Plan-0006) and `tokens.json`. `.dark` is the class Nuxt UI 4 color mode sets on `<html>` and the class the kit puts on a dark slide, so one selector serves both.
+- The theme ships in its own files, `themes/dark.css` (one `.dark` block) and `themes/dark.json`, plus the kit's optional `dark` module (kit Plan-0006); `tokens.css` keeps only the light values. A consumer opts in by loading `themes/dark.css` and setting `.dark`. The Tailwind theme needs no dark copy: its semantic utilities already read `var(--mq-*)`. `.dark` is the class Nuxt UI 4 color mode sets on `<html>` and the class the kit puts on a dark slide, so one selector serves both.
 - The design system never switches on `prefers-color-scheme` by itself. An app may follow the viewer's setting by toggling `.dark`; a document or deck never does (see Scope).
 - Components read roles only, as today; a component that needs a literal to work on dark is a defect.
 
@@ -76,7 +76,7 @@ Contrast with the WCAG 2.x formula, on canvas `#11161f` and surface `#1a2131`.
 | `--mq-panel-start`, `--mq-panel-end` | `#2f4c8f`, `#0f2a5e` | white 8.23:1 at the start | |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow | | |
 
-The light navy `#9fb3e8` (8.71:1) is also kept for large highlighted title text.
+The light navy `#9fb3e8` (8.71:1) is also kept for large highlighted title text, through a new role `--mq-accent-highlight` that is the accent itself in light.
 
 ### Brand on dark
 
@@ -119,13 +119,13 @@ Each dark series meets or beats its light counterpart against its canvas (light:
 - One name per role in both themes: a component, a deck module or a Nuxt UI wiring written for light works on dark without change
 - Apps, documents and slides switch by the same `.dark` class, and Nuxt UI 4 needs no extra mapping
 - The navy panel, charts, status layer and brand all have a defined dark form, so a Paracel dark slide needs nothing deck-local
-- Light consumers receive the same bytes: the theme is additive, a minor release
+- Light consumers keep their rendering: the theme is additive and sits in its own files; the light outputs gain only the two roles dark needed (`--mq-on-warning-fill`, `--mq-accent-highlight`), a minor release
 
 ### Negative Consequences
 
 - Every new role needs a dark value or an explicit "same as light", and every pair is checked twice
 - The specimen prints its hex values and contrast ratios at build time, from the light values; it must render each theme to show the right numbers
-- `.dark` is a generic class name: a consumer that already uses `.dark` for something else gets the theme there too
+- `.dark` is a generic class name: a consumer that loads `themes/dark.css` and already uses `.dark` for something else gets the theme there too
 - A dark PDF uses more ink if someone prints it anyway; the author's choice carries that risk
 
 ### Relation to other decisions

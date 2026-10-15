@@ -7,3 +7,10 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Drafted on branch docs/plan-dark-theme from main at c7046e6 (1.1.0 released, Plan-0002 completed); status draft, owner review pending.
 - Source: Paracel Plan 0190 Q-17. The owner compared five renders of one Paracel dark slide: the navy panel as the whole background (disliked), light (acceptable), a near-black with a navy cast (liked), the original black and grey with navy fills (navy as line or text on black is 1.2:1; not kept), then three ways to make navy shine, keeping the lifted navy with a navy gradient and glow on the key element. The baseline table in the plan comes from that render.
 - Depends on kit Plan-0006 (delivery-comms 2.1.0: dark module, contract 2.1.0, .slide-classification) for Inc 02 onward.
+
+## Plan reworked (2026-10-15)
+
+- Reworked on branch docs/dark-theme-adr after ADR-0007 (#17) and the owner's design pass of 2026-10-15 (decision log gitignored at var/design-pass/dark-theme/decisions.md).
+- Mechanism changed from parallel --mq-dark-* tokens for slides to a themes tier: the semantic roles re-valued under .dark, shipped in dist/themes/dark.css and dark.json; scope widened to apps, documents and slides.
+- The peer review of 2026-10-15 (var/reports/dark-theme/0003-dark-theme-peer-review.md, verdict not ready to start) is answered finding by finding in the plan's "Review findings" table.
+- Five increments now: tokens and themes tier (01), guidelines and agent outputs (02), components and specimen in both themes (03), kit dark module and classification (04), README and release (05). Inc 04 waits for kit 2.1.0.

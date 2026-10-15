@@ -8,3 +8,5 @@ playwright-report/
 # claude plugin eval writes its results next to the cases unless --output-dir is given.
 plugins/**/evals/results/
 __pycache__/
+# Session-local working state (handoffs, review records); committing one is a per-file opt-in.
+var/

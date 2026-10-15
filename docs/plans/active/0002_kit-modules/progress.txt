@@ -5,3 +5,21 @@
 ## Peer review alignment (2026-10-11)
 
 The kit Plan-0005 peer review found this plan ahead of the kit contract on several points. Aligned: prerequisites now name kit increments 05 to 09, 11 and 12 for increment 05, and the kit's release/2.0 branch; dataviz uses the kit role names (--chart-1..4, --chart-rest, --chart-axis, --chart-grid, --chart-highlight); brand sets --brand-logo-on-light, --brand-logo-on-dark, --brand-mark and --brand-legal; guidance is one export path (dist/kit/guidance/) and informational; fonts follow the kit rule (@font-face in any provided module); the manifest is checked with ajv, pinned as a devDependency; the kit's contrast pairs must pass with this design's values; class modules use the classes listed in modules.json.
+
+## Peer review and owner decisions (2026-10-15)
+
+Peer review against the kit as shipped on release/2.0 at d9254da (contract 2.0.0) and this repository at 788598e; the full record stays session-local. Owner decisions, all applied to the plan:
+
+1. Guidance is one file, dist/kit/guidance.md: the kit resolver refuses a folder export and with it the whole design (kit design_source.py _inside requires a file). Kit issue #145 filed to align the contract text and the code.
+2. Kit roles are mapped in the existing kit tier, tokens/kit/ (DTCG aliases), not in a new build/kit-roles.mjs table, so the 24 core roles keep one mapping.
+3. Two new semantic line-height tokens, body 1.55 and tight 1.15 (taken from css/base.css, which then reads them); --border-width aliases the hairline stroke; --radius-pill aliases the 6 px maximum (Owner ruling 3, no pill shapes).
+4. Option (a): document, slide-frame and print are written by hand against contract roles, from a kit-class to mq-class table, checked by screenshots, in 1.1.0. Renaming --mq-* references cannot work because the kit emits its own class names.
+5. Increment 05 gates on the npm-packed folder pinned with point; the npm resolve of 1.1.0 runs after the owner merges the release PR, outside the loop.
+6. make kit-check runs the real kit resolver on the packed folder in every gate from increment 01 (KIT_DIR, skips in CI); from increment 02 it also renders kit fixtures.
+7. Claude Design System format checked against the type's instructions (release 1791927328-0a67): add the cover, upload logos at publication and write the index last, save the instructions as a fixture.
+8. Milestone table M1 to M4 added.
+9. Prerequisites met; vendor the contract from kit d9254da; contrast uses the either-role rule for text on fills (all 13 pairs pass today).
+10. Logo roles are url() values of the exports; the banner test covers dist/kit/*.css.
+11. Chart roles map by name: --chart-axis to the axis token, --chart-grid to the baseline token, --chart-highlight to series 1, each citing guidelines/charts.md.
+12. The CLAUDE.md/AGENTS.md lines and the plugin settings snippet move from increment 04 to 05; the kit part links the kit's agents-md-block.md.
+13. DESIGN.md pins @google/design.md@0.4.0 and follows the kit's shape, without the kit: key.

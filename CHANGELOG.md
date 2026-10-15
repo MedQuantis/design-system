@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/MedQuantis/design-system/compare/v1.0.1...v1.1.0) (2026-10-15)
+
+
+### Features
+
+* **design-md:** export DESIGN.md and the Claude Design System from the build ([#14](https://github.com/MedQuantis/design-system/issues/14)) ([933d7f5](https://github.com/MedQuantis/design-system/commit/933d7f5bb45de3a3906a2f852dd0f3172fbf77ce))
+* **kit:** publish the core, dataviz, type, space-shape and brand kit modules with a manifest ([#11](https://github.com/MedQuantis/design-system/issues/11)) ([fa60143](https://github.com/MedQuantis/design-system/commit/fa6014364adf4a7af063208c4329703b83770e6d))
+* **kit:** publish the document, slide-frame and print kit modules in the MedQuantis layout ([#13](https://github.com/MedQuantis/design-system/issues/13)) ([a9afda1](https://github.com/MedQuantis/design-system/commit/a9afda1fedaec5f889f255ea29e31ba2bfa507f4))
+
 ## [1.0.1](https://github.com/MedQuantis/design-system/compare/v1.0.0...v1.0.1) (2026-10-11)
 
 

@@ -490,3 +490,15 @@ test("SKILL.md shows the slide footer and the column legend; the ring and slide 
     assert.match(rubric, /bottom right/, `${name} rubric places the slide number (owner ruling 11)`);
   }
 });
+
+test("the kit reference names every module of the kit manifest and SKILL.md links it", () => {
+  const path = "references/kit-modules.md";
+  assert.ok(relativeLinks(skillText()).includes(path), `SKILL.md does not link ${path}`);
+  const text = read(`${SKILL}/${path}`);
+  const manifest = readJson("kit-manifest.json");
+  for (const [module, file] of Object.entries(manifest.provides)) {
+    assert.match(text, new RegExp("`" + module + "`"), `${path} does not name the ${module} module`);
+    assert.ok(text.includes(file.replace("./", "dist/")), `${path} does not name ${file}`);
+  }
+  assert.deepEqual(relativeLinks(text), [], `${path} links another file: keep references one level deep`);
+});

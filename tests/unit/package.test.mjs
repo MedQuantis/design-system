@@ -123,3 +123,39 @@ test("README documents CDN use with an exact version and an SRI hash, never a ra
   assert.doesNotMatch(readme, /cdn\.jsdelivr\.net\/gh\//);
   assert.doesNotMatch(readme, /—/, "README carries an em dash");
 });
+
+// Increment 05 of Plan-0002: a consumer repo learns from the README how to render with the
+// delivery-comms kit, where DESIGN.md is, and how to enable the plugin and brief its agents.
+const KIT_MODULES = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "print", "brand", "guidance"];
+
+test("README explains use from the delivery-comms kit, DESIGN.md, the agent lines and the plugin settings", () => {
+  const readme = read("README.md");
+  // The section runs to the next level-two heading outside a code block (the AGENTS.md lines hold one).
+  const lines = readme.split("\n");
+  const start = lines.indexOf("## Using it from the delivery-comms kit");
+  let fenced = false;
+  let end = lines.length;
+  for (let i = start + 1; start >= 0 && i < lines.length; i += 1) {
+    if (lines[i].startsWith("```")) fenced = !fenced;
+    else if (!fenced && lines[i].startsWith("## ")) {
+      end = i;
+      break;
+    }
+  }
+  const section = start >= 0 ? lines.slice(start, end).join("\n") : undefined;
+  assert.ok(section, "README has no section Using it from the delivery-comms kit");
+  assert.match(section, /docs\/ux\/package\.json/);
+  assert.match(section, /ux-design-system point @medquantis\/design-system@\d+\.\d+\.\d+/);
+  for (const module of KIT_MODULES) assert.match(section, new RegExp("`" + module + "`"), `the kit section does not name the ${module} module`);
+  assert.match(section, /https:\/\/github\.com\/VictorHueni\/homemade-claude-kit\/blob\/[\w./-]+\/plugins\/delivery-comms\/skills\/ux-design-system\/references\/agents-md-block\.md/);
+  assert.doesNotMatch(section, /## Design system \(delivery-comms\)/, "link the kit's AGENTS.md block, do not copy it");
+  assert.match(readme, /`dist\/DESIGN\.md`/);
+  assert.match(section, /CLAUDE\.md/);
+  assert.match(section, /AGENTS\.md/);
+  const json = section.match(/```json\n([\s\S]*?)\n```/);
+  assert.ok(json, "the kit section has no .claude/settings.json snippet");
+  const settings = JSON.parse(json[1]);
+  assert.deepEqual(settings.extraKnownMarketplaces?.medquantis?.source, { source: "github", repo: "MedQuantis/design-system" });
+  assert.equal(settings.enabledPlugins?.["medquantis-design-system@medquantis"], true);
+  assert.doesNotMatch(section, /[–—]/, "the kit section carries an em or en dash");
+});

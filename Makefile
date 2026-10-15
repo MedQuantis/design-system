@@ -31,11 +31,13 @@ node_modules/.package-lock.json: package-lock.json
 # dist/ is generated from tokens/ and never committed; rebuilt from scratch every time. The llms
 # files are generated from guidelines/ and the token build. build-kit writes the kit guidance and
 # kit-manifest.json, a build output at the root (gitignored) because the kit reads it there only.
+# build-design-md writes dist/DESIGN.md, the Google DESIGN.md export.
 build: node_modules/.package-lock.json
 	rm -rf dist kit-manifest.json
 	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
 	node scripts/build-llms.mjs
 	node scripts/build-kit.mjs
+	node scripts/build-design-md.mjs
 
 # The real kit is the judge (Plan-0002, Principle 6): pack the package, unpack it into a scratch
 # folder and run the kit resolver on it, from the homemade-claude-kit checkout named by KIT_DIR.

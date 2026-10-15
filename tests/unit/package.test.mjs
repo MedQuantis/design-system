@@ -17,6 +17,7 @@ const EXPORTS = [
   "./kit-contract.css",
   "./kit/*",
   "./kit-manifest.json",
+  "./DESIGN.md",
   "./css/*",
   "./fonts.css",
   "./brand/*",
@@ -33,6 +34,7 @@ const DIST_FILES = [
   "dist/kit-contract.css",
   ...["core", "dataviz", "type", "space-shape", "brand", "document", "slide-frame", "print"].map((module) => `dist/kit/${module}.css`),
   "dist/kit/guidance.md",
+  "dist/DESIGN.md",
   "dist/llms.txt",
   "dist/llms-full.txt",
 ];

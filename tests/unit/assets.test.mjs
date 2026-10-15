@@ -137,9 +137,9 @@ const LICENCE_FILE = /(?:^|\/)(?:OFL\.txt|LICENSE)$/;
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const CDN_HOST = /fonts\.googleapis\.com|fonts\.gstatic\.com|unpkg\.com|jsdelivr\.net|cdnjs\.cloudflare\.com/i;
 const TEXT_EXTENSIONS = new Set([".css", ".json", ".js", ".mjs", ".svg", ".html", ".txt", ".md", ""]);
-// The llms files and the kit guidance are documentation for language models and agents: their
-// links point readers at the CDN release or an issue and are never loaded by a page.
-const LLM_DOCS = new Set(["dist/llms.txt", "dist/llms-full.txt", "dist/kit/guidance.md"]);
+// The llms files, the kit guidance and DESIGN.md are documentation for language models and agents:
+// their links point readers at the CDN release or an issue and are never loaded by a page.
+const LLM_DOCS = new Set(["dist/llms.txt", "dist/llms-full.txt", "dist/kit/guidance.md", "dist/DESIGN.md"]);
 
 test("no shipped file requests a remote font, icon or stylesheet", () => {
   const files = ["fonts", "icons", "brand", "css", "dist"].flatMap((dir) => walk(at(dir)));

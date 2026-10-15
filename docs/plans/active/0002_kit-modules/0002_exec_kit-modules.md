@@ -28,7 +28,7 @@ Principles:
 6. The real kit is the judge. From increment 01, `make kit-check` packs the package, unpacks it into a scratch folder and runs the kit resolver on it (`python3 $KIT_DIR/plugins/delivery-comms/shared/design_source.py provenance --design-system <folder>`), expecting exit 0 and every provided module reported as `design-system`; from increment 02 it also renders a kit fixture deck. It reads the kit checkout from `KIT_DIR` and skips with a clear message when `KIT_DIR` is unset, so CI stays self-contained; every increment's gate runs it locally.
 
 **Overall Status:** in-progress
-**Current Increment:** 03
+**Current Increment:** 04
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ Principles:
 | :-- | :-- | :-- | :-- | :-- | :-- |
 | M1: Kit modules | 01-02 | done | All nine modules and the manifest, accepted by the real kit | `make check`, `make kit-check` | `kit` |
 | M2: DESIGN.md | 03 | done | Agents outside the kit read the same brand | `make check`, `make kit-check` | `design-md` |
-| M3: Claude Design System | 04 | pending | The claude.ai design system generated from the build | `make check`, `make kit-check` | `claude` |
+| M3: Claude Design System | 04 | done | The claude.ai design system generated from the build | `make check`, `make kit-check` | `claude` |
 | M4: Release 1.1.0 | 05 | pending | 1.1.0 on npm, rendering from the kit | `make check`, `make kit-check`, packed-folder render | `docs` |
 
 ## Increment Plan
@@ -126,7 +126,7 @@ Exit criteria:
 
 ### Increment 04: Claude Design System artifact generated from the build
 
-**Status:** pending
+**Status:** done
 
 claude.ai has a "Design System" artifact type that Claude reads before building decks, designs and pages; design systems are attached per account. Generated from the build, never filled by hand, so the artifact, the npm package and the kit carry the same version. Format checked on 2026-10-15 against the type's instructions (type release `1791927328-0a67`, contract `0.2.47`).
 

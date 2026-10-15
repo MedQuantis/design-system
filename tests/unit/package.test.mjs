@@ -57,7 +57,7 @@ test("the npm tarball holds only the built tokens, css, fonts, icons, brand, gui
   const allowed = (path) => DIST_FILES.includes(path) || ROOT_FILES.includes(path) || SHIPPED_FOLDERS.some((folder) => path.startsWith(folder));
   const strays = files.filter((path) => !allowed(path));
   assert.deepEqual(strays, [], `files outside the allow-list: ${strays.join(", ")}`);
-  for (const folder of ["tests/", "scripts/", "docs/", "plugins/", "tokens/", "build/", "examples/", "dist/specimen/", "dist/skill-evals/", ".github/"]) {
+  for (const folder of ["tests/", "scripts/", "docs/", "plugins/", "tokens/", "build/", "examples/", "dist/specimen/", "dist/skill-evals/", "dist/claude-design-system/", ".github/"]) {
     assert.ok(!files.some((path) => path.startsWith(folder)), `${folder} must not ship`);
   }
   for (const file of [...DIST_FILES, ...LICENCE_FILES, "README.md", "kit-manifest.json"]) assert.ok(files.includes(file), `${file} is missing from the tarball`);

@@ -1,0 +1,91 @@
+/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
+/*
+ * Class rules of the MedQuantis document module for the homemade-claude-kit renderers
+ * (com-slide-deck mode: document; Plan-0002 increment 02). Written by hand against contract roles
+ * only: core, type, space-shape, dataviz and the document roles, which tokens/kit/ maps. The
+ * build copies these rules into dist/kit/document.css after the roles. build/kit-classes.md names
+ * the MedQuantis rule each class reproduces: the A4 sheet of css/print.css (mq-page) with the
+ * body text of css/base.css (mq-doc).
+ *
+ * Cascade: com-slide-deck adds its document baseline (doc.baseline.css) after the design layer,
+ * so the rules it also writes carry one more element in their selector. The page box and the
+ * print margins stay the deck's config.yaml page: block.
+ */
+
+/* mq-page and mq-doc: the sheet on the canvas colour (owner ruling 9), Newsreader body. */
+body .doc {
+  background: var(--doc-page-bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--doc-text-size);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+}
+
+/* Headings in Outfit 500, never 700 (owner ruling 4, guidelines/typography.md). */
+.doc h1,
+.doc h2,
+.doc h3 {
+  margin: var(--space-lg) 0 var(--space-sm);
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.doc h1 {
+  font-size: var(--title-size);
+  letter-spacing: -0.015em;
+}
+
+.doc h2 {
+  font-size: var(--font-size-lg);
+  letter-spacing: -0.01em;
+}
+
+.doc h3 {
+  font-size: var(--font-size-md);
+}
+
+.doc p {
+  margin: 0 0 var(--space-md);
+}
+
+/* A section opens with its own head; its first element keeps no top margin. */
+.doc-section > :first-child {
+  margin-top: 0;
+}
+
+/* A section that follows on the same page: a hairline rule and the space between sections. */
+body .doc-section.doc-section--flow {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--doc-rule);
+}
+
+/* mq-eyebrow: Geist Mono 500 capitals in navy above a heading. */
+.doc-label {
+  margin: 0 0 var(--space-sm);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* A block that never splits across pages (guidelines/layout.md, Print and PDF). */
+body .doc-keep {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* In a document the source bar flows as a footnote: the kit's base slide-frame positions it on
+   a slide canvas, which a document does not have. */
+.doc .slide-source-bar {
+  position: static;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}

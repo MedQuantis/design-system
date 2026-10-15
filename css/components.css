@@ -35,7 +35,7 @@
     color: var(--mq-muted);
     font-family: var(--mq-font-family-body);
     font-size: var(--mq-font-size-small);
-    line-height: 1.55;
+    line-height: var(--mq-font-line-height-body);
   }
 
   /* Navy panel */
@@ -74,7 +74,7 @@
     color: var(--mq-on-navy-second-level);
     font-family: var(--mq-font-family-body);
     font-size: var(--mq-font-size-small);
-    line-height: 1.55;
+    line-height: var(--mq-font-line-height-body);
   }
 
   :where(.mq-panel-rule) {

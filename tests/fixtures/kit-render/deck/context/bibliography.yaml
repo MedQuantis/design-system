@@ -1,0 +1,6 @@
+# Fictitious source for the kit fixture deck. mq:illustrative
+sources:
+  fixture-survey:
+    org: "Fixture Institute"
+    title: "Invented survey of slide frames"
+    year: 2026

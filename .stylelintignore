@@ -1,0 +1,4 @@
+# css/kit/ holds the class rules of the kit modules, written against the homemade-claude-kit
+# contract roles (--ink, --slide-padding), not --mq- tokens, so the MedQuantis rules do not apply;
+# tests/unit/kit-modules.test.mjs checks them instead (contract roles only, no literal colour).
+css/kit/

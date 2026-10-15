@@ -1,0 +1,29 @@
+/*
+ * Deck components of the kit fixture deck: contract roles only, as build.py requires.
+ * The slide frame itself (canvas, section label, footer row, source bar) is the design's
+ * slide-frame module.
+ */
+.deck-title {
+  position: absolute;
+  top: var(--slide-padding);
+  right: var(--slide-padding);
+  left: var(--slide-padding);
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-size: var(--title-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+}
+.deck-body {
+  position: absolute;
+  top: calc(var(--slide-padding) * 2);
+  right: var(--slide-padding);
+  left: var(--slide-padding);
+  margin: 0;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}

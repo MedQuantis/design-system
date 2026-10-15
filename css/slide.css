@@ -47,7 +47,7 @@
     font-family: var(--mq-font-family-heading);
     font-size: var(--mq-font-size-slide-title);
     font-weight: var(--mq-font-weight-heading);
-    line-height: 1.15;
+    line-height: var(--mq-font-line-height-tight);
     letter-spacing: -0.01em;
     text-wrap: balance;
   }

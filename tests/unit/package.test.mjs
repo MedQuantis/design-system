@@ -31,7 +31,7 @@ const DIST_FILES = [
   "dist/tokens.json",
   "dist/tailwind.css",
   "dist/kit-contract.css",
-  ...["core", "dataviz", "type", "space-shape", "brand"].map((module) => `dist/kit/${module}.css`),
+  ...["core", "dataviz", "type", "space-shape", "brand", "document", "slide-frame", "print"].map((module) => `dist/kit/${module}.css`),
   "dist/kit/guidance.md",
   "dist/llms.txt",
   "dist/llms-full.txt",

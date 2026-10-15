@@ -1,0 +1,99 @@
+/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
+/*
+ * Class rules of the MedQuantis slide-frame module for the homemade-claude-kit renderers
+ * (Plan-0002 increment 02). Written by hand against contract roles only: core, type, space-shape,
+ * dataviz and the slide-frame roles, which tokens/kit/ maps. The build copies these rules into
+ * dist/kit/slide-frame.css after the roles. build/kit-classes.md names the MedQuantis rule each
+ * class reproduces: css/slide.css, with the legal line bottom left and the slide number bottom
+ * right (owner ruling 11, guidelines/brand.md).
+ *
+ * Cascade: the kit inlines its base slide-frame.css before this module, so these rules restyle
+ * it; com-slide-deck adds its baseline (controls hint, presentation mode) after the design layer,
+ * so the rules for those classes carry one more element in their selector.
+ * Tertiary grey has no contract role: the footer row uses --muted, the contract's secondary text.
+ */
+
+/* mq-slide: the canvas, body text in Newsreader. The kit's render.py drops the shadow in the PDF. */
+.slide {
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+/* mq-slide-label: mono capitals in navy, 48 px from the top, at the side margin. */
+.slide-label {
+  top: var(--space-xl);
+  left: var(--slide-padding);
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.18em;
+}
+
+/* mq-slide-foot: one row, the legal line at the left and the number at the right, 24 px above
+   the bottom edge, at the side margins. */
+.slide-footer {
+  right: var(--slide-padding);
+  bottom: calc(var(--space-md) + var(--space-sm));
+  left: var(--slide-padding);
+  height: auto;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(var(--space-md) + var(--space-sm));
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+}
+
+/* MedQuantis slides carry no logo in the footer row (owner ruling 11, guidelines/layout.md). */
+.slide-logo {
+  display: none;
+}
+
+.slide-legal {
+  margin: 0;
+}
+
+/* mq-slide-number: the eyebrow size, tabular figures. */
+.slide-number {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A cited source on a slide: the note style of guidelines/typography.md, above the footer row. */
+.slide .slide-source-bar {
+  right: var(--slide-padding);
+  bottom: calc(var(--space-md) + var(--space-sm) + var(--space-lg));
+  left: var(--slide-padding);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+/* The controls hint above the deck: a hint in Geist Mono, as in an empty state (guidelines/layout.md, App patterns). */
+body .controls-hint {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.04em;
+}
+
+body .controls-hint kbd {
+  border-color: var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+
+/* Presentation mode: the slide alone on an ink surround, without the desk shadow. */
+html body.presenting {
+  background: var(--ink);
+}
+
+html body.presenting .slide.active {
+  box-shadow: none;
+}

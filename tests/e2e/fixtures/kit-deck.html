@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- mq:illustrative
+Static copy of the page homemade-claude-kit 98aa290 renders for tests/fixtures/kit-render/deck
+(com-slide-deck build.py), taken from a make kit-check run. The kit inlines the resolved design in one style
+block, the base of each module before the package's own; here that block is replaced by links to
+dist/kit/*.css for the modules the renderer inlines (core, dataviz, type, space-shape, document, slide-frame, print), in the kit's order, with the kit's
+base slide-frame rules inline where that module is inlined, so tests/e2e/kit-modules.spec.mjs runs
+without the kit. The CSS comments of the kit's own style blocks are left out. Fictitious content.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit fixture deck</title>
+
+<link rel="stylesheet" href="../../../dist/kit/core.css">
+<link rel="stylesheet" href="../../../dist/kit/dataviz.css">
+<link rel="stylesheet" href="../../../dist/kit/type.css">
+<link rel="stylesheet" href="../../../dist/kit/space-shape.css">
+<link rel="stylesheet" href="../../../dist/kit/document.css">
+<style>
+:root {
+  --slide-bg: #ffffff;
+  --slide-fg: #1a1f29;
+  --slide-padding: 48px;
+  --slide-width: 960px;
+  --slide-height: 540px;
+}
+
+.slide {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: var(--slide-width);
+  height: var(--slide-height);
+  background: var(--slide-bg);
+  color: var(--slide-fg);
+}
+.slide-label {
+  position: absolute;
+  top: calc(var(--slide-padding) / 2);
+  left: var(--slide-padding);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.slide-footer {
+  position: absolute;
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  bottom: calc(var(--slide-padding) / 2);
+  height: 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+  color: var(--muted);
+  pointer-events: none;
+}
+.slide-logo {
+  flex: none;
+  width: 72px;
+  height: 20px;
+  background: var(--brand-logo-on-light) left center / contain no-repeat;
+}
+.slide-legal {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.slide-number {
+  margin-left: auto;
+  flex: none;
+}
+.slide-source-bar {
+  position: absolute;
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  bottom: calc(var(--slide-padding) / 2 + 28px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+</style>
+<link rel="stylesheet" href="../../../dist/kit/slide-frame.css">
+<link rel="stylesheet" href="../../../dist/kit/print.css">
+<style>
+.deck-title {
+  position: absolute;
+  top: var(--slide-padding);
+  right: var(--slide-padding);
+  left: var(--slide-padding);
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-size: var(--title-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+}
+.deck-body {
+  position: absolute;
+  top: calc(var(--slide-padding) * 2);
+  right: var(--slide-padding);
+  left: var(--slide-padding);
+  margin: 0;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+.controls-hint {
+  text-align: center;
+  padding: 10px 0 6px;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  user-select: none;
+}
+.controls-hint kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 11px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+body.presenting {
+  background: var(--ink);
+  overflow: hidden;
+}
+body.presenting .controls-hint { display: none; }
+body.presenting .slide:not(.active) { display: none; }
+body.presenting .slide.active {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+}
+:root { --kit-slide-scale: 1; }
+@media (max-width: 980px) {
+  body:not(.presenting) {
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+  body:not(.presenting) .slide {
+    transform: scale(var(--kit-slide-scale));
+    transform-origin: top center;
+    margin-bottom: calc(var(--slide-height) * (var(--kit-slide-scale) - 1));
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="controls-hint">
+  Press <kbd>F</kbd> for fullscreen presentation &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate &middot; <kbd>Esc</kbd> to exit
+</div>
+
+<!-- slide 1: Cover -->
+
+<div class="slide">
+  <p class="slide-label">01 · Kit fixture</p>
+  <h1 class="deck-title">A fictitious deck for the kit render check</h1>
+  <p class="deck-body">Every line on this slide is invented. It shows the MedQuantis slide frame: the section label at the top left, the legal line at the bottom left and the slide number at the bottom right.</p>
+
+<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-number">01</span></div>
+</div>
+
+<!-- slide 2: Content -->
+
+<div class="slide" data-sources="fixture-survey">
+  <p class="slide-label">02 · Sources</p>
+  <h1 class="deck-title">A slide that cites an invented source</h1>
+  <p class="deck-body">The source bar sits above the footer row; the footer keeps the legal line and the number on one line.</p>
+
+<div class="slide-source-bar">Fixture Institute · Invented survey of slide frames (2026)</div>
+
+<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-number">02</span></div>
+</div>
+
+<script>
+// ── Baseline: mobile responsive scaling ──
+(function() {
+  function setMobileScale() {
+    if (window.innerWidth < 980) {
+      var scale = (window.innerWidth - 16) / 1280;
+      document.documentElement.style.setProperty('--kit-slide-scale', scale);
+    } else {
+      document.documentElement.style.removeProperty('--kit-slide-scale');
+    }
+  }
+  setMobileScale();
+  window.addEventListener('resize', setMobileScale);
+})();
+
+// The kit fixture deck needs no presentation script; build.py adds its baseline scaling.
+
+</script>
+
+</body>
+</html>

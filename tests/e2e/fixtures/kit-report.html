@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- mq:illustrative
+Static copy of the page homemade-claude-kit 98aa290 renders for tests/fixtures/kit-render/release-note
+(com-release-note render_pdf.py --html-only), taken from a make kit-check run. The kit inlines the resolved design in one style
+block, the base of each module before the package's own; here that block is replaced by links to
+dist/kit/*.css for the modules the renderer inlines (core, dataviz, print), in the kit's order, with the kit's
+base slide-frame rules inline where that module is inlined, so tests/e2e/kit-modules.spec.mjs runs
+without the kit. The CSS comments of the kit's own style blocks are left out. Fictitious content.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kit fixture v0.1.0: a fictitious release</title>
+<style>
+:root { --kit-report-font: var(--font-body); }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--kit-report-font);
+  color: var(--ink);
+  background: var(--print-bg);
+  font-size: 10.5pt;
+  line-height: 1.5;
+}
+.report { max-width: 178mm; margin: 0 auto; padding: 2mm 0; }
+.report code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+.report-framing,
+.entry-list li {
+  text-align: justify;
+  hyphens: auto;
+}
+
+.report-kicker {
+  font-family: var(--font-mono);
+  font-size: 8pt; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent); margin-top: 9mm; margin-bottom: 2.5mm;
+}
+.report-title { font-size: 21pt; font-weight: 700; line-height: 1.2; margin: 0 0 2mm; }
+.report-framing { font-size: 10.5pt; color: var(--muted); font-style: italic; margin: 0 0 3mm; }
+.cartouche {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 3mm 4mm; margin: 0 0 6mm;
+  font-size: 8.5pt; break-inside: avoid;
+}
+.cart-row { display: grid; grid-template-columns: 30mm 1fr; gap: 3mm; padding: 1.2mm 0; }
+.cart-row + .cart-row { border-top: 1px solid var(--border); }
+.cart-k {
+  font-family: var(--font-mono); font-size: 7.5pt;
+  text-transform: uppercase; letter-spacing: 0.1em; padding-top: 0.3mm;
+  color: var(--accent);
+}
+.cart-v { color: var(--ink); overflow-wrap: anywhere; }
+.cartouche a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.cartouche code { font-family: var(--font-mono); font-size: 0.95em; }
+
+.recap { margin: 0 0 6mm; break-inside: avoid; }
+.recap-label {
+  font-family: var(--font-mono); font-size: 7.5pt;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted); margin-bottom: 3mm;
+}
+.recap-body { display: grid; grid-template-columns: max-content 1fr; gap: 10mm; align-items: center; }
+.recap-figure { display: grid; grid-template-columns: 28mm max-content; gap: 4mm; align-items: center; }
+.donut { width: 28mm; height: 28mm; position: relative; }
+.donut-svg { display: block; width: 100%; height: 100%; }
+.donut-hole {
+  position: absolute; inset: 6.5mm; border-radius: 50%; background: var(--surface);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.donut-total { font-size: 14pt; font-weight: 700; color: var(--ink); line-height: 1; }
+.donut-cap {
+  font-family: var(--font-mono); font-size: 6.5pt;
+  color: var(--muted);
+}
+.donut-legend { display: grid; gap: 1.2mm; }
+.dl-row { display: grid; grid-template-columns: 3mm auto 6mm 8mm; align-items: center; gap: 2.5mm; }
+.dl-sw { width: 3mm; height: 3mm; border-radius: 1px; }
+.dl-k { font-size: 8pt; color: var(--ink); white-space: nowrap; }
+.dl-v, .dl-p { font-size: 8pt; font-variant-numeric: tabular-nums; text-align: right; }
+.dl-v { color: var(--ink); font-weight: 700; }
+.dl-p { color: var(--muted); }
+.recap-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.recap-card {
+  border: 1px solid var(--border); border-radius: var(--card-radius);
+  padding: 2.5mm 3mm; text-align: center;
+}
+.recap-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.rc-k { font-size: 7.5pt; color: var(--muted); margin-bottom: 1mm; }
+.rc-v { font-size: 15pt; font-weight: 700; color: var(--ink); line-height: 1; }
+.rc-pair { white-space: nowrap; }
+
+.section { margin-top: 9mm; margin-bottom: 5.5mm; }
+.section--page-break { break-before: page; page-break-before: always; }
+.section-label {
+  display: block;
+  font-family: var(--kit-report-font);
+  font-size: 13pt; font-weight: 700; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--ink);
+  border-bottom: 1.2mm solid var(--accent);
+  padding-bottom: 2.5mm; margin-bottom: 4mm;
+    break-after: avoid; page-break-after: avoid;
+}
+
+.product-card,
+.bucket {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 3.5mm 5mm; margin-bottom: 3.5mm;
+  break-inside: avoid;
+}
+.product-name { font-size: 11.5pt; font-weight: 700; margin: 0 0 2.5mm; display: flex; align-items: baseline; gap: 2.5mm; }
+.product-id {
+  font-family: var(--font-mono); font-size: 8pt; font-weight: 600;
+  color: var(--accent-ink); background: var(--accent);
+  border-radius: 999px; padding: 0.5mm 2.5mm;
+}
+.capability-group + .capability-group {
+  margin-top: 4mm; padding-top: 4mm; border-top: 1px solid var(--border);
+}
+.capability-label {
+  font-size: 9.5pt; font-weight: 700; margin: 0 0 1.5mm;
+  display: flex; align-items: baseline; gap: 2mm;
+}
+.entry-list { list-style: none; margin: 0; padding: 0; }
+.entry-list li { padding: 1mm 0; break-inside: avoid; }
+.entry-list li + li { border-top: 1px solid var(--border); }
+.entry-ref {
+  font-family: var(--font-mono); font-size: 8pt; font-weight: 600;
+  color: var(--accent); margin-right: 1.5mm;
+}
+.entry-label { font-weight: 600; }
+.entry-audit {
+  font-family: var(--font-mono); font-size: 7.5pt;
+  color: var(--muted); margin-left: 1.5mm;
+}
+
+.entry-num { font-variant-numeric: tabular-nums; }
+.entry--titled { padding: 0; }
+.entry--titled + .entry--titled { margin-top: 4mm; padding-top: 4mm; }
+
+.section--breaking .section-label {
+  color: var(--danger);
+  border-bottom-color: var(--danger);
+}
+.breaking {
+  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  border-radius: var(--card-radius);
+  background: var(--surface-2);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  padding: 3.5mm 5mm; break-inside: avoid;
+}
+.breaking .entry-list li + li { border-top-color: var(--border); }
+
+@page { size: A4; margin: 48px 72px; }
+@media print {
+  .report { padding: 0; max-width: none; }
+}
+</style>
+<link rel="stylesheet" href="../../../dist/kit/core.css">
+<link rel="stylesheet" href="../../../dist/kit/dataviz.css">
+<link rel="stylesheet" href="../../../dist/kit/print.css">
+</head>
+<body>
+<div class="report">
+<div class="report-kicker">Release note · v0.1.0</div>
+<h1 class="report-title">A fictitious release</h1>
+<p class="report-framing">Every entry in this note is invented, to show the MedQuantis print module on the kit&#x27;s release-note report.</p>
+<div class="cartouche"><div class="cart-row"><span class="cart-k">Period</span><span class="cart-v">2026-01-05 to 2026-01-30</span></div><div class="cart-row"><span class="cart-k">Status</span><span class="cart-v">active</span></div><div class="cart-row"><span class="cart-k">Full changelog</span><span class="cart-v"><code>v0.0.1...v0.1.0</code></span></div><div class="cart-row"><span class="cart-k">Generated</span><span class="cart-v">com-release-note on 2026-01-30 from <code>v0.1.0-kit-fixture.md</code>. Source note is the single source of truth; re-render after edits.</span></div></div>
+<div class="recap"><div class="recap-label">Release at a glance</div><div class="recap-body"><div class="recap-figure"><div class="donut"><svg class="donut-svg" viewBox="0 0 100 100" role="presentation"><g transform="rotate(-90 50 50)"><circle cx="50" cy="50" r="38.39" fill="none" style="stroke:var(--chart-1)" stroke-width="23.21" stroke-dasharray="95.55 145.68" stroke-dashoffset="-0.00"/><circle cx="50" cy="50" r="38.39" fill="none" style="stroke:var(--chart-2)" stroke-width="23.21" stroke-dasharray="47.31 193.92" stroke-dashoffset="-96.49"/><circle cx="50" cy="50" r="38.39" fill="none" style="stroke:var(--chart-3)" stroke-width="23.21" stroke-dasharray="47.31 193.92" stroke-dashoffset="-144.74"/><circle cx="50" cy="50" r="38.39" fill="none" style="stroke:var(--chart-4)" stroke-width="23.21" stroke-dasharray="47.31 193.92" stroke-dashoffset="-192.98"/></g></svg><div class="donut-hole"><span class="donut-total">5</span><span class="donut-cap">entries</span></div></div><div class="donut-legend"><div class="dl-row"><span class="dl-sw" style="background:var(--chart-1)"></span><span class="dl-k">New capabilities</span><span class="dl-v">2</span><span class="dl-p">40%</span></div><div class="dl-row"><span class="dl-sw" style="background:var(--chart-2)"></span><span class="dl-k">Platform items</span><span class="dl-v">1</span><span class="dl-p">20%</span></div><div class="dl-row"><span class="dl-sw" style="background:var(--chart-3)"></span><span class="dl-k">Fixes</span><span class="dl-v">1</span><span class="dl-p">20%</span></div><div class="dl-row"><span class="dl-sw" style="background:var(--chart-4)"></span><span class="dl-k">Breaking changes</span><span class="dl-v">1</span><span class="dl-p">20%</span></div></div></div><div class="recap-cards"><div class="recap-card"><div class="rc-k">Days</div><div class="rc-v">25</div></div></div></div></div>
+<section class="section section--page-break"><div class="section-label">What&#x2019;s new</div>
+<div class="product-card">
+<h2 class="product-name"><span class="product-id">P1</span>Fixture Portal</h2>
+<div class="capability-group">
+<ul class="entry-list"><li><span class="entry-ref">C1.1</span><span class="entry-label">Sample listing:</span> Readers see an invented list of sample items, sorted by name.<span class="entry-audit">(0001)</span></li><li><span class="entry-ref">C1.2</span><span class="entry-label">Sample export:</span> The invented list can be exported to a file.<span class="entry-audit">(0002)</span></li></ul></div>
+</div>
+</section>
+<section class="section"><div class="section-label">Fixes and improvements</div><div class="bucket"><ul class="entry-list"><li><span class="entry-label">Sample search:</span> The search box no longer clears itself after a fictitious timeout.<span class="entry-audit">(0003)</span></li></ul></div></section>
+<section class="section section--page-break"><div class="section-label">Platform and engineering</div><div class="bucket"><ul class="entry-list"><li class="entry--titled"><h3 class="capability-label"><span class="entry-ref entry-num">01</span>Build</h3><div>The fixture build runs on every merge.<span class="entry-audit">(0004)</span></div></li></ul></div></section>
+<section class="section section--breaking"><div class="section-label">Breaking changes</div><div class="breaking"><ul class="entry-list"><li>The invented <code>/fixture/v1</code> endpoint is retired in favour of <code>/fixture/v2</code>.</li></ul></div></section>
+</div>
+</body>
+</html>

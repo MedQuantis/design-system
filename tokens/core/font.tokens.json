@@ -166,6 +166,17 @@
           },
           "$description": "Font size 16.5 px (Report design system, 2026-10-08)."
         }
+      },
+      "line-height": {
+        "$type": "number",
+        "1-15": {
+          "$value": 1.15,
+          "$description": "Line height 1.15, the tight end of headings, counters and stat figures (owner, 2026-10-15)."
+        },
+        "1-55": {
+          "$value": 1.55,
+          "$description": "Line height 1.55 of app UI text, labels, descriptions and the document body (owner, 2026-10-15)."
+        }
       }
     }
   }

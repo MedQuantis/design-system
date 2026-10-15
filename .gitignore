@@ -1,5 +1,8 @@
 node_modules/
 dist/
+# A build output like dist/, written to the root because the kit resolver reads kit-manifest.json
+# at the top of the package only (design_source.py _load_package), never through exports.
+/kit-manifest.json
 test-results/
 playwright-report/
 *.tgz

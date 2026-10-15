@@ -15,6 +15,8 @@ const EXPORTS = [
   "./tokens.json",
   "./tailwind.css",
   "./kit-contract.css",
+  "./kit/*",
+  "./kit-manifest.json",
   "./css/*",
   "./fonts.css",
   "./brand/*",
@@ -23,9 +25,19 @@ const EXPORTS = [
 ];
 
 // The generated files a release ships; the specimen, eval reports and the skill zip stay local.
-const DIST_FILES = ["dist/tokens.css", "dist/tokens.json", "dist/tailwind.css", "dist/kit-contract.css", "dist/llms.txt", "dist/llms-full.txt"];
+// kit-manifest.json is generated too, at the root, because the kit reads it there only.
+const DIST_FILES = [
+  "dist/tokens.css",
+  "dist/tokens.json",
+  "dist/tailwind.css",
+  "dist/kit-contract.css",
+  ...["core", "dataviz", "type", "space-shape", "brand"].map((module) => `dist/kit/${module}.css`),
+  "dist/kit/guidance.md",
+  "dist/llms.txt",
+  "dist/llms-full.txt",
+];
 const SHIPPED_FOLDERS = ["css/", "fonts/", "icons/", "brand/", "guidelines/"];
-const ROOT_FILES = ["LICENSE", "README.md", "package.json", "stylelint.config.mjs"];
+const ROOT_FILES = ["LICENSE", "README.md", "package.json", "stylelint.config.mjs", "kit-manifest.json"];
 const LICENCE_FILES = ["LICENSE", "brand/LICENSE", "guidelines/LICENSE", "icons/LICENSE", "fonts/outfit/OFL.txt", "fonts/newsreader/OFL.txt", "fonts/geist-mono/OFL.txt"];
 
 let packed;
@@ -46,7 +58,7 @@ test("the npm tarball holds only the built tokens, css, fonts, icons, brand, gui
   for (const folder of ["tests/", "scripts/", "docs/", "plugins/", "tokens/", "build/", "examples/", "dist/specimen/", "dist/skill-evals/", ".github/"]) {
     assert.ok(!files.some((path) => path.startsWith(folder)), `${folder} must not ship`);
   }
-  for (const file of [...DIST_FILES, ...LICENCE_FILES, "README.md"]) assert.ok(files.includes(file), `${file} is missing from the tarball`);
+  for (const file of [...DIST_FILES, ...LICENCE_FILES, "README.md", "kit-manifest.json"]) assert.ok(files.includes(file), `${file} is missing from the tarball`);
 });
 
 test("package.json exports every subpath consumers use, and each target ships", () => {

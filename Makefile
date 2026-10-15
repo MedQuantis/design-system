@@ -1,4 +1,4 @@
-.PHONY: check test test-unit test-e2e specimen browsers build lint workflow-lint confidentiality-check assets brand brand-check skill skill-zip skill-evals plugin-validate
+.PHONY: check test test-unit test-e2e specimen browsers build kit-check lint workflow-lint confidentiality-check assets brand brand-check skill skill-zip skill-evals plugin-validate
 
 # Single local entry point; CI runs the same target.
 check: lint workflow-lint build test confidentiality-check
@@ -29,11 +29,19 @@ node_modules/.package-lock.json: package-lock.json
 	npm ci --ignore-scripts
 
 # dist/ is generated from tokens/ and never committed; rebuilt from scratch every time. The llms
-# files are generated from guidelines/ and the token build.
+# files are generated from guidelines/ and the token build. build-kit writes the kit guidance and
+# kit-manifest.json, a build output at the root (gitignored) because the kit reads it there only.
 build: node_modules/.package-lock.json
-	rm -rf dist
+	rm -rf dist kit-manifest.json
 	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
 	node scripts/build-llms.mjs
+	node scripts/build-kit.mjs
+
+# The real kit is the judge (Plan-0002, Principle 6): pack the package, unpack it into a scratch
+# folder and run the kit resolver on it, from the homemade-claude-kit checkout named by KIT_DIR.
+# Not in make check, because CI has no kit checkout; without KIT_DIR it prints a skip and exits 0.
+kit-check: build
+	node scripts/kit-check.mjs
 
 # Stylelint on the shared CSS; the custom-property rule reads dist/tokens.css, so build first.
 lint: build

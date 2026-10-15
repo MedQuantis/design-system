@@ -47,6 +47,7 @@ const BANNER = "/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT Lice
 test("every shipped stylesheet starts with the copyright banner", () => {
   const sheets = [
     ...["tokens", "tailwind", "kit-contract"].map((name) => `dist/${name}.css`),
+    ...["core", "dataviz", "type", "space-shape", "brand"].map((module) => `dist/kit/${module}.css`),
     ...["app", "base", "components", "print", "slide"].map((name) => `css/${name}.css`),
     "fonts/fonts.css",
   ];

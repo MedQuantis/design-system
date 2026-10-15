@@ -2,7 +2,7 @@
 
 The homemade-claude-kit renderers emit their own class names, listed under `classes` in the kit contract (`tests/fixtures/kit-contract/modules.json`). The MedQuantis document, slide-frame and print modules restyle them by hand, in `css/kit/document.css`, `css/kit/slide-frame.css` and `css/kit/print.css`, against contract roles only (Plan-0002 increment 02, owner decision 4). This table names, for each kit class, the MedQuantis rule whose look it reproduces, or the guideline it follows where MedQuantis has no counterpart. `tests/unit/kit-modules.test.mjs` checks that every class has a row and that every named `mq-` class exists in `css/`.
 
-Where a MedQuantis value has no contract role, the closest role stands in, as noted: tertiary grey becomes `--muted` (the contract has no tertiary text role), the 12.5 px note size `--font-size-sm` (13 px), the 18 px slide text `--font-size-md` (16.5 px), the medium shadow `--shadow` (the small one). The print rules use literal print sizes and the weight 500, because the report inlines no type role.
+Where a MedQuantis value has no contract role, the closest role stands in, as noted: the 12.5 px note size `--font-size-sm` (13 px), the 18 px slide text `--font-size-md` (16.5 px), the medium shadow `--shadow` (the small one). The print rules use literal print sizes and the weight 500, because the report inlines no type role.
 
 | Kit class | Module | Reproduces |
 | :-- | :-- | :-- |

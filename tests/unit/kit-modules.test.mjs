@@ -86,10 +86,10 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.0.0 from homemade-claude-kit 98aa290", () => {
+test("the vendored kit contract is 2.0.0 from homemade-claude-kit eb04989", () => {
   assert.equal(contract().contractVersion, "2.0.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "98aa290", "plugins/delivery-comms/contract/", "2.0.0"]) {
+  for (const fact of ["homemade-claude-kit", "eb04989", "plugins/delivery-comms/contract/", "2.0.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });
@@ -222,7 +222,7 @@ test("brand: logo roles are url() values of shipped exports, the legal line come
 test("every text pair of the contract reaches WCAG AA, a list pair when any of its roles does", () => {
   const values = new Map([...TOKEN_MODULES].flatMap((module) => [...declarations(moduleCss(module))]));
   const { pairs } = contract();
-  assert.equal(pairs.length, 13);
+  assert.equal(pairs.length, 14); // 13, plus --tertiary on --canvas-bg (kit #148)
   for (const pair of pairs) {
     const bg = values.get(pair.bg);
     assert.match(bg ?? "", /^#[0-9a-f]{6}$/i, `${pair.bg} is not a hex colour`);

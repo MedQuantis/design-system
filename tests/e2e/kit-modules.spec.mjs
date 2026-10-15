@@ -10,7 +10,7 @@ const fixture = (name) => pathToFileURL(join(root, "tests/e2e/fixtures", name)).
 
 // The slide frame of owner ruling 11: 72 px side margins (guidelines/layout.md, Media).
 const SIDE = 72;
-const MUTED = "rgb(85, 85, 85)";
+const TERTIARY = "rgb(112, 112, 112)"; // #707070, the tertiary grey (owner rulings 1 and 11)
 const CANVAS = "rgb(250, 250, 248)";
 
 let external;
@@ -52,7 +52,7 @@ test("kit deck: the slide frame puts the legal line bottom left and the number b
     for (const box of [legal, number]) expect(box.y, "in the footer row").toBeGreaterThan(frame.y + frame.height - SIDE);
     await expect(slide.locator(".slide-logo"), "MedQuantis slides carry no logo in the footer row").toBeHidden();
     for (const cell of [".slide-legal", ".slide-number"]) {
-      await expect(slide.locator(cell)).toHaveCSS("color", MUTED);
+      await expect(slide.locator(cell)).toHaveCSS("color", TERTIARY);
       await expect(slide.locator(cell)).toHaveCSS("font-family", /Geist Mono/);
     }
     await expect(slide).toHaveCSS("background-color", CANVAS);

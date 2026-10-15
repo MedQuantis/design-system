@@ -11,6 +11,10 @@
           "$value": "{semantic.color.muted}",
           "$description": "Kit contract: secondary text."
         },
+        "tertiary": {
+          "$value": "{semantic.color.tertiary}",
+          "$description": "Kit contract 2.0.0: tertiary text for slide footers, legal lines, slide numbers and source lines (Owner ruling 1 and ruling 11, 2026-10-09). Not in kit-contract.css, which keeps the old 24 roles."
+        },
         "canvas-bg": {
           "$value": "{semantic.color.canvas}",
           "$description": "Kit contract: page background (Owner ruling 9, 2026-10-09)."

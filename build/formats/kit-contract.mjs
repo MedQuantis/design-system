@@ -5,8 +5,10 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { LICENCE_BANNER } from "../licence-banner.mjs";
 
-// The 24 roles of the old contract are the kit tier's core module (tokens/kit/, kit.core).
-const isKit = (token) => token.path[0] === "kit" && token.path[1] === "core";
+// The 24 roles of the old contract are the kit tier's core module (tokens/kit/, kit.core), less the
+// roles contract 2.0.0 added to core, which the old renderers do not know.
+const ADDED_IN_2_0 = ["tertiary"];
+const isKit = (token) => token.path[0] === "kit" && token.path[1] === "core" && !ADDED_IN_2_0.includes(token.path.at(-1));
 
 // Kit renderers inline this file into the HTML they write elsewhere and ignore @import, so a
 // relative url() would resolve against the output, not against fonts/. The faces travel as

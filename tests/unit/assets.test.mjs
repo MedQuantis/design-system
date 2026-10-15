@@ -137,16 +137,18 @@ const LICENCE_FILE = /(?:^|\/)(?:OFL\.txt|LICENSE)$/;
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const CDN_HOST = /fonts\.googleapis\.com|fonts\.gstatic\.com|unpkg\.com|jsdelivr\.net|cdnjs\.cloudflare\.com/i;
 const TEXT_EXTENSIONS = new Set([".css", ".json", ".js", ".mjs", ".svg", ".html", ".txt", ".md", ""]);
-// The llms files and the kit guidance are documentation for language models and agents: their
-// links point readers at the CDN release or an issue and are never loaded by a page.
-const LLM_DOCS = new Set(["dist/llms.txt", "dist/llms-full.txt", "dist/kit/guidance.md"]);
+// The llms files, the kit guidance, DESIGN.md and the brand book of the claude.ai Design System are
+// documentation for language models and agents: their links point readers at the CDN release or an
+// issue and are never loaded by a page. The Design System's previews and JSON are still checked.
+const LLM_DOCS = new Set(["dist/llms.txt", "dist/llms-full.txt", "dist/kit/guidance.md", "dist/DESIGN.md"]);
+const isAgentDoc = (name) => LLM_DOCS.has(name) || (name.startsWith("dist/claude-design-system/") && name.endsWith(".md"));
 
 test("no shipped file requests a remote font, icon or stylesheet", () => {
   const files = ["fonts", "icons", "brand", "css", "dist"].flatMap((dir) => walk(at(dir)));
   assert.ok(files.some((file) => file.startsWith(at("fonts"))), "fonts/ is empty");
   for (const file of files) {
     const name = relative(root, file);
-    if (!TEXT_EXTENSIONS.has(extname(file)) || LLM_DOCS.has(name)) continue;
+    if (!TEXT_EXTENSIONS.has(extname(file)) || isAgentDoc(name)) continue;
     const text = readFileSync(file, "utf8");
     assert.doesNotMatch(text, CDN_HOST, `${name} names a font or script CDN`);
     for (const [, url] of text.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) assert.ok(!isRemote(url), `${name}: remote url(${url.slice(0, 60)})`);

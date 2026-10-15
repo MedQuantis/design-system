@@ -12,6 +12,18 @@ This folder records the pre-public audit (`<date>-pre-public-audit.md`) and the 
 
 The tag is pushed with the workflow token, which starts no other workflow; that is why `check` repeats the CI gate instead of relying on `ci.yml`.
 
+### After each release: the claude.ai Design System
+
+`make build` also writes `dist/claude-design-system/project/`, the claude.ai Design System artifact of that version (Plan-0002 increment 04; format: `tests/fixtures/claude-design-system/type-instructions.md`, the type's instructions with their release id). It is not in the npm package, and no workflow publishes it yet: the Artifact API cannot be driven from CI. After the release, the owner publishes it by hand from a Claude Code session, on the released tag:
+
+1. Check out the tag and run `make build`. The index (`design-system.json`) then says `"via": "CI release vX.Y.Z"`, which tells anyone editing the system on claude.ai that the next release overwrites their edits.
+2. First release only: create the system from the Design System type with the title `MedQuantis` and no files. Later releases publish to the same system url.
+3. Upload each file of `assets/Logos/` except its `README.md` to the system's url as an asset, and note the `/_blob/<id>` each upload returns.
+4. Publish every other file under `project/` (tokens.json, the brand book `.md` files, `assets/Logos/README.md`, the component folders, the cover last), in calls of at most 255 paths, without `design-system.json`.
+5. Last, in its own call, publish `design-system.json`. On a later release, first read the one online, then keep its `createdOnFiles` marker and any keys people added there. Add one record per logo to `assetGroups.Logos.files`: `{"name", "blob", "size", "type": "image/svg+xml"}`, with `name` as in `order` and `size` in bytes.
+
+Automating this from the release workflow is a follow-up, once the Artifact API allows it.
+
 ## First release: steps for the owner
 
 These cannot be automated from the repository. All were done by 2026-10-11, when `v1.0.0` was published; they are kept as the record of how the trusted publisher was set up.

@@ -2,7 +2,7 @@
 
 The single source of the MedQuantis visual identity: design tokens, shared CSS, self-hosted fonts and icons, brand assets, guidelines and a Claude skill. Every value is defined once, in `tokens/`, and reaches each consumer as a generated output in its native format ([ADR-0002](docs/architecture/decisions/adr-0002-central-tokens-first-design-system.md)).
 
-> Status: bootstrap. Nothing is published yet; the repository stays private until the pre-public confidentiality audit passes ([ADR-0005](docs/architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md)).
+> Status: published on npm as `@medquantis/design-system`; the repository is public behind the confidentiality gate ([ADR-0005](docs/architecture/decisions/adr-0005-public-repo-with-confidentiality-gate.md)).
 
 ## Outputs
 
@@ -17,6 +17,8 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
+| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.0.0): the manifest declares nine modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
+| `dist/DESIGN.md` | Tools and agents outside the kit: the tokens as [Google DESIGN.md](https://github.com/google-labs-code/design.md) front matter, then the guidelines as prose |
 | `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |
 | `plugins/medquantis-design-system/` | The Claude skill, as a Claude Code plugin and as a zip for claude.ai (see Claude skill) |
 
@@ -105,6 +107,57 @@ echo "sha384-$(openssl dgst -sha384 -binary dist/tokens.css | openssl base64 -A)
 ```
 
 Every other shipped file (`css/*.css`, `fonts/fonts.css`, `dist/kit-contract.css`) works the same way, each with its own hash. Fonts referenced by `fonts.css` load relative to it, so serve the stylesheet and its fonts from the same release URL.
+
+## Using it from the delivery-comms kit
+
+The homemade-claude-kit renders decks (`com-slide-deck`), artefact views (`com-artefact-viz`) and release notes (`com-release-note`) with the design system a project pins. A project pins this package once, with the kit's `ux-design-system` skill, at an exact version (1.1.0 is the first release with the kit modules):
+
+```sh
+python3 <skill-dir>/scripts/design_system.py point @medquantis/design-system@1.1.0
+```
+
+In the kit's words this is `ux-design-system point @medquantis/design-system@1.1.0`. It writes the pin to `docs/ux/package.json`, checks the package's `kit-manifest.json` through the kit resolver and prints the Dependabot entry (`directory: "/docs/ux"`) that turns later releases into pull requests. Change the pin only with `point`, never by hand, and never add a `docs/ux/tokens.css`. Each render writes `<output>.provenance.json`, which names the module each value came from.
+
+`kit-manifest.json`, at the top of the package, declares all nine modules of the contract, so the kit's base theme fills none of them:
+
+| Module | File | Carries |
+| :-- | :-- | :-- |
+| `core` | `dist/kit/core.css` | Text, canvas, surface, border, accent and status colours, the tertiary grey of footers and legal lines, the three faces with their font files, title size, spacing, radii and the card shadow |
+| `dataviz` | `dist/kit/dataviz.css` | The ordered navy and blue-grey chart series, the rest series, axis, grid and highlight |
+| `type` | `dist/kit/type.css` | The type scale, the body and tight line heights, weights 400 and 500 |
+| `space-shape` | `dist/kit/space-shape.css` | The smallest and largest spacing steps, the small radius, the 6 px maximum radius (no pill shapes) and the hairline stroke |
+| `document` | `dist/kit/document.css` | The A4 document: page colour, text size, rules, and the MedQuantis rules for the kit's document classes |
+| `slide-frame` | `dist/kit/slide-frame.css` | The 1280 by 720 slide: canvas, padding, section label, and the footer row with the legal line and slide number |
+| `print` | `dist/kit/print.css` | The release-note report: page size, margins, and breaking changes in navy, never a status hue |
+| `brand` | `dist/kit/brand.css` | The wordmarks on light and on navy, the monogram and the legal line |
+| `guidance` | `dist/kit/guidance.md` | The rules from `guidelines/` that the kit's skills read before writing a page |
+
+The kit lines a consumer repository adds to its `AGENTS.md` (or `CLAUDE.md`) are the kit's own: copy the [AGENTS.md block of `ux-design-system`](https://github.com/VictorHueni/homemade-claude-kit/blob/release/2.0/plugins/delivery-comms/skills/ux-design-system/references/agents-md-block.md) as it stands at the kit version you use, rather than a copy kept here. Below it, add the MedQuantis lines:
+
+```markdown
+## MedQuantis brand
+- Anything that carries the MedQuantis brand (slides, A4 reports, web pages, app screens, charts) outside a kit render is built with the `medquantis-design-system` skill, and is not done until its validator (`validate.py --record`) reports no finding.
+- Values come from `--mq-*` tokens only; a local addition uses this project's own prefix and references `var(--mq-*)`, never a literal colour, font or shadow.
+- Documents (slides, reports, papers, the website) are navy only and show a state by mark style; the status colours belong to interactive apps alone.
+- Tools that read a DESIGN.md take the one in the pinned package (`@medquantis/design-system/DESIGN.md`), never a hand-written copy.
+```
+
+To give every session in that repository the `medquantis-design-system` plugin, local and cloud alike, commit this `.claude/settings.json` (merge the two keys into an existing file).
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "medquantis": {
+      "source": { "source": "github", "repo": "MedQuantis/design-system" }
+    }
+  },
+  "enabledPlugins": {
+    "medquantis-design-system@medquantis": true
+  }
+}
+```
+
+Tools and agents outside the kit read `dist/DESIGN.md` (exported as `@medquantis/design-system/DESIGN.md`): the same tokens and rules in Google's DESIGN.md format, generated by `make build` and checked with Google's linter.
 
 ## Specialisation rules
 

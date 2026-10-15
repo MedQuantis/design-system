@@ -191,5 +191,6 @@ Deliver the bundled, validated file itself (an artifact, an attachment, a PDF so
 - [references/web.md](references/web.md): the website and web pages
 - [references/app.md](references/app.md): interactive apps, including the status colours
 - [references/charts.md](references/charts.md): charts in any medium
+- [references/kit-modules.md](references/kit-modules.md): pages rendered by the homemade-claude-kit delivery-comms skills, and the nine kit modules this package provides
 
-Each reference is generated from the MedQuantis guidelines and ends with the colour tokens of its medium.
+Each medium reference is generated from the MedQuantis guidelines and ends with the colour tokens of its medium; the kit reference is written by hand.

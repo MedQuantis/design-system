@@ -17,6 +17,7 @@ const EXPORTS = [
   "./kit-contract.css",
   "./kit/*",
   "./kit-manifest.json",
+  "./DESIGN.md",
   "./css/*",
   "./fonts.css",
   "./brand/*",
@@ -33,6 +34,7 @@ const DIST_FILES = [
   "dist/kit-contract.css",
   ...["core", "dataviz", "type", "space-shape", "brand", "document", "slide-frame", "print"].map((module) => `dist/kit/${module}.css`),
   "dist/kit/guidance.md",
+  "dist/DESIGN.md",
   "dist/llms.txt",
   "dist/llms-full.txt",
 ];
@@ -55,7 +57,7 @@ test("the npm tarball holds only the built tokens, css, fonts, icons, brand, gui
   const allowed = (path) => DIST_FILES.includes(path) || ROOT_FILES.includes(path) || SHIPPED_FOLDERS.some((folder) => path.startsWith(folder));
   const strays = files.filter((path) => !allowed(path));
   assert.deepEqual(strays, [], `files outside the allow-list: ${strays.join(", ")}`);
-  for (const folder of ["tests/", "scripts/", "docs/", "plugins/", "tokens/", "build/", "examples/", "dist/specimen/", "dist/skill-evals/", ".github/"]) {
+  for (const folder of ["tests/", "scripts/", "docs/", "plugins/", "tokens/", "build/", "examples/", "dist/specimen/", "dist/skill-evals/", "dist/claude-design-system/", ".github/"]) {
     assert.ok(!files.some((path) => path.startsWith(folder)), `${folder} must not ship`);
   }
   for (const file of [...DIST_FILES, ...LICENCE_FILES, "README.md", "kit-manifest.json"]) assert.ok(files.includes(file), `${file} is missing from the tarball`);
@@ -120,4 +122,40 @@ test("README documents CDN use with an exact version and an SRI hash, never a ra
   assert.match(readme, /openssl dgst -sha384 -binary dist\/tokens\.css \| openssl base64 -A/);
   assert.doesNotMatch(readme, /cdn\.jsdelivr\.net\/gh\//);
   assert.doesNotMatch(readme, /—/, "README carries an em dash");
+});
+
+// Increment 05 of Plan-0002: a consumer repo learns from the README how to render with the
+// delivery-comms kit, where DESIGN.md is, and how to enable the plugin and brief its agents.
+const KIT_MODULES = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "print", "brand", "guidance"];
+
+test("README explains use from the delivery-comms kit, DESIGN.md, the agent lines and the plugin settings", () => {
+  const readme = read("README.md");
+  // The section runs to the next level-two heading outside a code block (the AGENTS.md lines hold one).
+  const lines = readme.split("\n");
+  const start = lines.indexOf("## Using it from the delivery-comms kit");
+  let fenced = false;
+  let end = lines.length;
+  for (let i = start + 1; start >= 0 && i < lines.length; i += 1) {
+    if (lines[i].startsWith("```")) fenced = !fenced;
+    else if (!fenced && lines[i].startsWith("## ")) {
+      end = i;
+      break;
+    }
+  }
+  const section = start >= 0 ? lines.slice(start, end).join("\n") : undefined;
+  assert.ok(section, "README has no section Using it from the delivery-comms kit");
+  assert.match(section, /docs\/ux\/package\.json/);
+  assert.match(section, /ux-design-system point @medquantis\/design-system@\d+\.\d+\.\d+/);
+  for (const module of KIT_MODULES) assert.match(section, new RegExp("`" + module + "`"), `the kit section does not name the ${module} module`);
+  assert.match(section, /https:\/\/github\.com\/VictorHueni\/homemade-claude-kit\/blob\/[\w./-]+\/plugins\/delivery-comms\/skills\/ux-design-system\/references\/agents-md-block\.md/);
+  assert.doesNotMatch(section, /## Design system \(delivery-comms\)/, "link the kit's AGENTS.md block, do not copy it");
+  assert.match(readme, /`dist\/DESIGN\.md`/);
+  assert.match(section, /CLAUDE\.md/);
+  assert.match(section, /AGENTS\.md/);
+  const json = section.match(/```json\n([\s\S]*?)\n```/);
+  assert.ok(json, "the kit section has no .claude/settings.json snippet");
+  const settings = JSON.parse(json[1]);
+  assert.deepEqual(settings.extraKnownMarketplaces?.medquantis?.source, { source: "github", repo: "MedQuantis/design-system" });
+  assert.equal(settings.enabledPlugins?.["medquantis-design-system@medquantis"], true);
+  assert.doesNotMatch(section, /[–—]/, "the kit section carries an em or en dash");
 });

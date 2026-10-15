@@ -51,3 +51,12 @@ export const readGuideline = (root, name) => {
 // A reference read outside the repository cannot follow relative links, and Agent Skills keep
 // references one level deep, so relative links become their plain label; absolute URLs stay.
 export const unlinkRelative = (markdown) => markdown.replace(/\[([^\]]+)\]\((?!https?:)[^)\s]+\)/g, "$1");
+
+// The legal line, written once in guidelines/brand.md (section "Legal line", the line in
+// backticks). The kit brand module reads it here instead of a second copy in tokens/.
+export const legalLine = (root) => {
+  const section = readGuideline(root, "brand.md").sections.get("Legal line");
+  const line = section?.match(/^`([^`]+)`$/m)?.[1];
+  if (!line) throw new Error("guidelines/brand.md has no legal line in backticks under ## Legal line");
+  return line;
+};

@@ -27,8 +27,8 @@ Principles:
 5. No breaking change: every existing export keeps its path and its bytes, apart from the files this plan adds.
 6. The real kit is the judge. From increment 01, `make kit-check` packs the package, unpacks it into a scratch folder and runs the kit resolver on it (`python3 $KIT_DIR/plugins/delivery-comms/shared/design_source.py provenance --design-system <folder>`), expecting exit 0 and every provided module reported as `design-system`; from increment 02 it also renders a kit fixture deck. It reads the kit checkout from `KIT_DIR` and skips with a clear message when `KIT_DIR` is unset, so CI stays self-contained; every increment's gate runs it locally.
 
-**Overall Status:** pending (peer-reviewed 2026-10-15, owner decisions applied; awaiting the owner's go)
-**Current Increment:** --
+**Overall Status:** in-progress
+**Current Increment:** 01
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ Principles:
 
 | Milestone | Increments | Status | Coherent outcome | Test gate | Commit scope |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| M1: Kit modules | 01-02 | pending | All nine modules and the manifest, accepted by the real kit | `make check`, `make kit-check` | `kit` |
+| M1: Kit modules | 01-02 | in-progress | All nine modules and the manifest, accepted by the real kit | `make check`, `make kit-check` | `kit` |
 | M2: DESIGN.md | 03 | pending | Agents outside the kit read the same brand | `make check`, `make kit-check` | `design-md` |
 | M3: Claude Design System | 04 | pending | The claude.ai design system generated from the build | `make check`, `make kit-check` | `claude` |
 | M4: Release 1.1.0 | 05 | pending | 1.1.0 on npm, rendering from the kit | `make check`, `make kit-check`, packed-folder render | `docs` |
@@ -49,22 +49,23 @@ Principles:
 
 ### Increment 01: core, dataviz and the token modules, with the manifest
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
-1. **Write first, expect red:** `tests/unit/kit-modules.test.mjs`: for each of `core`, `dataviz`, `type`, `space-shape` and `brand`, `dist/kit/<module>.css` defines every role the vendored `modules.json` lists for it and nothing outside it, and never a `--kit-*` property; every value equals the value of the token it aliases in `tokens/kit/`; every role of a provided module resolves to a token in `tokens/`; `dist/kit/guidance.md` exists; `dist/kit-manifest.json` validates against the vendored schema (checked by `ajv`, pinned exactly as a devDependency), declares `contractVersion` 2.0.0, provides those five modules and `guidance` under export paths that resolve in the packed tarball, and lists `document`, `slide-frame` and `print` under `omitted` until increment 02; every text pair the vendored `modules.json` lists under `pairs` passes WCAG AA with this design's values, a pair whose `fg` is a list passing when any of its roles reaches 4.5:1 (all 13 pass today: white text on series 1 and 2, dark text on series 3); `core` and `dataviz` values equal today's `dist/kit-contract.css` where both define a role; every `dist/kit/*.css` starts with the copyright banner (extend `tests/unit/smoke.test.mjs`); the `package.json` `exports` gain `./kit/*` and `./kit-manifest.json`; `npm pack --dry-run` includes them. `make kit-check` reports `core`, `dataviz`, `type`, `space-shape`, `brand` and `guidance` as `design-system`.
+1. **Write first, expect red:** `tests/unit/kit-modules.test.mjs`: for each of `core`, `dataviz`, `type`, `space-shape` and `brand`, `dist/kit/<module>.css` defines every role the vendored `modules.json` lists for it and nothing outside it, and never a `--kit-*` property; every value equals the value of the token it aliases in `tokens/kit/`; every role of a provided module resolves to a token in `tokens/`; `dist/kit/guidance.md` exists; `kit-manifest.json`, at the repository root, validates against the vendored schema (checked by `ajv`, pinned exactly as a devDependency), declares `contractVersion` 2.0.0, provides those five modules and `guidance` under export paths that resolve in the packed tarball, and lists `document`, `slide-frame` and `print` under `omitted` until increment 02; every text pair the vendored `modules.json` lists under `pairs` passes WCAG AA with this design's values, a pair whose `fg` is a list passing when any of its roles reaches 4.5:1 (all 13 pass today: white text on series 1 and 2, dark text on series 3); `core` and `dataviz` values equal today's `dist/kit-contract.css` where both define a role; every `dist/kit/*.css` starts with the copyright banner (extend `tests/unit/smoke.test.mjs`); the `package.json` `exports` gain `./kit/*` (to `./dist/kit/*`) and `./kit-manifest.json`, `files` gains `dist/kit/` and `kit-manifest.json`, and the lists in `tests/unit/package.test.mjs` follow; `npm pack --dry-run` includes them, with the manifest at `package/kit-manifest.json`. `make kit-check` reports `core`, `dataviz`, `type`, `space-shape`, `brand` and `guidance` as `design-system`.
 2. **The kit tier.** One DTCG group per module under `tokens/kit/`, aliasing semantic tokens, extending `tokens/kit/contract.tokens.json`; a Style Dictionary format per module in `build/formats/kit-modules.mjs` writes `dist/kit/<module>.css` from it (with the banner from `build/licence-banner.mjs`), and `dist/kit-contract.css` keeps coming from the same entries. No separate mapping table. `type` and `space-shape` add roles and never redefine a `core` role. `core` keeps the embedded latin font faces `kit-contract.css` carries today; under the kit contract, fonts are the `@font-face` rules of any provided module.
 3. **Dataviz mapping** (owner 2026-10-15, by name, each `$description` citing `guidelines/charts.md`): `--chart-1` to `--chart-4` to the four ordered series, `--chart-rest` to the remainder fill, `--chart-axis` to the chart axis token (axis lines and ticks), `--chart-grid` to the chart baseline token (the one 1 px baseline; MedQuantis draws no background grid), `--chart-highlight` to series 1 (highlight on grey).
 4. **Type and space-shape** (owner 2026-10-15): two new semantic line-height tokens, `body` 1.55 and `tight` 1.15, taken from `css/base.css`, which then reads them too (the display size keeps its own 1.08, the kit has no role for it); `--line-height-body` and `--line-height-tight` alias them. `--border-width` aliases the hairline stroke (1px). `--radius-pill` aliases the 6 px maximum radius, its `$description` citing Owner ruling 3 (no pill shapes).
 5. **Brand.** `--brand-logo-on-light`, `--brand-logo-on-dark` and `--brand-mark` are `url()` values naming the logo exports: `url("./brand/wordmark-on-light.svg")`, `url("./brand/wordmark-on-navy.svg")`, `url("./brand/monogram.svg")` (the kit resolver inlines only `url()` values). `--brand-legal` is a CSS string: the legal line of `guidelines/brand.md`, generated from one source shared with the guideline.
 6. **Guidance** (owner 2026-10-15): one generated file, `dist/kit/guidance.md`, with a section per module (do and don't lines from the guidelines); the manifest maps `guidance` to `./kit/guidance.md`. Not a folder: the kit resolver refuses a folder export and with it the whole design (kit issue [#145](https://github.com/VictorHueni/homemade-claude-kit/issues/145)). The kit treats guidance as informational (kit Plan-0005 Q-6).
-7. **`make kit-check`** (Principle 6): the `Makefile` target, and `KIT_DIR` documented in the README's Development section.
+7. **Manifest at the package root** (owner 2026-10-15): the kit reads `kit-manifest.json` at the top of the unpacked package only, never through `exports` (`design_source.py` `_load_package`), so the build writes it to the repository root, not `dist/`; it is gitignored like every build output, with a comment saying why it sits there.
+8. **`make kit-check`** (Principle 6): the `Makefile` target, and `KIT_DIR` documented in the README's Development section.
 
 Primary files:
 
-1. `tokens/kit/`, `tokens/semantic/`, `build/formats/kit-modules.mjs`, `build/style-dictionary.config.mjs`, `css/base.css`, `package.json`, `Makefile`
-2. `tests/unit/kit-modules.test.mjs`, `tests/unit/smoke.test.mjs`, `tests/fixtures/kit-contract/`
+1. `tokens/kit/`, `tokens/semantic/`, `build/formats/kit-modules.mjs`, `build/style-dictionary.config.mjs`, `css/base.css`, `package.json`, `.gitignore`, `Makefile`
+2. `tests/unit/kit-modules.test.mjs`, `tests/unit/smoke.test.mjs`, `tests/unit/package.test.mjs`, `tests/fixtures/kit-contract/`
 
 Test gate:
 

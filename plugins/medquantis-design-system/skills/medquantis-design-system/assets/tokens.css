@@ -59,6 +59,8 @@
   --mq-core-font-size-56: 56px; /** Font size 56 px (Report design system, 2026-10-08). */
   --mq-core-font-size-12-5: 12.5px; /** Font size 12.5 px (Report design system, 2026-10-08). */
   --mq-core-font-size-16-5: 16.5px; /** Font size 16.5 px (Report design system, 2026-10-08). */
+  --mq-core-font-line-height-1-15: 1.15; /** Line height 1.15, the tight end of headings, counters and stat figures (owner, 2026-10-15). */
+  --mq-core-font-line-height-1-55: 1.55; /** Line height 1.55 of app UI text, labels, descriptions and the document body (owner, 2026-10-15). */
   --mq-core-radius-3: 3px; /** Owner ruling 3, 2026-10-09: small items (tags, inputs, chips). */
   --mq-core-radius-6: 6px; /** Owner ruling 3, 2026-10-09: cards and panels; the maximum anywhere, no pill shapes. */
   --mq-core-radius-12: 12px; /** Owner ruling 3, amended 2026-10-10: the one exception above 6 px, for app dialogs and modals, side drawers and command palettes only; never in documents, slides, cards or website media. */
@@ -158,6 +160,8 @@
   --mq-font-weight-emphasis: 600; /** Owner ruling 4, 2026-10-09: a short highlighted word inside body text, as the Med of the logo. */
   --mq-font-weight-body: 400; /** Body text. */
   --mq-font-weight-light: 300; /** Owner ruling 6, 2026-10-09: only the Quantis half of the wordmark; never for headings or body text. */
+  --mq-font-line-height-body: 1.55; /** Body line height of documents, slides and pages (owner, 2026-10-15). */
+  --mq-font-line-height-tight: 1.15; /** Tight line height of section titles; the display title keeps its own 1.08 (owner, 2026-10-15). */
   --mq-font-size-hero-min: 34px; /** Hero title at the narrowest viewport. */
   --mq-font-size-hero-max: 56px; /** Hero title at the widest viewport. */
   --mq-font-size-h2: 32px; /** Section title. */

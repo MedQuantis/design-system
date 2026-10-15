@@ -39,6 +39,17 @@
           "$description": "Owner ruling 6, 2026-10-09: only the Quantis half of the wordmark; never for headings or body text."
         }
       },
+      "line-height": {
+        "$type": "number",
+        "body": {
+          "$value": "{core.font.line-height.1-55}",
+          "$description": "Body line height of documents, slides and pages (owner, 2026-10-15)."
+        },
+        "tight": {
+          "$value": "{core.font.line-height.1-15}",
+          "$description": "Tight line height of section titles; the display title keeps its own 1.08 (owner, 2026-10-15)."
+        }
+      },
       "size": {
         "$type": "dimension",
         "hero-min": {

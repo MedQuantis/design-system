@@ -1,114 +1,252 @@
 {
   "kit": {
-    "color": {
-      "$type": "color",
-      "ink": {
-        "$value": "{semantic.color.ink}",
-        "$description": "Kit contract: primary text."
-      },
-      "muted": {
-        "$value": "{semantic.color.muted}",
-        "$description": "Kit contract: secondary text."
-      },
-      "canvas-bg": {
-        "$value": "{semantic.color.canvas}",
-        "$description": "Kit contract: page background (Owner ruling 9, 2026-10-09)."
-      },
-      "surface": {
-        "$value": "{semantic.color.surface}",
-        "$description": "Kit contract: card and panel background (Owner ruling 9, 2026-10-09)."
-      },
-      "surface-2": {
-        "$value": "{semantic.color.surface-alt}",
-        "$description": "Kit contract: recessed or group background."
-      },
-      "border": {
-        "$value": "{semantic.color.border}",
-        "$description": "Kit contract: hairlines and dividers."
-      },
-      "accent": {
-        "$value": "{semantic.color.accent}",
-        "$description": "Kit contract: primary action, links and identifiers; navy (ADR-0003)."
-      },
-      "accent-ink": {
-        "$value": "{semantic.color.on-accent}",
-        "$description": "Kit contract: text on accent fills, and on every state fill the kit renderers draw."
-      },
-      "success": {
-        "$value": "{semantic.color.status.success}",
-        "$description": "Kit contract: positive state."
-      },
-      "warning": {
-        "$value": "{semantic.color.status.warning}",
-        "$description": "Kit contract: caution state. Warning strong, not the fill, because kit renderers put white text on it (Owner ruling 5, 2026-10-09)."
-      },
-      "danger": {
-        "$value": "{semantic.color.status.danger}",
-        "$description": "Kit contract: negative state."
-      },
-      "info": {
-        "$value": "{semantic.color.status.info}",
-        "$description": "Kit contract: informational state."
-      }
-    },
-    "font": {
-      "$type": "fontFamily",
-      "font-body": {
-        "$value": "{semantic.font.family.body}",
-        "$description": "Kit contract: body and reading text, Newsreader (Owner ruling 10, 2026-10-09)."
-      },
-      "font-heading": {
-        "$value": "{semantic.font.family.heading}",
-        "$description": "Kit contract: titles, headings, badges and buttons, Outfit (Owner ruling 10, 2026-10-09)."
-      },
-      "font-mono": {
-        "$value": "{semantic.font.family.mono}",
-        "$description": "Kit contract: identifiers, codes and figures, Geist Mono (Owner ruling 10, 2026-10-09)."
-      }
-    },
-    "size": {
-      "$type": "dimension",
-      "title-size": {
-        "$value": "{semantic.font.size.h2}",
-        "$description": "Kit contract: view and slide title size, the section title size."
-      },
-      "space-sm": {
-        "$value": "{semantic.space.2}",
-        "$description": "Kit contract: small spacing, 8 px."
-      },
-      "space-md": {
-        "$value": "{semantic.space.4}",
-        "$description": "Kit contract: medium spacing, 16 px."
-      },
-      "space-lg": {
-        "$value": "{semantic.space.6}",
-        "$description": "Kit contract: large spacing, 32 px."
-      },
-      "shell-max": {
-        "$value": {
-          "value": 1400,
-          "unit": "px"
+    "core": {
+      "color": {
+        "$type": "color",
+        "ink": {
+          "$value": "{semantic.color.ink}",
+          "$description": "Kit contract: primary text."
         },
-        "$description": "Kit contract: maximum width of a kit view. Kit default kept; no MedQuantis value for wide boards yet (owner decision pending)."
+        "muted": {
+          "$value": "{semantic.color.muted}",
+          "$description": "Kit contract: secondary text."
+        },
+        "canvas-bg": {
+          "$value": "{semantic.color.canvas}",
+          "$description": "Kit contract: page background (Owner ruling 9, 2026-10-09)."
+        },
+        "surface": {
+          "$value": "{semantic.color.surface}",
+          "$description": "Kit contract: card and panel background (Owner ruling 9, 2026-10-09)."
+        },
+        "surface-2": {
+          "$value": "{semantic.color.surface-alt}",
+          "$description": "Kit contract: recessed or group background."
+        },
+        "border": {
+          "$value": "{semantic.color.border}",
+          "$description": "Kit contract: hairlines and dividers."
+        },
+        "accent": {
+          "$value": "{semantic.color.accent}",
+          "$description": "Kit contract: primary action, links and identifiers; navy (ADR-0003)."
+        },
+        "accent-ink": {
+          "$value": "{semantic.color.on-accent}",
+          "$description": "Kit contract: text on accent fills, and on every state fill the kit renderers draw."
+        },
+        "success": {
+          "$value": "{semantic.color.status.success}",
+          "$description": "Kit contract: positive state."
+        },
+        "warning": {
+          "$value": "{semantic.color.status.warning}",
+          "$description": "Kit contract: caution state. Warning strong, not the fill, because kit renderers put white text on it (Owner ruling 5, 2026-10-09)."
+        },
+        "danger": {
+          "$value": "{semantic.color.status.danger}",
+          "$description": "Kit contract: negative state."
+        },
+        "info": {
+          "$value": "{semantic.color.status.info}",
+          "$description": "Kit contract: informational state."
+        }
       },
-      "card-radius": {
-        "$value": "{semantic.radius.medium}",
-        "$description": "Kit contract: card radius (Owner ruling 3, 2026-10-09)."
+      "font": {
+        "$type": "fontFamily",
+        "font-body": {
+          "$value": "{semantic.font.family.body}",
+          "$description": "Kit contract: body and reading text, Newsreader (Owner ruling 10, 2026-10-09)."
+        },
+        "font-heading": {
+          "$value": "{semantic.font.family.heading}",
+          "$description": "Kit contract: titles, headings, badges and buttons, Outfit (Owner ruling 10, 2026-10-09)."
+        },
+        "font-mono": {
+          "$value": "{semantic.font.family.mono}",
+          "$description": "Kit contract: identifiers, codes and figures, Geist Mono (Owner ruling 10, 2026-10-09)."
+        }
       },
-      "btn-radius": {
-        "$value": "{semantic.radius.small}",
-        "$description": "Kit contract: button radius (Owner ruling 3, 2026-10-09)."
+      "size": {
+        "$type": "dimension",
+        "title-size": {
+          "$value": "{semantic.font.size.h2}",
+          "$description": "Kit contract: view and slide title size, the section title size."
+        },
+        "space-sm": {
+          "$value": "{semantic.space.2}",
+          "$description": "Kit contract: small spacing, 8 px."
+        },
+        "space-md": {
+          "$value": "{semantic.space.4}",
+          "$description": "Kit contract: medium spacing, 16 px."
+        },
+        "space-lg": {
+          "$value": "{semantic.space.6}",
+          "$description": "Kit contract: large spacing, 32 px."
+        },
+        "shell-max": {
+          "$value": {
+            "value": 1400,
+            "unit": "px"
+          },
+          "$description": "Kit contract: maximum width of a kit view. Kit default kept; no MedQuantis value for wide boards yet (owner decision pending)."
+        },
+        "card-radius": {
+          "$value": "{semantic.radius.medium}",
+          "$description": "Kit contract: card radius (Owner ruling 3, 2026-10-09)."
+        },
+        "btn-radius": {
+          "$value": "{semantic.radius.small}",
+          "$description": "Kit contract: button radius (Owner ruling 3, 2026-10-09)."
+        },
+        "node-radius": {
+          "$value": "{semantic.radius.medium}",
+          "$description": "Kit contract: diagram node radius (Owner ruling 3, 2026-10-09)."
+        }
       },
-      "node-radius": {
-        "$value": "{semantic.radius.medium}",
-        "$description": "Kit contract: diagram node radius (Owner ruling 3, 2026-10-09)."
+      "elevation": {
+        "$type": "shadow",
+        "shadow": {
+          "$value": "{semantic.shadow.small}",
+          "$description": "Kit contract: card elevation, the MedQuantis small shadow (owner decision, 2026-10-10)."
+        }
       }
     },
-    "elevation": {
-      "$type": "shadow",
-      "shadow": {
-        "$value": "{semantic.shadow.small}",
-        "$description": "Kit contract: card elevation, the MedQuantis small shadow (owner decision, 2026-10-10)."
+    "dataviz": {
+      "$type": "color",
+      "chart-1": {
+        "$value": "{semantic.chart.series.1}",
+        "$description": "Kit contract: first series, darkest; series 1 of the ordered palette (guidelines/charts.md, The ordered palette)."
+      },
+      "chart-2": {
+        "$value": "{semantic.chart.series.2}",
+        "$description": "Kit contract: second series; series 2 of the ordered palette (guidelines/charts.md)."
+      },
+      "chart-3": {
+        "$value": "{semantic.chart.series.3}",
+        "$description": "Kit contract: third series; series 3 of the ordered palette, below 3:1 on the page, so label or outline its marks (guidelines/charts.md)."
+      },
+      "chart-4": {
+        "$value": "{semantic.chart.series.4}",
+        "$description": "Kit contract: fourth series; series 4 of the ordered palette, below 3:1 on the page (guidelines/charts.md)."
+      },
+      "chart-rest": {
+        "$value": "{semantic.chart.rest}",
+        "$description": "Kit contract: every series past the fourth, the remainder fill grouped as Other (guidelines/charts.md, never more than four series)."
+      },
+      "chart-axis": {
+        "$value": "{semantic.chart.axis}",
+        "$description": "Kit contract: axis lines and ticks, non-text (guidelines/charts.md, Marks)."
+      },
+      "chart-grid": {
+        "$value": "{semantic.chart.baseline}",
+        "$description": "Kit contract: the one 1 px baseline; MedQuantis draws no background grid (guidelines/charts.md, Marks)."
+      },
+      "chart-highlight": {
+        "$value": "{semantic.chart.series.1}",
+        "$description": "Kit contract: the highlighted mark is series 1, every other item in series 3 (guidelines/charts.md, Highlight on grey)."
+      }
+    },
+    "type": {
+      "size": {
+        "$type": "dimension",
+        "font-size-xs": {
+          "$value": "{semantic.font.size.eyebrow}",
+          "$description": "Kit contract: smallest text, 11 px, the floor for any text (guidelines/typography.md)."
+        },
+        "font-size-sm": {
+          "$value": "{semantic.font.size.label}",
+          "$description": "Kit contract: small text, the 13 px label size."
+        },
+        "font-size-md": {
+          "$value": "{semantic.font.size.body}",
+          "$description": "Kit contract: body text size, 16.5 px on screen."
+        },
+        "font-size-lg": {
+          "$value": "{semantic.font.size.h3}",
+          "$description": "Kit contract: large text, the 20 px subsection title."
+        },
+        "font-size-xl": {
+          "$value": "{semantic.font.size.hero-max}",
+          "$description": "Kit contract: display text, the 56 px hero title (css/base.css .mq-display)."
+        }
+      },
+      "line-height": {
+        "$type": "number",
+        "line-height-body": {
+          "$value": "{semantic.font.line-height.body}",
+          "$description": "Kit contract: body line height, 1.55 (owner 2026-10-15, Plan-0002)."
+        },
+        "line-height-tight": {
+          "$value": "{semantic.font.line-height.tight}",
+          "$description": "Kit contract: heading line height, 1.15 (owner 2026-10-15, Plan-0002)."
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "font-weight-regular": {
+          "$value": "{semantic.font.weight.body}",
+          "$description": "Kit contract: regular weight, 400."
+        },
+        "font-weight-bold": {
+          "$value": "{semantic.font.weight.heading}",
+          "$description": "Kit contract: the heading weight, Outfit 500; MedQuantis headings never use 700 (Owner ruling 4, 2026-10-09)."
+        }
+      }
+    },
+    "space-shape": {
+      "$type": "dimension",
+      "space-xs": {
+        "$value": "{semantic.space.1}",
+        "$description": "Kit contract: extra-small spacing, 4 px, step 1 of the 4 and 8 px scale."
+      },
+      "space-xl": {
+        "$value": "{semantic.space.7}",
+        "$description": "Kit contract: extra-large spacing, 48 px, the step after space-lg (32 px)."
+      },
+      "radius-sm": {
+        "$value": "{semantic.radius.small}",
+        "$description": "Kit contract: small corner radius, 3 px (Owner ruling 3, 2026-10-09)."
+      },
+      "radius-pill": {
+        "$value": "{semantic.radius.medium}",
+        "$description": "Kit contract: pill corner radius capped at the 6 px maximum, because MedQuantis draws no pill shapes (Owner ruling 3, 2026-10-09)."
+      },
+      "border-width": {
+        "$value": "{semantic.stroke.hairline}",
+        "$description": "Kit contract: hairline width, 1 px."
+      }
+    },
+    "brand": {
+      "logo": {
+        "$type": "asset",
+        "brand-logo-on-light": {
+          "$value": "./brand/wordmark-on-light.svg",
+          "$description": "Kit contract: the wordmark for light backgrounds, a package export path written as url() (guidelines/brand.md, Wordmark)."
+        },
+        "brand-logo-on-dark": {
+          "$value": "./brand/wordmark-on-navy.svg",
+          "$description": "Kit contract: the wordmark for navy backgrounds, a package export path written as url() (guidelines/brand.md, Wordmark)."
+        },
+        "brand-mark": {
+          "$value": "./brand/monogram.svg",
+          "$description": "Kit contract: the monogram, the compact mark, a package export path written as url() (guidelines/brand.md, Monogram and favicon)."
+        }
+      },
+      "legal": {
+        "$type": "string",
+        "brand-legal": {
+          "$description": "Kit contract: the legal line as a CSS string. Its value is read at build time from guidelines/brand.md, section Legal line, the one written source (build/guidelines.mjs legalLine).",
+          "$extensions": {
+            "com.medquantis.design-system": {
+              "fromGuideline": {
+                "file": "brand.md",
+                "section": "Legal line"
+              }
+            }
+          }
+        }
       }
     }
   }

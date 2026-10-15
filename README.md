@@ -125,7 +125,10 @@ make brand        # re-outline the monogram and wordmark SVGs from the pinned Ou
 make brand-check  # prove the committed brand SVGs reproduce byte for byte (Python, not in make check)
 make skill        # regenerate the Claude skill's references, eval graders and assets
 make skill-zip    # zip the skill for claude.ai into dist/
+make kit-check    # run the homemade-claude-kit resolver on the packed package (needs KIT_DIR)
 ```
+
+`make kit-check` packs the package as npm would publish it, unpacks it into a fresh temporary folder and runs the kit resolver (`plugins/delivery-comms/shared/design_source.py provenance`) on it, through the kit's own mise environment. `KIT_DIR` names a local homemade-claude-kit checkout, for example `KIT_DIR=../homemade-claude-kit make kit-check`; without it the target prints a skip message and exits 0. It is a separate gate, not part of `make check`, because CI has no kit checkout. `kit-manifest.json` is a build output at the repository root (gitignored), because the kit reads the manifest only at the top of the package.
 
 `fonts/` and `icons/` are committed copies of exact-pinned packages because they ship in the npm package; a unit test fails when they drift, so a Dependabot bump of a font or of Lucide needs `make assets` in the same PR. The screen wordmarks use live text, which renders in Outfit only where the page loads `fonts.css` (inline SVG); in an `<img>` use the `-print` variant.
 

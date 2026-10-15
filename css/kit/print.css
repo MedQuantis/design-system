@@ -1,0 +1,81 @@
+/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
+/*
+ * Class rules of the MedQuantis print module for the homemade-claude-kit renderers (the
+ * com-release-note report; Plan-0002 increment 02). Written by hand against contract roles only.
+ * The report inlines the core, dataviz, type, space-shape and print modules (render_pdf.py
+ * REPORT_MODULES, kit #149). The sizes are the A4 print column of guidelines/typography.md, which
+ * is not yet a token, and the weight is the heading weight 500 (owner ruling 4); the template's
+ * own bold text and chips read --font-weight-bold and --radius-pill from the design. The build
+ * copies these rules into dist/kit/print.css after the roles.
+ * build/kit-classes.md names the MedQuantis rule each class reproduces: css/print.css (mq-page)
+ * and the typography roles of css/base.css.
+ *
+ * Cascade: the report template's own rules come before the design layer, so these rules, of
+ * the same specificity, replace them. The page box is --print-page-size and --print-margin.
+ */
+
+/* mq-page: the A4 sheet on the canvas colour (owner ruling 9), ink text. */
+.report {
+  background: var(--print-bg);
+  color: var(--ink);
+}
+
+/* mq-eyebrow: Geist Mono 500 capitals in navy, 7.5 pt in print. */
+.report-kicker {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* mq-display: the document title in Outfit 500, 26 pt in print. */
+.report-title {
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-size: 26pt;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+/* mq-lead: Newsreader italic in the secondary text colour, 11.5 pt in print. */
+.report-framing {
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 11.5pt;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* The space between sections (guidelines/layout.md, Widths and spacing). */
+.section {
+  margin-top: var(--space-lg);
+}
+
+/* A section label: Outfit 500 capitals, 12.5 pt, under a 2 px navy rule like "In brief"
+   (guidelines/layout.md, Report skeleton). */
+.section-label {
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-size: 12.5pt;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* A section that leads a fresh page (guidelines/layout.md, Print and PDF). */
+.section--page-break {
+  break-before: page;
+  page-break-before: always;
+}
+
+/* Documents are navy only (ADR-0004, guidelines/colour.md): the breaking-changes label reads by
+   its words and a navy rule, never by a status hue. --print-breaking is the navy accent, and the
+   kit's template washes the breaking-changes panel with it too. */
+.section--breaking .section-label {
+  border-bottom-color: var(--print-breaking);
+  color: var(--print-breaking);
+}

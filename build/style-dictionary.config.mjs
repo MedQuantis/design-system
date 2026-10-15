@@ -3,7 +3,7 @@
 import { fileURLToPath } from "node:url";
 import StyleDictionary from "style-dictionary";
 import { kitContractFormat } from "./formats/kit-contract.mjs";
-import { KIT_TOKEN_MODULES, kitModuleFormat } from "./formats/kit-modules.mjs";
+import { KIT_MODULES, kitModuleFormat } from "./formats/kit-modules.mjs";
 import { legalLine } from "./guidelines.mjs";
 import { LICENCE_BANNER } from "./licence-banner.mjs";
 import { tailwindFormat } from "./formats/tailwind.mjs";
@@ -99,7 +99,7 @@ export default {
       "mq/json": jsonMq,
       "mq/tailwind": tailwindFormat,
       "mq/kit-contract": kitContractFormat,
-      ...Object.fromEntries(KIT_TOKEN_MODULES.map((module) => [`mq/kit-${module}`, kitModuleFormat(module)])),
+      ...Object.fromEntries(KIT_MODULES.map((module) => [`mq/kit-${module}`, kitModuleFormat(module)])),
     },
   },
   platforms: {
@@ -117,7 +117,7 @@ export default {
         { destination: "tokens.json", format: "mq/json", filter: notKit },
         { destination: "tailwind.css", format: "mq/tailwind", filter: notKit },
         { destination: "kit-contract.css", format: "mq/kit-contract" },
-        ...KIT_TOKEN_MODULES.map((module) => ({ destination: `kit/${module}.css`, format: `mq/kit-${module}` })),
+        ...KIT_MODULES.map((module) => ({ destination: `kit/${module}.css`, format: `mq/kit-${module}` })),
       ],
     },
   },

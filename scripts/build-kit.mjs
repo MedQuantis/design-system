@@ -7,16 +7,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { readGuideline, unlinkRelative } from "../build/guidelines.mjs";
-import { KIT_TOKEN_MODULES } from "../build/formats/kit-modules.mjs";
+import { KIT_MODULES } from "../build/formats/kit-modules.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
 // The kit contract version this build targets; tests compare it with the vendored modules.json.
 const CONTRACT_VERSION = "2.0.0";
-
-const OMITTED_REASON =
-  "Written by hand against the MedQuantis layout rulings in Plan-0002 increment 02; the kit base theme fills it until then.";
-const OMITTED = Object.fromEntries(["document", "slide-frame", "print"].map((module) => [module, OMITTED_REASON]));
 
 // The guideline sections each module's guidance carries, in reading order.
 const GUIDANCE = {
@@ -29,6 +25,9 @@ const GUIDANCE = {
   dataviz: [["charts.md", ["The ordered palette", "Highlight on grey", "Marks"]]],
   type: [["typography.md", ["Weights", "Roles and sizes", "Line height"]]],
   "space-shape": [["layout.md", ["Widths and spacing", "Radius"]]],
+  document: [["layout.md", ["Print and PDF"]]],
+  "slide-frame": [["layout.md", ["Media"]]],
+  print: [["layout.md", ["Report skeleton"]]],
   brand: [["brand.md", ["Legal line", "Wordmark", "Monogram and favicon", "No combined logo yet"]]],
 };
 
@@ -55,7 +54,7 @@ const guidance = [
   "",
   "Generated from guidelines/ by the design-system build. Do not edit. The MedQuantis guideline sections behind each module this package provides; token names are the --mq-* names of tokens.css, which the kit roles of each module alias. The kit treats this file as informational.",
   "",
-  ...KIT_TOKEN_MODULES.flatMap(guidanceSection),
+  ...KIT_MODULES.flatMap(guidanceSection),
 ]
   .join("\n")
   .replace(/\n+$/, "\n");
@@ -63,10 +62,9 @@ const guidance = [
 const manifest = {
   contractVersion: CONTRACT_VERSION,
   provides: {
-    ...Object.fromEntries(KIT_TOKEN_MODULES.map((module) => [module, `./kit/${module}.css`])),
+    ...Object.fromEntries(KIT_MODULES.map((module) => [module, `./kit/${module}.css`])),
     guidance: "./kit/guidance.md",
   },
-  omitted: OMITTED,
 };
 
 mkdirSync(join(root, "dist/kit"), { recursive: true });

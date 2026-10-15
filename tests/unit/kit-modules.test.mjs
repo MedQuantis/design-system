@@ -8,6 +8,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
+import postcss from "postcss";
 import { contrastRatio, parseColor } from "../../build/color-math.mjs";
 import { readGuideline, unlinkRelative } from "../../build/guidelines.mjs";
 
@@ -23,8 +24,18 @@ const manifest = () => readJson("kit-manifest.json");
 const pkg = () => readJson("package.json");
 
 const TOKEN_MODULES = ["core", "dataviz", "type", "space-shape", "brand"];
-const PROVIDED = [...TOKEN_MODULES, "guidance"];
-const OMITTED = ["document", "slide-frame", "print"];
+// The class modules: roles from the kit tier, class rules written by hand in css/kit/ (Plan-0002
+// increment 02, owner decision 4).
+const CLASS_MODULES = ["document", "slide-frame", "print"];
+const MODULES = [...TOKEN_MODULES, ...CLASS_MODULES];
+const PROVIDED = [...MODULES, "guidance"];
+// The roles a class module may read. com-release-note inlines core, dataviz, type, space-shape and
+// print in the report (render_pdf.py REPORT_MODULES, since kit #149), never document or slide-frame.
+const READS = {
+  document: ["core", "type", "space-shape", "dataviz", "document"],
+  "slide-frame": ["core", "type", "space-shape", "dataviz", "slide-frame"],
+  print: ["core", "type", "space-shape", "dataviz", "print"],
+};
 const AA = 4.5;
 
 // Custom properties declared outside @font-face, last declaration wins (as the kit reads them).
@@ -75,15 +86,15 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.0.0 from homemade-claude-kit d9254da", () => {
+test("the vendored kit contract is 2.0.0 from homemade-claude-kit cdb01eb", () => {
   assert.equal(contract().contractVersion, "2.0.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "d9254da", "plugins/delivery-comms/contract/", "2.0.0"]) {
+  for (const fact of ["homemade-claude-kit", "cdb01eb", "plugins/delivery-comms/contract/", "2.0.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });
 
-for (const module of TOKEN_MODULES) {
+for (const module of MODULES) {
   test(`dist/kit/${module}.css defines exactly the ${module} roles of the contract, never a --kit-* property`, () => {
     const declared = declarations(moduleCss(module));
     const roles = Object.keys(contract().modules[module].roles);
@@ -98,23 +109,27 @@ for (const module of TOKEN_MODULES) {
 
 test("every role of a provided module is a token of the kit tier, under its own module", () => {
   const tier = kitTier();
-  for (const module of TOKEN_MODULES) {
+  for (const module of MODULES) {
     const own = tier.filter((entry) => entry.module === module).map((entry) => entry.role);
     assert.deepEqual([...own].sort(), Object.keys(contract().modules[module].roles).sort(), `tokens/kit kit.${module}`);
   }
   const modules = new Set(tier.map((entry) => entry.module));
-  assert.deepEqual([...modules].sort(), [...TOKEN_MODULES].sort(), "the kit tier holds one group per token module");
+  assert.deepEqual([...modules].sort(), [...MODULES].sort(), "the kit tier holds one group per module");
 });
 
-test("kit tier aliases point at semantic tokens, and each module value equals the aliased token", () => {
+// A string value may hold several aliases (the print margin): each {reference} is a semantic token,
+// and the module value is the string with every reference replaced by that token's value.
+test("kit tier aliases point at semantic tokens, and each module value equals the aliased tokens", () => {
   const byPath = builtByPath();
   for (const { module, role, token, path } of kitTier()) {
-    const alias = typeof token.$value === "string" ? token.$value.match(/^\{([^{}]+)\}$/)?.[1] : undefined;
-    if (!alias) continue;
-    assert.match(alias, /^semantic\./, `${path.join(".")} aliases ${alias}, not a semantic token`);
-    const target = byPath.get(alias);
-    assert.ok(target, `${path.join(".")} aliases ${alias}, which is not in dist/tokens.json`);
-    assert.equal(declarations(moduleCss(module)).get(role), String(target.value), `${role} in dist/kit/${module}.css`);
+    if (typeof token.$value !== "string" || !token.$value.includes("{")) continue;
+    const expected = token.$value.replace(/\{([^{}]+)\}/g, (_, alias) => {
+      assert.match(alias, /^semantic\./, `${path.join(".")} aliases ${alias}, not a semantic token`);
+      const target = byPath.get(alias);
+      assert.ok(target, `${path.join(".")} aliases ${alias}, which is not in dist/tokens.json`);
+      return String(target.value);
+    });
+    assert.equal(declarations(moduleCss(module)).get(role), expected, `${role} in dist/kit/${module}.css`);
   }
 });
 
@@ -207,7 +222,7 @@ test("brand: logo roles are url() values of shipped exports, the legal line come
 test("every text pair of the contract reaches WCAG AA, a list pair when any of its roles does", () => {
   const values = new Map([...TOKEN_MODULES].flatMap((module) => [...declarations(moduleCss(module))]));
   const { pairs } = contract();
-  assert.equal(pairs.length, 13);
+  assert.equal(pairs.length, 14); // 13, plus --tertiary on --canvas-bg (kit #148)
   for (const pair of pairs) {
     const bg = values.get(pair.bg);
     assert.match(bg ?? "", /^#[0-9a-f]{6}$/i, `${pair.bg} is not a hex colour`);
@@ -229,8 +244,8 @@ test("dist/kit/guidance.md is one file with a section per provided module, its l
   const sections = guidance.split(/^## /m).slice(1);
   assert.deepEqual(
     sections.map((section) => section.split("\n")[0].trim()),
-    TOKEN_MODULES,
-    "one section per token module, in contract order",
+    Object.keys(contract().modules).filter((module) => MODULES.includes(module)),
+    "one section per provided module, in contract order",
   );
   for (const section of sections) {
     const lines = section.split("\n").slice(1).filter((line) => line.trim() && !line.startsWith("Source:") && !line.startsWith("### "));
@@ -239,18 +254,152 @@ test("dist/kit/guidance.md is one file with a section per provided module, its l
   }
 });
 
+// The class modules (Plan-0002 increment 02): css/kit/<module>.css holds the class rules, written by
+// hand against contract roles; the build writes dist/kit/<module>.css from the roles of the kit tier
+// followed by those rules.
+const BANNER = "/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */\n";
+const handWritten = (module) => read(`css/kit/${module}.css`);
+const ruleBody = (css) => css.slice(BANNER.length);
+const classRules = (css) => {
+  const rules = [];
+  postcss.parse(css).walkRules((rule) => {
+    if (rule.parent?.type === "atrule" && rule.parent.name === "font-face") return;
+    rules.push(rule);
+  });
+  return rules;
+};
+const HEX = /#[0-9a-f]{3,8}\b/i;
+const COLOUR_FUNCTION = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|light-dark)\(/i;
+const NAMED_COLOUR = new RegExp(
+  `(?<![\\w#-])(?:${"aqua black blue brown fuchsia gold gray green grey lime maroon navy olive orange pink purple red silver teal white yellow".split(" ").join("|")})(?![\\w-])`,
+  "i",
+);
+const COLOUR_PROPERTY = /color|background|border|outline|fill|stroke|shadow|accent|caret|column-rule/i;
+
+for (const module of CLASS_MODULES) {
+  test(`css/kit/${module}.css starts with the banner, holds class rules only, and dist/kit/${module}.css carries them`, () => {
+    const source = handWritten(module);
+    assert.ok(source.startsWith(BANNER), `css/kit/${module}.css lacks the copyright banner`);
+    const declared = [];
+    for (const rule of classRules(source)) {
+      assert.notEqual(rule.selector.trim(), ":root", `css/kit/${module}.css: roles belong in tokens/kit/, not in a :root rule`);
+      rule.walkDecls((decl) => decl.prop.startsWith("--") && declared.push(decl.prop));
+    }
+    assert.deepEqual(declared, [], `css/kit/${module}.css declares custom properties; values belong in tokens/kit/`);
+    const built = moduleCss(module);
+    assert.ok(built.startsWith(BANNER), `dist/kit/${module}.css lacks the copyright banner`);
+    assert.ok(built.includes(ruleBody(source).trim()), `dist/kit/${module}.css does not carry the rules of css/kit/${module}.css`);
+  });
+
+  test(`css/kit/${module}.css styles every class the contract lists for ${module}`, () => {
+    const selectors = classRules(handWritten(module)).map((rule) => rule.selector).join("\n");
+    const classes = contract().modules[module].classes;
+    assert.ok(classes.length > 0, `the contract lists no class for ${module}`);
+    for (const name of classes) {
+      assert.match(selectors, new RegExp(`\\.${name}(?![\\w-])`), `css/kit/${module}.css has no rule for .${name}`);
+    }
+  });
+
+  test(`css/kit/${module}.css reads only the roles of ${READS[module].join(", ")}, never a literal colour, --mq-* or --kit-* name`, () => {
+    const allowed = new Set(READS[module].flatMap((name) => Object.keys(contract().modules[name].roles)));
+    const source = handWritten(module).replace(/\/\*[\s\S]*?\*\//g, "");
+    assert.doesNotMatch(source, /--mq-/, "an --mq-* name: kit modules read contract roles only");
+    assert.doesNotMatch(source, /(?<![\w-])--kit-/, "a --kit-* name belongs to the kit renderers");
+    for (const [, name] of source.matchAll(/var\(\s*(--[\w-]+)/g)) {
+      assert.ok(allowed.has(name), `css/kit/${module}.css reads ${name}, not a role of ${READS[module].join(", ")}`);
+    }
+    for (const rule of classRules(source)) {
+      rule.walkDecls((decl) => {
+        const where = `css/kit/${module}.css ${rule.selector} { ${decl.prop}: ${decl.value} }`;
+        assert.doesNotMatch(decl.value, HEX, `${where}: a literal colour`);
+        assert.doesNotMatch(decl.value, COLOUR_FUNCTION, `${where}: a colour function`);
+        if (COLOUR_PROPERTY.test(decl.prop)) assert.doesNotMatch(decl.value, NAMED_COLOUR, `${where}: a named colour`);
+      });
+    }
+  });
+}
+
+test("the class module roles alias semantic tokens by name, each citing its guideline", () => {
+  const byRole = new Map(kitTier().filter((entry) => CLASS_MODULES.includes(entry.module)).map((entry) => [entry.role, entry.token]));
+  const expected = {
+    "--doc-page-bg": "{semantic.color.canvas}",
+    "--doc-text-size": "{semantic.font.size.body}",
+    "--doc-rule": "{semantic.color.border}",
+    "--slide-bg": "{semantic.color.canvas}",
+    "--slide-fg": "{semantic.color.ink}",
+    "--slide-padding": "{semantic.space.8}",
+    "--slide-width": "{semantic.slide.width}",
+    "--slide-height": "{semantic.slide.height}",
+    "--print-bg": "{semantic.color.canvas}",
+    "--print-margin": "{semantic.space.7} {semantic.space.8}",
+    "--print-page-size": "A4",
+    "--print-breaking": "{semantic.color.accent}",
+  };
+  assert.deepEqual([...byRole.keys()].sort(), Object.keys(expected).sort());
+  for (const [role, value] of Object.entries(expected)) {
+    assert.equal(byRole.get(role).$value, value, role);
+    assert.match(byRole.get(role).$description, /guidelines\/[\w-]+\.md/, `${role} $description cites a guideline`);
+  }
+  const values = new Map(CLASS_MODULES.flatMap((module) => [...declarations(moduleCss(module))]));
+  assert.equal(values.get("--slide-width"), "1280px", "the 1280 by 720 slide canvas of css/slide.css");
+  assert.equal(values.get("--slide-height"), "720px");
+  assert.equal(values.get("--slide-padding"), "72px", "the 72 px side margins of guidelines/layout.md");
+  assert.equal(values.get("--print-page-size"), "A4");
+  assert.equal(values.get("--print-margin"), "48px 72px", "the padding of mq-page in css/print.css");
+  assert.equal(values.get("--doc-page-bg"), "#fafaf8", "owner ruling 9: every document page is the canvas colour");
+  const accent = declarations(moduleCss("core")).get("--accent");
+  assert.equal(values.get("--print-breaking"), accent, "documents are navy only (ADR-0004): breaking changes in the accent");
+  assert.match(byRole.get("--print-breaking").$description, /ADR-0004/);
+});
+
+test("build/kit-classes.md maps every class of the class modules to a MedQuantis rule or a guideline", () => {
+  const table = read("build/kit-classes.md");
+  assert.doesNotMatch(table, /\u2014/, "no em dash");
+  const mqSelectors = new Set(
+    ["base", "components", "slide", "print"].flatMap((file) => [...read(`css/${file}.css`).matchAll(/\.(mq-[\w-]+)/g)].map((m) => m[1])),
+  );
+  const rows = new Map(
+    table
+      .split("\n")
+      .map((line) => line.match(/^\| `([\w-]+)` \| ([^|]+) \| ([^|]+) \|/))
+      .filter(Boolean)
+      .map(([, name, module, source]) => [name, { module: module.trim(), source }]),
+  );
+  for (const module of CLASS_MODULES) {
+    for (const name of contract().modules[module].classes) {
+      const row = rows.get(name);
+      assert.ok(row, `build/kit-classes.md has no row for ${name}`);
+      assert.equal(row.module, `\`${module}\``, `${name}: module column`);
+      const named = [...row.source.matchAll(/`(mq-[\w-]+)`/g)].map((m) => m[1]);
+      assert.ok(named.length > 0 || /follows guidelines\/[\w-]+\.md/.test(row.source), `${name}: names no mq- rule and no guideline`);
+      for (const mq of named) assert.ok(mqSelectors.has(mq), `${name}: ${mq} is not a class of css/`);
+    }
+  }
+  const from = (name) => rows.get(name)?.source ?? "";
+  assert.match(from("slide-footer"), /`mq-slide-foot`/);
+  assert.match(from("slide-number"), /`mq-slide-number`/);
+  assert.match(from("slide-label"), /`mq-slide-label`/);
+  assert.match(from("report"), /`mq-page`/);
+});
+
+test("css/components.css and css/slide.css read the line-height tokens instead of the literals 1.55 and 1.15", () => {
+  for (const [file, name] of [["components", "--mq-font-line-height-body"], ["slide", "--mq-font-line-height-tight"]]) {
+    const css = read(`css/${file}.css`);
+    assert.ok(css.includes(`line-height: var(${name})`), `css/${file}.css does not read ${name}`);
+    assert.doesNotMatch(css, /line-height:\s*1\.(55|15);/, `css/${file}.css: a line-height literal the tokens hold`);
+  }
+});
+
 test("kit-manifest.json at the package root validates against the vendored schema with ajv", () => {
+  // Compiled as vendored: the kit's $id carries no fragment since homemade-claude-kit #147.
   const schema = readJson("tests/fixtures/kit-contract/kit-manifest.schema.json");
-  // The kit's $id ends in "#2.0.0", a non-empty fragment that JSON Schema 2020-12 forbids in $id, so
-  // ajv refuses the schema itself. Only that fragment is dropped; every keyword is checked as shipped.
-  assert.match(schema.$id, /#2\.0\.0$/, "the kit fixed its $id: compile the vendored schema as is");
-  const validate = new Ajv2020({ allErrors: true, strict: true }).compile({ ...schema, $id: schema.$id.replace(/#.*$/, "") });
+  assert.doesNotMatch(schema.$id, /#/, "a fragment in $id, which JSON Schema 2020-12 forbids");
+  const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
   const data = manifest();
   assert.ok(validate(data), JSON.stringify(validate.errors));
   assert.equal(data.contractVersion, "2.0.0");
   assert.deepEqual(Object.keys(data.provides).sort(), [...PROVIDED].sort());
-  assert.deepEqual(Object.keys(data.omitted ?? {}).sort(), [...OMITTED].sort());
-  for (const reason of Object.values(data.omitted)) assert.ok(reason.length > 0, "an omitted module names its reason");
+  assert.equal(data.omitted, undefined, "every module of the contract is provided, nothing is omitted");
   assert.equal(data.provides.guidance, "./kit/guidance.md");
 });
 
@@ -266,7 +415,7 @@ test("every manifest path is a package export that ships, and the manifest ships
     assert.ok(target, `${module}: ${key} is not a package export`);
     assert.ok(shipped.includes(target.replace(/^\.\//, "")), `${module}: ${target} does not ship`);
   }
-  for (const module of TOKEN_MODULES) assert.equal(manifest().provides[module], `./kit/${module}.css`);
+  for (const module of MODULES) assert.equal(manifest().provides[module], `./kit/${module}.css`);
 });
 
 test("kit-manifest.json is a build output, gitignored", () => {

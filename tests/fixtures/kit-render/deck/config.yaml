@@ -1,0 +1,22 @@
+# Fictitious kit fixture deck, rendered by make kit-check (Plan-0002 increment 02). mq:illustrative
+title: "Kit fixture deck"
+author: "Kit fixture"
+lang: "en"
+mode: slides
+slides:
+  - file: "01-cover.html"
+    label: "Cover"
+  - file: "02-content.html"
+    label: "Content"
+paths:
+  slides_dir: "slides"
+  styles_file: "design/styles.css"
+  script_file: "design/script.js"
+  bibliography_file: "context/bibliography.yaml"
+  output_dir: "output"
+  output_filename: "deck.html"
+  # kit-check copies this folder next to the unpacked package.
+  design_tokens: "../package"
+numbering:
+  enabled: true
+  format: "{current:02d}"

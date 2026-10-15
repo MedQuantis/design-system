@@ -170,7 +170,8 @@ test("data-patterns.md encodes owner ruling 8 as amended and carries the illustr
 
 test("the root README lists every mq- component with its status, trial or stable", () => {
   const classes = new Set();
-  for (const file of readdirSync(join(root, "css"))) {
+  // The mq- stylesheets only: css/kit/ restyles the kit's own classes and defines no mq- component.
+  for (const file of readdirSync(join(root, "css")).filter((name) => name.endsWith(".css"))) {
     for (const [, name] of read(`css/${file}`).matchAll(/\.(mq-[a-z]+)(?![a-z-])/g)) classes.add(name);
   }
   const readme = read("README.md");

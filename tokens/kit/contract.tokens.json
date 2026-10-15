@@ -11,6 +11,10 @@
           "$value": "{semantic.color.muted}",
           "$description": "Kit contract: secondary text."
         },
+        "tertiary": {
+          "$value": "{semantic.color.tertiary}",
+          "$description": "Kit contract 2.0.0: tertiary text for slide footers, legal lines, slide numbers and source lines (Owner ruling 1 and ruling 11, 2026-10-09). Not in kit-contract.css, which keeps the old 24 roles."
+        },
         "canvas-bg": {
           "$value": "{semantic.color.canvas}",
           "$description": "Kit contract: page background (Owner ruling 9, 2026-10-09)."
@@ -216,6 +220,72 @@
       "border-width": {
         "$value": "{semantic.stroke.hairline}",
         "$description": "Kit contract: hairline width, 1 px."
+      }
+    },
+    "document": {
+      "doc-page-bg": {
+        "$type": "color",
+        "$value": "{semantic.color.canvas}",
+        "$description": "Kit contract: the paper sheet of a paginated document, the canvas colour of every document page (Owner ruling 9, 2026-10-09; guidelines/colour.md, Neutrals)."
+      },
+      "doc-text-size": {
+        "$type": "dimension",
+        "$value": "{semantic.font.size.body}",
+        "$description": "Kit contract: document body text, the 16.5 px body size that mq-doc sets on an A4 mq-page (guidelines/typography.md, Roles and sizes; the A4 print column is not yet a token)."
+      },
+      "doc-rule": {
+        "$type": "color",
+        "$value": "{semantic.color.border}",
+        "$description": "Kit contract: the rule between document sections, the border and divider colour (guidelines/colour.md, Neutrals)."
+      }
+    },
+    "slide-frame": {
+      "slide-bg": {
+        "$type": "color",
+        "$value": "{semantic.color.canvas}",
+        "$description": "Kit contract: slide background, the canvas colour of every document page, slides included (Owner ruling 9, 2026-10-09; guidelines/colour.md, Neutrals)."
+      },
+      "slide-fg": {
+        "$type": "color",
+        "$value": "{semantic.color.ink}",
+        "$description": "Kit contract: slide text colour, primary text (guidelines/colour.md, Neutrals)."
+      },
+      "slide-padding": {
+        "$type": "dimension",
+        "$value": "{semantic.space.8}",
+        "$description": "Kit contract: slide inner padding, the 72 px side margins of the slide canvas (guidelines/layout.md, Media)."
+      },
+      "slide-width": {
+        "$type": "dimension",
+        "$value": "{semantic.slide.width}",
+        "$description": "Kit contract: slide canvas width, 1280 px, as css/slide.css (guidelines/layout.md, Media)."
+      },
+      "slide-height": {
+        "$type": "dimension",
+        "$value": "{semantic.slide.height}",
+        "$description": "Kit contract: slide canvas height, 720 px, as css/slide.css (guidelines/layout.md, Media)."
+      }
+    },
+    "print": {
+      "print-bg": {
+        "$type": "color",
+        "$value": "{semantic.color.canvas}",
+        "$description": "Kit contract: printed page background, the canvas colour; the desk never reaches paper (Owner ruling 9, 2026-10-09; guidelines/layout.md, Print and PDF)."
+      },
+      "print-margin": {
+        "$type": "dimension",
+        "$value": "{semantic.space.7} {semantic.space.8}",
+        "$description": "Kit contract: printed page margin, 48 px top and bottom and 72 px at the sides, the padding of mq-page in css/print.css (guidelines/layout.md, Widths and spacing)."
+      },
+      "print-page-size": {
+        "$type": "other",
+        "$value": "A4",
+        "$description": "Kit contract: printed page size, A4, 210 by 297 mm (guidelines/layout.md, Media). A named size, as the kit's print chrome reads it."
+      },
+      "print-breaking": {
+        "$type": "color",
+        "$value": "{semantic.color.accent}",
+        "$description": "Kit contract: the accent of breaking changes in printed reports, navy, because documents are navy only and breaking changes read by their words and a navy rule, never a status hue (ADR-0004; guidelines/colour.md, The medium split)."
       }
     },
     "brand": {

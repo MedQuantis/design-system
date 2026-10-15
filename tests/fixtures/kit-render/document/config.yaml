@@ -1,0 +1,21 @@
+# Fictitious kit fixture document (A4), rendered by make kit-check (Plan-0002 increment 02). mq:illustrative
+title: "Kit fixture document"
+author: "Kit fixture"
+lang: "en"
+mode: document
+page:
+  size: A4
+  orientation: portrait
+pages:
+  - file: "01-intro.html"
+    label: "Introduction"
+  - file: "02-details.html"
+    label: "Details"
+paths:
+  slides_dir: "pages"
+  styles_file: "design/styles.css"
+  script_file: "design/script.js"
+  output_dir: "output"
+  output_filename: "document.html"
+  # kit-check copies this folder next to the unpacked package.
+  design_tokens: "../package"

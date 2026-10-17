@@ -393,6 +393,26 @@
     ],
     "description": "Focus ring on dark backgrounds, the light navy: 8.71:1 on the canvas (ADR-0007)."
   },
+  "--mq-shadow-small": {
+    "value": "0px 1px 2px 0px rgba(0, 0, 0, 0.4)",
+    "type": "shadow",
+    "path": [
+      "semantic",
+      "shadow",
+      "small"
+    ],
+    "description": "Cards on dark: black at 40 %, since the light 5 % shadow does not show on the dark canvas (ADR-0007, owner approval of 2026-10-17)."
+  },
+  "--mq-shadow-medium": {
+    "value": "0px 3px 12px 0px rgba(0, 0, 0, 0.5)",
+    "type": "shadow",
+    "path": [
+      "semantic",
+      "shadow",
+      "medium"
+    ],
+    "description": "A slide or page previewed on the dark desk: black at 50 % (ADR-0007, owner approval of 2026-10-17)."
+  },
   "--mq-shadow-panel": {
     "value": "0px 0px 0px 1px rgba(159, 179, 232, 0.35)",
     "type": "shadow",
@@ -402,5 +422,15 @@
       "panel"
     ],
     "description": "Navy panels on dark: a 1 px light-navy outline, no glow (ADR-0007, owner 2026-10-15)."
+  },
+  "--mq-shadow-edge": {
+    "value": "0px 0px 0px 1px rgba(159, 179, 232, 0.35)",
+    "type": "shadow",
+    "path": [
+      "semantic",
+      "shadow",
+      "edge"
+    ],
+    "description": "On dark, the panel's 1 px light-navy outline around a navy KPI tile, a navy brand tile and the monogram, whose navy square is 1.11:1 on the dark surface (owner rulings 13 and 14, ADR-0007)."
   }
 }

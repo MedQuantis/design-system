@@ -50,7 +50,7 @@ Principles:
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
 **Overall Status:** in_progress
-**Current Increment:** 02
+**Current Increment:** 03
 
 ## Prerequisites
 
@@ -125,15 +125,16 @@ Prediction:
 
 ### Increment 03: components and the specimen in both themes
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:**
-   - extend `tests/unit/css.test.mjs`: no colour literal anywhere in `css/` or `scripts/specimen.css`; the navy panel, the KPI tile and the brand tile read the panel roles and `--mq-shadow-panel` only; text on the warning fill reads `--mq-on-warning-fill`; a `mq-monogram` class draws the outline from a role that is none in light.
+   - extend `tests/unit/css.test.mjs`: no colour literal anywhere in `css/` or `scripts/specimen.css`; the navy panel reads the panel roles and `--mq-shadow-panel`, the navy KPI tile and the navy brand tile the panel roles and `--mq-shadow-edge` (none in light, the panel outline on dark; owner approval of 2026-10-17), never the accent; the specimen frames its slide with `--mq-shadow-edge`, on screen only; text on the warning fill reads `--mq-on-warning-fill`; a `mq-monogram` class draws the outline from `--mq-shadow-edge`, a role that is none in light; the highlighted row's key cell reads `--mq-accent-highlight` (ruling 18).
    - extend `tests/unit/specimen.test.mjs`: the build writes `dist/specimen/dark.html` with `class="dark"` on `<html>` and `themes/dark.css` loaded; every swatch prints its dark value and every contrast row its dark ratio; the brand section shows the on-navy files on dark.
    - extend `tests/e2e/specimen.spec.mjs`: the dark page passes axe with no violation; a screenshot baseline per part of the dark page; the light baselines unchanged.
-2. `css/components.css` and `css/app.css`: text on the warning fill reads `--mq-on-warning-fill`; the `mq-monogram` class. `scripts/build-specimen.mjs`: renders once per theme, with the values and ratios of that theme; the brand tiles pick the files by theme.
+   - extend `tests/unit/themes.test.mjs`: on dark, `--mq-shadow-small` is black at 40 % (0 1px 2px) and `--mq-shadow-medium` black at 50 % (0 3px 12px), the design-pass values (owner approval of 2026-10-17); light unchanged.
+2. `css/components.css` and `css/app.css`: text on the warning fill reads `--mq-on-warning-fill`; the `mq-monogram` class; the navy KPI tile's edge. `tokens/themes/dark/`: the edge role and the dark small and medium shadows (core raw values tagged dark-only). `scripts/build-specimen.mjs`: renders once per theme, with the values and ratios of that theme; the brand tiles pick the files by theme.
 
 Primary files:
 
@@ -150,7 +151,11 @@ Exit criteria:
 
 Prediction:
 
-1. New: `dist/specimen/dark.html` and its baselines. Changed: `dist/tokens.css`, `dist/tokens.json`, `dist/themes/dark.*` (the monogram outline role), the light warning-badge baseline only if its text colour value changes (it should not: `--mq-on-warning-fill` is ink in light).
+1. New: `dist/specimen/dark.html` and its baselines (11 `dark-part-*`, `dark-focus-on-canvas`, `dark-focus-on-navy`). Changed: `dist/tokens.css`, `dist/tokens.json` (the edge role and the core `shadow.none`), `dist/themes/dark.*` (the edge role, the dark small and medium shadows), the light warning-badge baseline only if its text colour value changes (it should not: `--mq-on-warning-fill` is ink in light).
+2. Ripples (owner approval of 2026-10-17): `dist/llms-full.txt`, `dist/DESIGN.md`, `dist/claude-design-system/project/` (`README.md`, `tokens.json`, `design-system.json` by its build timestamp), the skill's asset copies (`css/components.css`, `tokens.css`, `tokens.json`, `themes/dark.css`, `themes/dark.json`) and references (`a4-report`, `app`, `charts`, `slides`, `web`); sources the existing tests require: `guidelines/colour.md` (the dark rows), `README.md` (the `mq-monogram` status row), `tests/unit/themes.test.mjs`; ADR-0007 records the edge and the dark shadows.
+3. Light rendering: the specimen's navy brand tiles take the panel gradient (approved 2026-10-17); the `part-brand` baseline passes within tolerance and is not rewritten. Every other light baseline unchanged.
+4. Dark baselines re-captured after the dark small and medium shadows and the slide frame's edge (owner approval of 2026-10-17): `dark-part-shape`, `dark-part-slide`, and, since cards draw the small shadow and the A4 page the medium one, `dark-part-components` and `dark-part-print`.
+5. Byte-identical: `dist/kit-contract.css`, every `dist/kit/*`, `kit-manifest.json`, `dist/tailwind.css`.
 
 ### Increment 04: the kit dark module and the classification cell
 
@@ -247,6 +252,6 @@ Exit criteria:
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | M1: Dark theme defined | 01, 02 | done | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
-| M2: Dark on screen | 03 | pending | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
+| M2: Dark on screen | 03 | done | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
 | M3: Dark slides through the kit | 04 | pending | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
 | M4: Release 1.2.0 | 05 | pending | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |

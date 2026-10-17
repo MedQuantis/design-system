@@ -138,6 +138,115 @@
             "theme": "dark"
           }
         }
+      },
+      "none": {
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        ],
+        "$description": "No shadow: a transparent layer of zero size, for a role that draws an edge in one theme only (owner ruling 14)."
+      },
+      "small-dark": {
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.4,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        ],
+        "$description": "Dark theme only: the small elevation in black at 40 %, so a card still lifts off the dark canvas (ADR-0007, owner approval of 2026-10-17).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "medium-dark": {
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.5,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 12,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        ],
+        "$description": "Dark theme only: the medium elevation in black at 50 %, for a slide or page previewed on the dark desk (ADR-0007, owner approval of 2026-10-17).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
       }
     }
   }

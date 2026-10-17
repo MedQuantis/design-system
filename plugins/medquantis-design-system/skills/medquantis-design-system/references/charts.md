@@ -263,3 +263,4 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-shadow-small` | `0px 1px 2px 0px rgba(0, 0, 0, 0.05)` | Cards (increment 07 component need). |
 | `--mq-shadow-medium` | `0px 3px 12px 0px rgba(0, 0, 0, 0.07)` | A slide or page previewed on the desk, never in print (increment 07 component need). |
 | `--mq-shadow-panel` | `0px 14px 36px 0px rgba(10, 36, 99, 0.24)` | Navy panels (increment 07 component need). |
+| `--mq-shadow-edge` | `0px 0px 0px 0px rgba(0, 0, 0, 0)` | The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). |

@@ -2,9 +2,21 @@
   "semantic": {
     "shadow": {
       "$type": "shadow",
+      "small": {
+        "$value": "{core.shadow.small-dark}",
+        "$description": "Cards on dark: black at 40 %, since the light 5 % shadow does not show on the dark canvas (ADR-0007, owner approval of 2026-10-17)."
+      },
+      "medium": {
+        "$value": "{core.shadow.medium-dark}",
+        "$description": "A slide or page previewed on the dark desk: black at 50 % (ADR-0007, owner approval of 2026-10-17)."
+      },
       "panel": {
         "$value": "{core.shadow.panel-outline}",
         "$description": "Navy panels on dark: a 1 px light-navy outline, no glow (ADR-0007, owner 2026-10-15)."
+      },
+      "edge": {
+        "$value": "{core.shadow.panel-outline}",
+        "$description": "On dark, the panel's 1 px light-navy outline around a navy KPI tile, a navy brand tile and the monogram, whose navy square is 1.11:1 on the dark surface (owner rulings 13 and 14, ADR-0007)."
       }
     }
   }

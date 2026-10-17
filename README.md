@@ -59,6 +59,7 @@ Every `mq-` component is `trial` until a consumer uses it in production; it beco
 | Distribution bar | `mq-distribution`, `mq-segment` | `css/components.css` | trial |
 | Legend | `mq-legend` (`is-column`, `mq-legend-value`), `mq-swatch` | `css/components.css` | trial |
 | Takeaway | `mq-takeaway` | `css/components.css` | trial |
+| Monogram | `mq-monogram` | `css/components.css` | trial |
 | Footer | `mq-foot` | `css/components.css` | trial |
 | Slide canvas | `mq-slide` (`mq-slide-label`, `-title`, `-body`, `-foot`, `-number`) | `css/slide.css` | trial |
 | A4 page and desk | `mq-page`, `mq-desk`, `mq-no-print` | `css/print.css` | trial |
@@ -68,7 +69,7 @@ Consumers lint their own CSS with the same rules: `export { default } from "@med
 
 ## Specimen
 
-The specimen is the visual reference of the design system: every colour token with its contrast pairings and their allowed use, the type scale, the radii and shadows, every `mq-` component, a 1280 x 720 slide, an A4 page, the brand files and the app status layer. `make specimen` generates it into `dist/specimen/index.html` from `dist/tokens.json`, `css/` and the fictitious data in `examples/`; open that file in a browser. The folder holds its own copies of the CSS, fonts and brand files, so it works offline and requests nothing outside itself. It is never edited by hand and never committed. `make build` does not build it, so the package outputs stay free of it.
+The specimen is the visual reference of the design system: every colour token with its contrast pairings and their allowed use, the type scale, the radii and shadows, every `mq-` component, a 1280 x 720 slide, an A4 page, the brand files and the app status layer. `make specimen` generates it into `dist/specimen/index.html` from `dist/tokens.json`, `css/` and the fictitious data in `examples/`, and the same page in the dark theme into `dist/specimen/dark.html` from `dist/themes/dark.json`; open either file in a browser. The folder holds its own copies of the CSS, fonts and brand files, so it works offline and requests nothing outside itself. It is never edited by hand and never committed. `make build` does not build it, so the package outputs stay free of it.
 
 `make test` runs the unit tests, then Playwright and axe on the specimen: WCAG 2.2 AA with no serious or critical violation, no request outside the folder, a tagged PDF export, and screenshot baselines of each part of the page (header, every section, footer) and of the focus ring in `tests/e2e/specimen.spec.mjs-snapshots/`. The browser is Playwright's own Chromium headless shell, whose build is pinned by the exact `@playwright/test` version; `make browsers` installs it locally and CI installs the same build, so the baselines compare like with like. After a deliberate visual change, regenerate the baselines with `node_modules/.bin/playwright test --update-snapshots` and review the new images in the PR. When the CI job fails, it uploads Playwright's `test-results/` (actual, expected and diff images) as the `playwright-test-results` artifact, kept for 7 days.
 

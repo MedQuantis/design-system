@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Generates dist/specimen/, the visual reference of the design system: index.html plus copies of
-// tokens.css, css/, fonts/ and brand/, so the folder opens offline on its own and requests
-// nothing outside itself. Built from dist/tokens.json, tokens/contrast-pairs.json, css/ and the
+// Generates dist/specimen/, the visual reference of the design system: index.html (light) and
+// dark.html (the dark theme of ADR-0007) plus copies of tokens.css, themes/dark.css, css/, fonts/
+// and brand/, so the folder opens offline on its own and requests nothing outside itself. Built
+// from dist/tokens.json, dist/themes/dark.json, tokens/contrast-pairs.json, css/ and the
 // fictitious data in examples/; never hand-edited. Run through `make specimen`.
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -60,14 +61,23 @@ const inlineSvg = (file) =>
     .trim()
     .replace(/^<svg /, '<svg role="img" aria-label="MedQuantis" ');
 
-function swatches(tokens, group) {
-  const items = Object.entries(tokens).filter(
-    ([name, token]) => token.type === "color" && !name.startsWith("--mq-core-") && !token.deprecated && colourGroup(name, token) === group,
-  );
+// The pages, one per theme; a theme page prints the values and ratios of its theme, read over
+// the light tokens for the roles it does not re-value.
+export const PAGES = [
+  { file: "index.html", theme: "light" },
+  { file: "dark.html", theme: "dark" },
+];
+
+function swatches(tokens, group, theme = {}) {
+  const dark = Object.keys(theme).length > 0;
+  const items = Object.entries(tokens)
+    .filter(([name, token]) => token.type === "color" && !name.startsWith("--mq-core-") && !token.deprecated && colourGroup(name, token) === group)
+    .map(([name, token]) => [name, theme[name] ?? token]);
   return `<div class="specimen-grid">${items
     .map(([name, token]) => {
       const onNavy = /^--mq-on-navy-/.test(name) && group === "navy";
-      const chip = onNavy ? layers([name, "--mq-accent"]) : `var(${name})`;
+      // On dark the navy shows as the panel gradient, never the lifted accent (owner ruling 14).
+      const chip = onNavy ? layers([name, dark ? "--mq-panel-start" : "--mq-accent"]) : `var(${name})`;
       return `<figure class="specimen-swatch" data-swatch="${name}" style="margin: 0">
   <div style="background: ${chip}"></div>
   <figcaption class="specimen-swatch-text"><code>${name}</code><span>${escape(token.value)}${onNavy ? " on navy" : ""}</span><span class="specimen-swatch-note">${escape(token.description ?? "")}</span></figcaption>
@@ -76,10 +86,10 @@ function swatches(tokens, group) {
     .join("\n")}</div>`;
 }
 
-function contrastTable(pairs, tokens, caption) {
+function contrastTable(pairs, tokens, caption, theme = {}) {
   const rows = pairs
     .map((pair) => {
-      const { ratio, required } = evaluatePair(pair, tokens);
+      const { ratio, required } = evaluatePair(pair, tokens, theme);
       const background = layers(pair.bg);
       const sample =
         pair.use === "text" || pair.use === "large"
@@ -203,10 +213,38 @@ const kpiTile = (kpi, variant = "") =>
 
 const FOOT = "Illustrative data: invented insurers and products, round figures, no real market.";
 
-export function renderSpecimen({ tokens, pairs, examples, version, icons }) {
+const BRAND_TILES = {
+  light: [
+    ["wordmark-on-light.svg", "", true],
+    ["wordmark-on-light-print.svg", "", false],
+    ["wordmark-on-navy.svg", " is-navy", true],
+    ["wordmark-on-navy-print.svg", " is-navy", false],
+  ],
+  // On dark the white on-navy files go on every surface; the navy wordmark is 1.25:1 there (owner ruling 14).
+  dark: [
+    ["wordmark-on-navy.svg", "", true],
+    ["wordmark-on-navy-print.svg", "", false],
+    ["wordmark-on-navy.svg", " is-navy", true],
+    ["wordmark-on-navy-print.svg", " is-navy", false],
+  ],
+};
+
+function brandTiles(themeName) {
+  return BRAND_TILES[themeName]
+    .map(([file, variant, live]) =>
+      live
+        ? `<div class="specimen-brand-tile${variant}" data-brand="${file}">${inlineSvg(file)}<span>${file} · live text</span></div>`
+        : `<div class="specimen-brand-tile${variant}"><img src="brand/${file}" alt="MedQuantis"><span>${file} · outlined</span></div>`,
+    )
+    .join("\n");
+}
+
+export function renderSpecimen({ tokens, pairs, examples, version, icons, theme = "light", themeTokens = {} }) {
   const { kpis, insurers, products } = examples;
-  const documentPairs = pairs.filter((pair) => !isStatusPair(pair));
-  const statusPairs = pairs.filter(isStatusPair);
+  const dark = theme === "dark";
+  const shown = pairs.filter((pair) => pair.themes.includes(theme));
+  const documentPairs = shown.filter((pair) => !isStatusPair(pair));
+  const statusPairs = shown.filter(isStatusPair);
   const lead = insurers[0];
   const sections = [
     ["colour", "Colour"],
@@ -222,15 +260,15 @@ export function renderSpecimen({ tokens, pairs, examples, version, icons }) {
   ];
 
   return `<!doctype html>
-<html lang="en">
+<html lang="en"${dark ? ' class="dark"' : ""}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MedQuantis design system specimen</title>
+<title>MedQuantis design system specimen${dark ? ", dark theme" : ""}</title>
 <link rel="icon" href="brand/favicon/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="css/base.css">
+${dark ? '<link rel="stylesheet" href="themes/dark.css">\n' : ""}<link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/slide.css">
 <link rel="stylesheet" href="css/print.css">
@@ -239,8 +277,8 @@ export function renderSpecimen({ tokens, pairs, examples, version, icons }) {
 </head>
 <body class="mq-doc" style="margin: 0">
 <header class="mq-wrap specimen-header">
-${inlineSvg("wordmark-on-light.svg").replace("<svg ", '<svg class="specimen-brandline" ')}
-<p class="mq-eyebrow" style="margin-top: var(--mq-space-5)">Design system specimen · version ${escape(version)}</p>
+${inlineSvg(dark ? "wordmark-on-navy.svg" : "wordmark-on-light.svg").replace("<svg ", '<svg class="specimen-brandline" ')}
+<p class="mq-eyebrow" style="margin-top: var(--mq-space-5)">Design system specimen${dark ? " · dark theme" : ""} · version ${escape(version)}</p>
 <h1 class="mq-display">MedQuantis design system</h1>
 <p class="mq-lead">The visual reference of every token and shared component, generated from <code>dist/tokens.json</code>, <code>css/</code> and <code>examples/</code> by <code>scripts/build-specimen.mjs</code>. Never edit this page by hand.</p>
 <nav class="specimen-nav mq-no-print" aria-label="Sections"><ul>
@@ -253,19 +291,19 @@ ${sections.map(([id, title]) => `<li><a href="#${id}">${title}</a></li>`).join("
 <h2 class="mq-title" id="colour-title">Colour</h2>
 <p class="mq-prose">Semantic tokens only; consumers never use the <code>--mq-core-*</code> names. Status colours are shown in the app status layer, since documents never use them (ADR-0004).</p>
 <h3 class="mq-subtitle specimen-sub">Text, surfaces and lines</h3>
-${swatches(tokens, "neutral")}
+${swatches(tokens, "neutral", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">Navy and on navy</h3>
-${swatches(tokens, "navy")}
+${swatches(tokens, "navy", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">Charts: four ordered series and the remainder</h3>
-${swatches(tokens, "chart")}
+${swatches(tokens, "chart", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">Focus ring</h3>
-${swatches(tokens, "focus")}
+${swatches(tokens, "focus", themeTokens)}
 </section>
 
 <section class="mq-wrap specimen-section" id="contrast" aria-labelledby="contrast-title">
 <h2 class="mq-title" id="contrast-title">Contrast</h2>
 <p class="mq-prose">Every foreground and background pairing the shared CSS uses, from <code>tokens/contrast-pairs.json</code>, with its WCAG 2.x ratio and the use it is allowed for. A pairing that is not listed is not allowed.</p>
-${contrastTable(documentPairs, tokens, "Document and app pairings")}
+${contrastTable(documentPairs, tokens, "Document and app pairings", themeTokens)}
 </section>
 
 <section class="mq-wrap specimen-section" id="type" aria-labelledby="type-title">
@@ -306,7 +344,7 @@ ${["small", "medium", "panel"].map((name) => `<div class="specimen-elevation" st
 <h3 class="mq-subtitle specimen-sub">Cards</h3>
 <div class="specimen-columns">
 <div class="mq-card"><h4 class="mq-card-title">${escape(products[0].name)}</h4><p class="mq-card-body">A card holds one idea: a title, a short body and, at most, one figure.</p></div>
-<div class="mq-card"><h4 class="mq-card-title">${escape(products[1].name)}</h4><p class="mq-card-body">Cards sit on white with a hairline and the small shadow.</p></div>
+<div class="mq-card"><h4 class="mq-card-title">${escape(products[1].name)}</h4><p class="mq-card-body">Cards sit on ${dark ? "the dark surface" : "white"} with a hairline and the small shadow.</p></div>
 </div>
 
 <h3 class="mq-subtitle specimen-sub">Navy panel</h3>
@@ -361,13 +399,14 @@ ${ring(insurers)}
 
 <section class="mq-wrap specimen-section" id="brand" aria-labelledby="brand-title">
 <h2 class="mq-title" id="brand-title">Brand</h2>
-<p class="mq-prose">Two wordmark files per background: live text for pages that load <code>fonts.css</code>, outlined for images, documents, email and print. The monogram is the favicon and app icon.</p>
+<p class="mq-prose">${
+    dark
+      ? "On dark, the white on-navy files on every surface, never the navy wordmark (owner ruling 14): live text for pages that load <code>fonts.css</code>, outlined for images, documents, email and print. A navy tile takes the panel gradient, and the monogram the panel's 1 px edge."
+      : "Two wordmark files per background: live text for pages that load <code>fonts.css</code>, outlined for images, documents, email and print. The monogram is the favicon and app icon."
+  }</p>
 <div class="specimen-columns">
-<div class="specimen-brand-tile" data-brand="wordmark-on-light.svg">${inlineSvg("wordmark-on-light.svg")}<span>wordmark-on-light.svg · live text</span></div>
-<div class="specimen-brand-tile"><img src="brand/wordmark-on-light-print.svg" alt="MedQuantis"><span>wordmark-on-light-print.svg · outlined</span></div>
-<div class="specimen-brand-tile is-navy" data-brand="wordmark-on-navy.svg">${inlineSvg("wordmark-on-navy.svg")}<span>wordmark-on-navy.svg · live text</span></div>
-<div class="specimen-brand-tile is-navy"><img src="brand/wordmark-on-navy-print.svg" alt="MedQuantis"><span>wordmark-on-navy-print.svg · outlined</span></div>
-<div class="specimen-brand-tile"><img src="brand/monogram.svg" alt="MedQuantis monogram"><span>monogram.svg</span></div>
+${brandTiles(theme)}
+<div class="specimen-brand-tile"><img class="mq-monogram" src="brand/monogram.svg" alt="MedQuantis monogram"><span>monogram.svg</span></div>
 </div>
 </section>
 
@@ -405,13 +444,13 @@ ${insurerTable(insurers)}
 
 <section class="mq-wrap specimen-section" id="focus" aria-labelledby="focus-title">
 <h2 class="mq-title" id="focus-title">Focus</h2>
-<p class="mq-prose">Keyboard focus draws a 2 px ring with a 2 px offset: navy on light backgrounds, for instance on <a id="focus-light" href="#colour">this link to the colours</a>, and white inside a navy panel.</p>
+<p class="mq-prose">Keyboard focus draws a 2 px ring with a 2 px offset: ${dark ? "the light navy on the dark canvas" : "navy on light backgrounds"}, for instance on <a id="focus-light" href="#colour">this link to the colours</a>, and white inside a navy panel.</p>
 <div class="mq-panel"><p class="mq-panel-text" style="margin: 0">On navy, the ring turns white, as on <a id="focus-navy" href="#brand">this link to the brand</a>.</p></div>
 </section>
 
 <section class="mq-wrap specimen-section" id="app-status" aria-labelledby="app-status-title">
 <h2 class="mq-title" id="app-status-title">App status layer · apps only</h2>
-<p class="mq-prose"><code>css/app.css</code> is for interactive apps only, for genuine system status, always with an icon or a word. Documents never load it (ADR-0004). Warning text, icons and borders use <code>--mq-warning</code>; the warning fill always carries ink text (owner ruling 5).</p>
+<p class="mq-prose"><code>css/app.css</code> is for interactive apps only, for genuine system status, always with an icon or a word. Documents never load it (ADR-0004). Warning text, icons and borders use <code>--mq-warning</code>; the warning fill always carries ${dark ? "<code>--mq-on-warning-fill</code> text, near-black on dark (ADR-0007)" : "ink text (owner ruling 5)"}.</p>
 <div class="specimen-row">
 <span class="mq-status is-success">${icon(icons.CircleCheck, { className: "mq-status-icon" })}Enregistré</span>
 <span class="mq-status is-info">${icon(icons.Info, { className: "mq-status-icon" })}Information</span>
@@ -420,9 +459,9 @@ ${insurerTable(insurers)}
 <span class="mq-status is-danger">${icon(icons.CircleX, { className: "mq-status-icon" })}Erreur</span>
 </div>
 <h3 class="mq-subtitle specimen-sub">Status colours</h3>
-${swatches(tokens, "status")}
+${swatches(tokens, "status", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">Status pairings</h3>
-${contrastTable(statusPairs, tokens, "App status pairings")}
+${contrastTable(statusPairs, tokens, "App status pairings", themeTokens)}
 </section>
 
 </main>
@@ -437,26 +476,37 @@ ${contrastTable(statusPairs, tokens, "App status pairings")}
 `;
 }
 
-async function main() {
+export async function buildSpecimen(out = join(root, "dist/specimen")) {
   const tokensPath = join(root, "dist/tokens.json");
-  if (!existsSync(tokensPath)) {
-    console.error("dist/tokens.json is missing: run make build first");
-    process.exit(2);
+  const darkPath = join(root, "dist/themes/dark.json");
+  for (const path of [tokensPath, darkPath]) {
+    if (!existsSync(path)) throw new Error(`${path} is missing: run make build first`);
   }
   const tokens = JSON.parse(readFileSync(tokensPath, "utf8"));
+  const themes = { light: {}, dark: JSON.parse(readFileSync(darkPath, "utf8")) };
   const pairs = loadPairs(join(root, "tokens/contrast-pairs.json"));
   const examples = JSON.parse(readFileSync(join(root, "examples/specimen.json"), "utf8"));
   const { version } = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
   const icons = await import("lucide");
 
-  const out = join(root, "dist/specimen");
   rmSync(out, { recursive: true, force: true });
-  mkdirSync(out, { recursive: true });
+  mkdirSync(join(out, "themes"), { recursive: true });
   for (const dir of ["css", "fonts", "brand"]) cpSync(join(root, dir), join(out, dir), { recursive: true });
   cpSync(join(root, "dist/tokens.css"), join(out, "tokens.css"));
+  cpSync(join(root, "dist/themes/dark.css"), join(out, "themes/dark.css"));
   cpSync(join(root, "scripts/specimen.css"), join(out, "specimen.css"));
-  writeFileSync(join(out, "index.html"), renderSpecimen({ tokens, pairs, examples, version, icons }));
-  console.log(`dist/specimen/index.html written (${pairs.length} contrast pairs)`);
+  for (const { file, theme } of PAGES) {
+    writeFileSync(join(out, file), renderSpecimen({ tokens, pairs, examples, version, icons, theme, themeTokens: themes[theme] }));
+  }
+  return PAGES.map(({ file }) => file);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    const files = await buildSpecimen();
+    console.log(`dist/specimen/ written: ${files.join(", ")}`);
+  } catch (error) {
+    console.error(error.message);
+    process.exit(2);
+  }
+}

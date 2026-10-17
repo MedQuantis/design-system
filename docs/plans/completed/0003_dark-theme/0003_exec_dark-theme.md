@@ -49,7 +49,7 @@ Principles:
 6. Navy stays the single accent (ADR-0003): on dark it shows as the lifted tint, the light tint and the panel gradient; no new hue.
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
-**Overall Status:** in_progress
+**Overall Status:** done
 **Current Increment:** 05
 
 ## Prerequisites
@@ -191,7 +191,7 @@ Prediction:
 
 ### Increment 05: README and release 1.2.0
 
-**Status:** in_progress
+**Status:** done
 
 Scope:
 
@@ -253,5 +253,5 @@ Exit criteria:
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | M1: Dark theme defined | 01, 02 | done | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
 | M2: Dark on screen | 03 | done | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
-| M3: Dark slides through the kit | 04 | pending | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
-| M4: Release 1.2.0 | 05 | pending | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |
+| M3: Dark slides through the kit | 04 | done | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
+| M4: Release 1.2.0 | 05 | done | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |

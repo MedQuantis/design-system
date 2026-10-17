@@ -252,6 +252,9 @@ Every ratio below is the WCAG 2.x contrast with the dark values, on the dark can
 | `--mq-panel-start` | `#2f4c8f` | Light end of the navy panel gradient | Background, white 8.23:1 on the panel start |
 | `--mq-panel-end` | `#0f2a5e` | Dark end of the navy panel gradient | Background |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow (owner ruling 13) | Navy panels, the report header and the navy KPI tile on dark | Edge of a panel |
+| `--mq-shadow-edge` | the same 1 px outline, light navy at 35 %; none in light | The monogram (`mq-monogram`), the navy KPI tile and a navy brand or app tile, which draw no shadow in light (owner ruling 14) | Edge of a navy mark |
+| `--mq-shadow-small` | black at 40 %, 1 px down with a 2 px blur | Cards, figures and tables on dark, where the light 5 % shadow does not show | Elevation |
+| `--mq-shadow-medium` | black at 50 %, 3 px down with a 12 px blur | A slide or page previewed on the dark desk, raised panels and menus | Elevation |
 
 Accent text on the pale fills reads `--mq-accent-highlight` in both themes (owner ruling 18): in light it is the accent itself, while on dark the lifted navy would be only 3.57:1 on the pale fill and 4.05:1 on the quiet pale fill. The fills are measured laid over the canvas and over the surface, the worse result counting. The callout tab keeps `--mq-accent` on the quiet pale fill as a non-text mark.
 
@@ -600,3 +603,4 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-shadow-small` | `0px 1px 2px 0px rgba(0, 0, 0, 0.05)` | Cards (increment 07 component need). |
 | `--mq-shadow-medium` | `0px 3px 12px 0px rgba(0, 0, 0, 0.07)` | A slide or page previewed on the desk, never in print (increment 07 component need). |
 | `--mq-shadow-panel` | `0px 14px 36px 0px rgba(10, 36, 99, 0.24)` | Navy panels (increment 07 component need). |
+| `--mq-shadow-edge` | `0px 0px 0px 0px rgba(0, 0, 0, 0)` | The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). |

@@ -67,6 +67,7 @@
   --mq-core-shadow-small: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /** Small elevation for cards (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** Medium elevation for a slide or page shown on the desk (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy-tinted elevation for navy panels (increment 07 component need, Report design system, 2026-10-08). */
+  --mq-core-shadow-none: 0px 0px 0px 0px rgba(0, 0, 0, 0); /** No shadow: a transparent layer of zero size, for a role that draws an edge in one theme only (owner ruling 14). */
   --mq-core-size-720: 720px; /** Slide canvas height, 720 px (increment 07 component need: the 1280 by 720 slide canvas). */
   --mq-core-size-760: 760px; /** Reading measure, 760 px (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-size-1040: 1040px; /** Content width of a screen document, 1040 px (increment 07 component need, Report design system, 2026-10-08). */
@@ -148,6 +149,7 @@
   --mq-shadow-small: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /** Cards (increment 07 component need). */
   --mq-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** A slide or page previewed on the desk, never in print (increment 07 component need). */
   --mq-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy panels (increment 07 component need). */
+  --mq-shadow-edge: 0px 0px 0px 0px rgba(0, 0, 0, 0); /** The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). */
   --mq-slide-width: 1280px; /** Slide canvas width (increment 07 component need). */
   --mq-slide-height: 720px; /** Slide canvas height (increment 07 component need). */
   --mq-page-width: 1040px; /** Content width of a screen document (increment 07 component need). */

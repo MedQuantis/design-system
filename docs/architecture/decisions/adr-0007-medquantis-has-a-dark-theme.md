@@ -75,6 +75,8 @@ Contrast with the WCAG 2.x formula, on canvas `#11161f` and surface `#1a2131`.
 | `--mq-focus-ring-color` | `#9fb3e8`, the light navy | 8.71:1 | |
 | `--mq-panel-start`, `--mq-panel-end` | `#2f4c8f`, `#0f2a5e` | white 8.23:1 at the start | |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow | | |
+| `--mq-shadow-edge` | the same 1 px outline, none in light, for the monogram, the navy KPI tile and a navy brand tile (owner, 2026-10-17) | | |
+| `--mq-shadow-small`, `--mq-shadow-medium` | black at 40 % (0 1px 2px) and at 50 % (0 3px 12px), the design-pass values, so cards and a previewed slide or page still lift off the dark canvas (owner, 2026-10-17) | | |
 | `--mq-on-navy-accent` | `#b2c2ed`, a lighter navy tint (owner, 2026-10-17) | 4.64:1 on the panel start | |
 | `--mq-on-navy-discreet` | white at 50 %, large text or non-text only (owner, 2026-10-17) | 3.37:1 on the panel start | |
 

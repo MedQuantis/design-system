@@ -56,8 +56,10 @@ const darkBlock = () => {
 };
 
 // ADR-0007 "Values", "Status colours on dark" and "Charts on dark", with the owner rulings of
-// 2026-10-17 on the on-navy tier, plus the two new roles and the deprecated aliases of tertiary
-// and of the on-navy accent, which follow their targets by definition.
+// 2026-10-17 on the on-navy tier, plus the two new roles, the deprecated aliases of tertiary
+// and of the on-navy accent, which follow their targets by definition, and the panel's edge
+// that the monogram and the navy tiles take on dark (owner ruling 14, Plan-0003 Inc 03), and the
+// darker small and medium shadows of the design pass (owner approval of 2026-10-17, ADR-0007).
 const ADR_0007 = {
   "--mq-canvas": "#11161f",
   "--mq-surface": "#1a2131",
@@ -84,6 +86,9 @@ const ADR_0007 = {
   "--mq-on-navy-discreet": "rgba(255, 255, 255, 0.5)",
   "--mq-accent-on-dark": "#b2c2ed",
   "--mq-shadow-panel": "0px 0px 0px 1px rgba(159, 179, 232, 0.35)",
+  "--mq-shadow-edge": "0px 0px 0px 1px rgba(159, 179, 232, 0.35)",
+  "--mq-shadow-small": "0px 1px 2px 0px rgba(0, 0, 0, 0.4)",
+  "--mq-shadow-medium": "0px 3px 12px 0px rgba(0, 0, 0, 0.5)",
   "--mq-success": "#6fbf73",
   "--mq-warning": "#e0a040",
   "--mq-danger": "#ff6b6b",

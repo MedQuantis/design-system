@@ -78,6 +78,10 @@
       "panel": {
         "$value": "{core.shadow.panel}",
         "$description": "Navy panels (increment 07 component need)."
+      },
+      "edge": {
+        "$value": "{core.shadow.none}",
+        "$description": "The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14)."
       }
     },
     "slide": {

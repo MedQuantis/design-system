@@ -1,7 +1,7 @@
 /*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
 /*
  * MedQuantis document components: cards, navy panel, KPI tiles, table, badges, callout,
- * progress and distribution bars, legend, takeaway and footer.
+ * progress and distribution bars, legend, takeaway, monogram and footer.
  * Documents are navy-only (ADR-0004): states read by mark style (solid, ring, pale, outline,
  * quiet, dashed), never by a status hue. Status badges live in app.css.
  * Text on a navy or tinted background names it in a mq-bg comment, so the contrast test can
@@ -150,6 +150,7 @@
   :where(.mq-kpi.is-navy) {
     border-color: transparent;
     background: linear-gradient(160deg, var(--mq-panel-start), var(--mq-panel-end));
+    box-shadow: var(--mq-shadow-edge);
   }
 
   :where(.mq-kpi.is-navy .mq-kpi-label, .mq-kpi.is-navy .mq-kpi-caption) {
@@ -221,6 +222,11 @@
 
   :where(.mq-table tr.is-highlight > td) {
     background-color: var(--mq-accent-pale);
+  }
+
+  :where(.mq-table tr.is-highlight > .is-key) {
+    /* mq-bg: --mq-accent-pale */
+    color: var(--mq-accent-highlight);
   }
 
   :where(.mq-table tr.is-total > td) {
@@ -454,6 +460,16 @@
     font-size: var(--mq-font-size-takeaway);
     font-weight: var(--mq-font-weight-heading);
     line-height: 1.4;
+  }
+
+  /* Monogram: the brand file at 48 px, where its corners of 8/64 of the side are the 6 px
+     radius, so the panel's edge it takes on dark follows them (owner ruling 14). */
+  :where(.mq-monogram) {
+    display: block;
+    width: var(--mq-space-7);
+    height: var(--mq-space-7);
+    border-radius: var(--mq-radius-medium);
+    box-shadow: var(--mq-shadow-edge);
   }
 
   /* Footer: sources, legal line, illustrative-data note */

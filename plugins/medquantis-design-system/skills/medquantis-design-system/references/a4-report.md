@@ -609,6 +609,7 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-accent-hover` | `#061a4d` | Hover state of accent-coloured controls. |
 | `--mq-accent-pale` | `#eaeef7` | Pale accent fill for a highlighted row, tag or state. |
 | `--mq-accent-pale-2` | `#f2f4f9` | Quieter pale accent fill. |
+| `--mq-accent-highlight` | `#0a2463` | Large highlighted title text; the accent itself in light, the light navy in dark (ADR-0007). |
 | `--mq-on-accent` | `#ffffff` | Text and icons on an accent fill, 14.53:1 on navy. |
 | `--mq-ink` | `#1a1a1a` | Primary text. |
 | `--mq-muted` | `#555555` | Secondary text. |

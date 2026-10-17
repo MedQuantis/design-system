@@ -174,7 +174,7 @@
 
   :where(.mq-kpi.is-pale .mq-kpi-value) {
     /* mq-bg: --mq-accent-pale */
-    color: var(--mq-accent);
+    color: var(--mq-accent-highlight);
   }
 
   /* Table */
@@ -258,7 +258,7 @@
 
   :where(.mq-badge.is-pale) {
     background-color: var(--mq-accent-pale);
-    color: var(--mq-accent);
+    color: var(--mq-accent-highlight);
   }
 
   :where(.mq-badge.is-outline) {
@@ -292,7 +292,7 @@
   :where(.mq-callout-title) {
     /* mq-bg: --mq-accent-pale-2 */
     margin: 0 0 var(--mq-space-1);
-    color: var(--mq-accent);
+    color: var(--mq-accent-highlight);
     font-family: var(--mq-font-family-mono);
     font-size: var(--mq-font-size-eyebrow);
     letter-spacing: 0.14em;

@@ -100,6 +100,44 @@
           }
         ],
         "$description": "Navy-tinted elevation for navy panels (increment 07 component need, Report design system, 2026-10-08)."
+      },
+      "panel-outline": {
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0.6235,
+                0.702,
+                0.9098
+              ],
+              "alpha": 0.35,
+              "hex": "#9fb3e8"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 1,
+              "unit": "px"
+            }
+          }
+        ],
+        "$description": "Dark theme only: the navy panel's 1 px outline in light navy at 35 %, no glow (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
       }
     }
   }

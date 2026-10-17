@@ -1,0 +1,13 @@
+{
+  "semantic": {
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "color": {
+          "$value": "{core.color.navy-light}",
+          "$description": "Focus ring on dark backgrounds, the light navy: 8.71:1 on the canvas (ADR-0007)."
+        }
+      }
+    }
+  }
+}

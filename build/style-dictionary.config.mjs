@@ -1,5 +1,7 @@
 // Style Dictionary 5.6.0 build: DTCG sources in tokens/ to dist/tokens.css, dist/tokens.json,
-// dist/tailwind.css, dist/kit-contract.css and the kit modules dist/kit/<module>.css.
+// dist/tailwind.css, dist/kit-contract.css and the kit modules dist/kit/<module>.css. The named
+// export darkTheme is the second run, for dist/themes/dark.css and dist/themes/dark.json
+// (scripts/build-themes.mjs, ADR-0007).
 import { fileURLToPath } from "node:url";
 import StyleDictionary from "style-dictionary";
 import { kitContractFormat } from "./formats/kit-contract.mjs";
@@ -77,8 +79,12 @@ const cssString = {
 // The built-in css/variables output behind the licence banner.
 const cssVariables = async (args) => `${LICENCE_BANNER}\n${await StyleDictionary.hooks.formats["css/variables"](args)}`;
 
-// The kit tier only feeds kit-contract.css and dist/kit/; it never becomes an --mq- token.
+// The kit tier only feeds kit-contract.css and dist/kit/; it never becomes an --mq- token. A raw
+// value only the dark theme uses carries the theme in $extensions and stays out of the light
+// outputs, which a light consumer receives byte for byte (ADR-0007).
 const notKit = (token) => token.path[0] !== "kit";
+const darkOnly = (token) => token.$extensions?.[EXTENSION]?.theme === "dark";
+const light = (token) => notKit(token) && !darkOnly(token);
 
 const cssTransforms = StyleDictionary.hooks.transformGroups.css.flatMap((name) => {
   if (name === "name/kebab") return ["name/mq"];
@@ -86,22 +92,24 @@ const cssTransforms = StyleDictionary.hooks.transformGroups.css.flatMap((name) =
   return [name];
 }).concat("value/css-string");
 
+const hooks = {
+  preprocessors: { "mq/from-guidelines": fromGuidelines },
+  transforms: { "name/mq": nameMq, "shadow/mq-colour": shadowColour, "value/css-string": cssString },
+  formats: {
+    "mq/css-variables": cssVariables,
+    "mq/json": jsonMq,
+    "mq/tailwind": tailwindFormat,
+    "mq/kit-contract": kitContractFormat,
+    ...Object.fromEntries(KIT_MODULES.map((module) => [`mq/kit-${module}`, kitModuleFormat(module)])),
+  },
+};
+
 export default {
   usesDtcg: true,
   source: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json", "tokens/kit/*.tokens.json"],
   log: { verbosity: "default", warnings: "error" },
   preprocessors: ["mq/from-guidelines"],
-  hooks: {
-    preprocessors: { "mq/from-guidelines": fromGuidelines },
-    transforms: { "name/mq": nameMq, "shadow/mq-colour": shadowColour, "value/css-string": cssString },
-    formats: {
-      "mq/css-variables": cssVariables,
-      "mq/json": jsonMq,
-      "mq/tailwind": tailwindFormat,
-      "mq/kit-contract": kitContractFormat,
-      ...Object.fromEntries(KIT_MODULES.map((module) => [`mq/kit-${module}`, kitModuleFormat(module)])),
-    },
-  },
+  hooks,
   platforms: {
     css: {
       prefix: "mq",
@@ -111,13 +119,42 @@ export default {
         {
           destination: "tokens.css",
           format: "mq/css-variables",
-          filter: notKit,
+          filter: light,
           options: { outputReferences: false, selector: ":root" },
         },
-        { destination: "tokens.json", format: "mq/json", filter: notKit },
-        { destination: "tailwind.css", format: "mq/tailwind", filter: notKit },
+        { destination: "tokens.json", format: "mq/json", filter: light },
+        { destination: "tailwind.css", format: "mq/tailwind", filter: light },
         { destination: "kit-contract.css", format: "mq/kit-contract" },
         ...KIT_MODULES.map((module) => ({ destination: `kit/${module}.css`, format: `mq/kit-${module}` })),
+      ],
+    },
+  },
+};
+
+// The dark theme (ADR-0007): the core and semantic tiers are included, the dark sources override
+// the roles they re-value, and only those roles are written, under .dark. Each re-valued role
+// collides with its light definition by design, so this run alone lets collisions through; a
+// broken reference still fails it.
+export const darkTheme = {
+  usesDtcg: true,
+  include: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json"],
+  source: ["tokens/themes/dark/*.tokens.json"],
+  log: { verbosity: "default", warnings: "disabled" },
+  preprocessors: ["mq/from-guidelines"],
+  hooks,
+  platforms: {
+    css: {
+      prefix: "mq",
+      transforms: cssTransforms,
+      buildPath: "dist/themes/",
+      files: [
+        {
+          destination: "dark.css",
+          format: "mq/css-variables",
+          filter: (token) => token.isSource,
+          options: { outputReferences: false, selector: ".dark" },
+        },
+        { destination: "dark.json", format: "mq/json", filter: (token) => token.isSource },
       ],
     },
   },

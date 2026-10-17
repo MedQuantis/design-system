@@ -50,7 +50,7 @@ Principles:
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
 **Overall Status:** in_progress
-**Current Increment:** 04
+**Current Increment:** 05
 
 ## Prerequisites
 
@@ -191,7 +191,7 @@ Prediction:
 
 ### Increment 05: README and release 1.2.0
 
-**Status:** pending
+**Status:** in_progress
 
 Scope:
 

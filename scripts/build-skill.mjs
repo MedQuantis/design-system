@@ -30,6 +30,7 @@ export const MEDIA = {
       ["colour.md", "Neutrals"],
       ["colour.md", "Navy panels and gradients"],
       ["colour.md", "States by mark style (documents)"],
+      ["colour.md", "Dark theme"],
       ["typography.md", "Three families, three roles"],
       ["typography.md", "Weights"],
       ["typography.md", "Roles and sizes"],
@@ -68,6 +69,7 @@ export const MEDIA = {
       ["colour.md", "Neutrals"],
       ["colour.md", "Navy panels and gradients"],
       ["colour.md", "States by mark style (documents)"],
+      ["colour.md", "Dark theme"],
       ["typography.md", "Three families, three roles"],
       ["typography.md", "Weights"],
       ["typography.md", "Roles and sizes"],
@@ -118,6 +120,7 @@ export const MEDIA = {
       ["colour.md", "Accent"],
       ["colour.md", "Neutrals"],
       ["colour.md", "Navy panels and gradients"],
+      ["colour.md", "Dark theme"],
       ["typography.md", "Three families, three roles"],
       ["typography.md", "Weights"],
       ["typography.md", "Roles and sizes"],
@@ -149,6 +152,7 @@ export const MEDIA = {
       ["colour.md", "Accent"],
       ["colour.md", "Neutrals"],
       ["colour.md", "Status colours (apps only)"],
+      ["colour.md", "Dark theme"],
       ["typography.md", "Three families, three roles"],
       ["typography.md", "Weights"],
       ["typography.md", "Line height"],
@@ -204,6 +208,13 @@ export const MEDIA = {
 
 const STATUS_NAME = /--mq-(success|warning|warning-fill|warning-tint|danger|info)\b/;
 
+// The skill's own files for a guideline section, appended under its copied text: the guideline
+// names the npm package paths, a skill page loads the copies in assets/ (owner, 2026-10-17).
+const SKILL_NOTES = {
+  "colour.md#Dark theme":
+    "In this skill: load or inline `assets/themes/dark.css` after `assets/tokens.css` (bundle.py inlines both) and set `.dark` on `<html>` for a dark page or deck, or on one slide. validate.py allows the dark values under the same medium rules as light.",
+};
+
 // Documents never carry status colours, so lines that only matter to apps are left out of their
 // references; the app reference keeps them.
 const forMedium = (body, medium) => (medium === "app" ? body : body.split("\n").filter((line) => !STATUS_NAME.test(line)).join("\n"));
@@ -219,7 +230,8 @@ export const renderReference = (root, medium) => {
     const source = guideline(file);
     const body = heading === "" ? source.intro : source.sections.get(heading);
     if (body === undefined) throw new Error(`guidelines/${file} has no section "${heading}"`);
-    return { title: heading === "" ? source.title : heading, file, body: forMedium(unlinkRelative(body), medium) };
+    const note = SKILL_NOTES[`${file}#${heading}`];
+    return { title: heading === "" ? source.title : heading, file, body: forMedium(unlinkRelative(body), medium) + (note ? `\n\n${note}` : "") };
   });
   const tokens = usableTokens(root, medium === "app" ? "app" : "document").filter(([, token]) => token.type === "color" || token.type === "shadow");
   const contents = [...parts.map((part) => part.title), "Colour tokens for this medium"];

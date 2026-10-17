@@ -34,12 +34,22 @@ const FAMILIES = {
   radius: (token) => token.path[1] === "radius",
   shadow: (token) => token.type === "shadow",
 };
+// The dark theme (ADR-0007, dist/themes/dark.json): a re-valued colour carries its dark value as
+// the dark theme's, light first so every other colour inherits its light value; a re-valued shadow,
+// which has no themes, names its dark value in its note. Each note adds the dark role's description.
+const dark = JSON.parse(readFileSync(join(root, "dist/themes/dark.json"), "utf8"));
+const darkNote = (key, token) => (key === "shadow" ? ` Dark theme (.dark): \`${token.value}\`, ${token.description}` : ` Dark theme (.dark): ${token.description}`);
 const family = (key) =>
   Object.entries(tokens)
     .filter(([, token]) => token.path[0] === "semantic" && !token.deprecated && FAMILIES[key](token))
     .map(([name, token]) => {
       if (!token.description) throw new Error(`${name} has no $description for its usage note`);
-      return { name: name.slice(2), value: key === "color" ? { light: token.value } : token.value, usage: token.description };
+      const themed = dark[name];
+      return {
+        name: name.slice(2),
+        value: key === "color" ? { light: token.value, ...(themed ? { dark: themed.value } : {}) } : token.value,
+        usage: `${token.description}${themed ? darkNote(key, themed) : ""}`,
+      };
     });
 
 // Text styles of guidelines/typography.md (Roles and sizes), each property a token.
@@ -91,7 +101,13 @@ write(
     {
       name: "MedQuantis",
       version: 1,
-      color: { themes: [{ id: "light", name: "Light" }], tokens: family("color") },
+      color: {
+        themes: [
+          { id: "light", name: "Light" },
+          { id: "dark", name: "Dark" },
+        ],
+        tokens: family("color"),
+      },
       type,
       spacing: { tokens: family("spacing") },
       radius: { tokens: family("radius") },

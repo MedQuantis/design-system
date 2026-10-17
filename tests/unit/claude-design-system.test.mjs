@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, relative } from "node:path";
 import { readGuideline, unlinkRelative } from "../../build/guidelines.mjs";
-import { flatten, loadPairs } from "../../build/contrast-pairs.mjs";
+import { evaluatePair, flatten, loadPairs } from "../../build/contrast-pairs.mjs";
 import { contrastRatio } from "../../build/color-math.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -67,7 +67,7 @@ test("the index is the type's files index, with the createdOnFiles marker, the t
 test("tokens.json is in the type's list shape, never a DTCG map", () => {
   const tokens = json("tokens.json");
   assert.equal(tokens.name, "MedQuantis");
-  assert.deepEqual(tokens.color.themes, [{ id: "light", name: "Light" }]);
+  assert.deepEqual(tokens.color.themes, [{ id: "light", name: "Light" }, { id: "dark", name: "Dark" }], "light first: a token without a dark value inherits it");
   assert.doesNotMatch(readProject("tokens.json"), /"\$value"|var\(|color-mix\(/);
   const names = [];
   for (const [family, group] of Object.entries(tokens)) {
@@ -83,20 +83,33 @@ test("tokens.json is in the type's list shape, never a DTCG map", () => {
   assert.deepEqual(names.filter((name, index) => names.indexOf(name) !== index), [], "each name once across the families");
 });
 
-test("every semantic colour, space, radius and shadow token is carried with its value and its $description", () => {
+// Plan-0003 increment 02: the dark theme of ADR-0007 (dist/themes/dark.json). A re-valued colour
+// carries its dark value as the dark theme's; a re-valued shadow, which has no themes, names its
+// dark value in its note; each note adds the dark role's own description.
+const darkTheme = () => JSON.parse(read("dist/themes/dark.json"));
+const darkNote = (family, dark) => (family === "shadow" ? ` Dark theme (.dark): \`${dark.value}\`, ${dark.description}` : ` Dark theme (.dark): ${dark.description}`);
+
+test("every semantic colour, space, radius and shadow token is carried with its value and its $description, the dark values with their notes", () => {
   const tokens = json("tokens.json");
+  const darkValues = darkTheme();
   for (const family of Object.keys(FAMILIES)) {
-    const expected = semantic(family).map(([name, token]) => ({
-      name: name.slice(2),
-      value: family === "color" ? { light: token.value } : token.value,
-      usage: token.description,
-    }));
+    const expected = semantic(family).map(([name, token]) => {
+      const dark = darkValues[name];
+      return {
+        name: name.slice(2),
+        value: family === "color" ? { light: token.value, ...(dark ? { dark: dark.value } : {}) } : token.value,
+        usage: `${token.description}${dark ? darkNote(family, dark) : ""}`,
+      };
+    });
     assert.ok(expected.length > 0, `${family} has tokens`);
     assert.deepEqual(tokens[family].tokens, expected, `${family}: same names (tokens.css without --), values and notes`);
   }
   for (const { name, value } of tokens.color.tokens) {
-    assert.match(value.light, /^(#[0-9a-f]{3,8}|rgba?\([\d.,\s]+\))$/i, `${name} is a colour value the page reads`);
+    for (const theme of Object.keys(value)) assert.match(value[theme], /^(#[0-9a-f]{3,8}|rgba?\([\d.,\s]+\))$/i, `${name} (${theme}) is a colour value the page reads`);
   }
+  const carriedDark = tokens.color.tokens.filter(({ value }) => value.dark).map(({ name }) => `--${name}`);
+  const expectedDark = Object.entries(darkValues).filter(([name, token]) => token.type === "color" && !builtTokens()[name].deprecated).map(([name]) => name);
+  assert.deepEqual(carriedDark.sort(), expectedDark.sort(), "every non-deprecated dark colour is carried");
 });
 
 test("type names the three Google-hosted faces, ships no font file, and every style is a token value", () => {
@@ -124,13 +137,19 @@ test("type names the three Google-hosted faces, ships no font file, and every st
   }
 });
 
-test("every text pair of tokens/contrast-pairs.json reaches 4.5:1 with the values the system carries", () => {
-  const carried = Object.fromEntries(json("tokens.json").color.tokens.map(({ name, value }) => [`--${name}`, { value: value.light }]));
+test("every text pair of tokens/contrast-pairs.json reaches 4.5:1 with the values the system carries, in each of its themes", () => {
+  const colours = json("tokens.json").color.tokens;
+  const carried = Object.fromEntries(colours.map(({ name, value }) => [`--${name}`, { value: value.light }]));
+  const carriedDark = Object.fromEntries(colours.filter(({ value }) => value.dark).map(({ name, value }) => [`--${name}`, { value: value.dark }]));
   const pairs = loadPairs(join(root, "tokens/contrast-pairs.json")).filter((pair) => pair.use === "text");
   assert.ok(pairs.length > 0);
+  assert.ok(Object.keys(carriedDark).length > 0, "the system carries no dark value");
   for (const pair of pairs) {
     const ratio = contrastRatio(carried[pair.fg].value, flatten(pair.bg, carried));
     assert.ok(ratio >= 4.5, `${pair.fg} on ${pair.bg.join(" over ")}: ${ratio.toFixed(2)}:1`);
+    if (!pair.themes.includes("dark")) continue;
+    const dark = evaluatePair(pair, carried, carriedDark).ratio;
+    assert.ok(dark >= 4.5, `dark: ${pair.fg} on ${pair.bg.join(" over ")}: ${dark.toFixed(2)}:1`);
   }
 });
 
@@ -154,6 +173,7 @@ test("README.md is the brand book generated from guidelines/, with the --mq- tok
   assert.match(text, /`mq-accent` in tokens\.json is `--mq-accent`/, "says how token names map to the rules");
   for (const name of README_GUIDELINES) expectSections(text, name, "###");
   assert.match(text, /`--mq-accent`/);
+  assert.match(text, /^### Dark theme$/m, "the brand book carries the Dark theme section (Plan-0003 increment 02)");
 });
 
 test("each other guideline is a further brand book section, at most 24", () => {

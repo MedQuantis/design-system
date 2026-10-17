@@ -4,7 +4,7 @@
 
 | Medium | Canvas | Layout |
 | :-- | :-- | :-- |
-| Slide | 1280 by 720 px (`--mq-slide-width`, `--mq-slide-height`, `css/slide.css`) | Fixed canvas, 72 px side margins (`--mq-space-8`), section label top left, title under it, and a footer row (`mq-slide-foot`) with the legal line bottom left and the slide number bottom right, both in tertiary mono (owner ruling 11) |
+| Slide | 1280 by 720 px (`--mq-slide-width`, `--mq-slide-height`, `css/slide.css`) | Fixed canvas, 72 px side margins (`--mq-space-8`), section label top left, title under it, and a footer row (`mq-slide-foot`) with the legal line bottom left and the slide number bottom right, both in tertiary mono (owner ruling 11); a classified deck adds its classification label at the right of the footer, before the slide number (owner ruling 17) |
 | Screen report or paper | A page that scrolls, centred, `--mq-page-width` (1040 px) wide | Flow layout: no absolute positions, no fixed heights. It is not a deck: no slide canvas inside a report |
 | A4 print | 210 by 297 mm (`--mq-a4-width`, `--mq-a4-height`, `css/print.css`) | One `mq-page` per sheet on the canvas colour; on screen the pages sit on the desk |
 
@@ -53,7 +53,7 @@ Squared-off corners read professional and institutional; pills read consumer.
 
 ## Elevation and navy blocks
 
-- Cards, figures and tables: `--mq-shadow-small`. Raised panels, menus and a page or slide previewed on the desk: `--mq-shadow-medium`. Navy panels: `--mq-shadow-panel`. No shadow in print and none on chart marks.
+- Cards, figures and tables: `--mq-shadow-small`. Raised panels, menus and a page or slide previewed on the desk: `--mq-shadow-medium`. Navy panels: `--mq-shadow-panel`, which on dark is a 1 px light-navy outline and never a glow (owner ruling 13). No shadow in print and none on chart marks.
 - One large navy block per screen, slide or page area. In a report, keep the header, a navy KPI band and a navy panel apart with light content.
 
 ## Document components
@@ -67,7 +67,7 @@ Squared-off corners read professional and institutional; pills read consumer.
 | Takeaway | `mq-takeaway` | The one sentence to remember, under a navy tab, Outfit 500 |
 | Numbered rows | (pattern) | A navy circle with the number, a heading column, a body column: one line per point |
 | Footer | `mq-foot` | Sources and legal line in tertiary italic, in reports and papers; never inside a slide |
-| Slide footer | `mq-slide-foot` | On every slide (owner ruling 11): the legal line bottom left, the slide number bottom right, small, tertiary, Geist Mono: `<footer class="mq-slide-foot"><p>MedQuantis SA · CH-1095 Lutry · medquantis.ch</p><p class="mq-slide-number">03</p></footer>` |
+| Slide footer | `mq-slide-foot` | On every slide (owner ruling 11): the legal line bottom left, the slide number bottom right, small, tertiary, Geist Mono. A classified deck shows its classification at the right of the footer, before the slide number: the label in the deck's language, never the C0 to C3 code (owner ruling 17). Without a classification: `<footer class="mq-slide-foot"><p>MedQuantis SA · CH-1095 Lutry · medquantis.ch</p><p class="mq-slide-number">03</p></footer>` |
 
 ## Tables
 

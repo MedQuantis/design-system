@@ -50,7 +50,7 @@ Principles:
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
 **Overall Status:** in_progress
-**Current Increment:** 01
+**Current Increment:** 02
 
 ## Prerequisites
 
@@ -94,7 +94,7 @@ Prediction:
 
 ### Increment 02: the guideline, DESIGN.md, the Claude Design System and the skill
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -102,13 +102,13 @@ Scope:
    - extend `tests/unit/guidelines.test.mjs`: `guidelines/colour.md` has a "Dark theme" section naming every dark role, its value and its contrast, with no em dash; `guidelines/brand.md` has the dark rules for the wordmark and monogram; `guidelines/layout.md` and `brand.md` place the classification at the right of the footer, before the number (amending ruling 11's two-cell footer).
    - extend `tests/unit/design-md.test.mjs`: `dist/DESIGN.md` carries the "Dark theme" section and lists the dark colours as `dark-*` names equal to `dist/themes/dark.json`, with no gradient under `colors` (the linter rejects one); `@google/design.md@0.4.0` lints with no error and no warning.
    - extend `tests/unit/claude-design-system.test.mjs`: `tokens.json` carries the dark values with their usage notes; the README brand book carries the "Dark theme" section.
-   - extend `tests/unit/skill.test.mjs`: the slides, documents and apps references each carry the "Dark theme" section.
+   - extend `tests/unit/skill.test.mjs`: the slides, documents and apps references each carry the "Dark theme" section, with a skill note naming `assets/themes/dark.css` and `.dark`; the skill ships `assets/themes/dark.css` and `dark.json` byte-equal to `dist/themes/`, and `validate.py` passes a page that bundles the dark theme and uses dark literal values while still failing a colour in neither theme, with status values apps only (owner, 2026-10-17: skill dark check in Inc 02).
 2. `guidelines/colour.md` "Dark theme": the scope (apps, documents chosen per document, slides), the values and contrast, the navy panel on dark, status and charts on dark; the warm-neutral rule ("never blue-tinted greys") scoped to the light theme; the light navy named a navy tint, not the retired sky blue (LCH hue 280.4 against sky blue 269.9 and navy 293.7, from the review). `guidelines/brand.md`: the white wordmark on every dark surface, a navy tile takes the panel gradient, the monogram's outline. `guidelines/layout.md`: the classification cell. `guidelines/README.md`: the provenance rows (owner rulings of 2026-10-15, ADR-0007), under the next ruling numbers.
-3. `scripts/build-design-md.mjs`: `["colour.md", "Dark theme"]` in the Colors section, the dark colours from `dist/themes/dark.json`. `scripts/build-claude-design-system.mjs`: the dark values and the section. `scripts/build-skill.mjs`: `["colour.md", "Dark theme"]` in `MEDIA.slides`, `MEDIA.documents` and `MEDIA.apps`; run `make skill`.
+3. `scripts/build-design-md.mjs`: `["colour.md", "Dark theme"]` in the Colors section, the dark colours from `dist/themes/dark.json`. `scripts/build-claude-design-system.mjs`: the dark values and the section. `scripts/build-skill.mjs`: `["colour.md", "Dark theme"]` in `MEDIA.slides`, `MEDIA.documents` and `MEDIA.apps`, with the skill note under it; `scripts/sync-skill-assets.mjs` copies `dist/themes/dark.css` and `dark.json` into the skill's `assets/themes/`; the skill's `scripts/validate.py` allows the dark semantic values under the same medium rules as light; run `make skill`.
 
 Primary files:
 
-1. `guidelines/colour.md`, `guidelines/brand.md`, `guidelines/layout.md`, `guidelines/README.md`, `scripts/build-design-md.mjs`, `scripts/build-claude-design-system.mjs`, `scripts/build-skill.mjs`, `plugins/medquantis-design-system/` (regenerated)
+1. `guidelines/colour.md`, `guidelines/brand.md`, `guidelines/layout.md`, `guidelines/README.md`, `scripts/build-design-md.mjs`, `scripts/build-claude-design-system.mjs`, `scripts/build-skill.mjs`, `scripts/sync-skill-assets.mjs`, `plugins/medquantis-design-system/` (regenerated, and `scripts/validate.py`)
 2. `tests/unit/guidelines.test.mjs`, `tests/unit/design-md.test.mjs`, `tests/unit/claude-design-system.test.mjs`, `tests/unit/skill.test.mjs`
 
 Test gate:
@@ -121,7 +121,7 @@ Exit criteria:
 
 Prediction:
 
-1. Changed: the four guidelines, `dist/DESIGN.md`, `dist/llms-full.txt`, `dist/claude-design-system/project/`, the skill's references and evals. No CSS output changes.
+1. Changed: the four guidelines, `dist/DESIGN.md`, `dist/llms-full.txt`, `dist/llms.txt` (the colour.md index line), `dist/kit/guidance.md` (the guideline sections it copies), `dist/claude-design-system/project/`, the skill's references and evals, `validate.py`. New: the skill's `assets/themes/dark.css` and `assets/themes/dark.json`. No CSS output changes (owner, 2026-10-17).
 
 ### Increment 03: components and the specimen in both themes
 
@@ -246,7 +246,7 @@ Exit criteria:
 
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| M1: Dark theme defined | 01, 02 | in_progress | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
+| M1: Dark theme defined | 01, 02 | done | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
 | M2: Dark on screen | 03 | pending | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
 | M3: Dark slides through the kit | 04 | pending | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
 | M4: Release 1.2.0 | 05 | pending | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |

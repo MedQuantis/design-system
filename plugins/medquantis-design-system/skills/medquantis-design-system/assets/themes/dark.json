@@ -1,0 +1,406 @@
+{
+  "--mq-chart-series-1": {
+    "value": "#9fb3e8",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "series",
+      "1"
+    ],
+    "description": "Series 1 on dark, the lightest first: 8.71:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-series-2": {
+    "value": "#6f88c9",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "series",
+      "2"
+    ],
+    "description": "Series 2 on dark: 5.22:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-series-3": {
+    "value": "#5d6f91",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "series",
+      "3"
+    ],
+    "description": "Series 3 on dark: 3.58:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-series-4": {
+    "value": "#3a4560",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "series",
+      "4"
+    ],
+    "description": "Series 4 on dark, context bars: 1.90:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-rest": {
+    "value": "#232b3d",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "rest"
+    ],
+    "description": "Remainder fill on dark, drawn with a series 4 outline: 1.28:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-axis": {
+    "value": "#6b7385",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "axis"
+    ],
+    "description": "Axis lines and ticks on dark (non-text): 3.81:1 on the canvas (ADR-0007)."
+  },
+  "--mq-chart-baseline": {
+    "value": "rgba(255, 255, 255, 0.1)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "chart",
+      "baseline"
+    ],
+    "description": "Gridlines and baselines on dark, white at 10 % (decorative, ADR-0007)."
+  },
+  "--mq-accent": {
+    "value": "#6f88c9",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent"
+    ],
+    "description": "The lifted navy, the accent on dark: 5.22:1 on the canvas, 4.63:1 on the surface (ADR-0007)."
+  },
+  "--mq-accent-hover": {
+    "value": "#8aa0d6",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent-hover"
+    ],
+    "description": "Hover state of accent-coloured controls on dark, 6.98:1 on the canvas (ADR-0007)."
+  },
+  "--mq-accent-pale": {
+    "value": "rgba(111, 136, 201, 0.18)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent-pale"
+    ],
+    "description": "The lifted navy at 18 % for a highlighted row, tag or state (ADR-0007)."
+  },
+  "--mq-accent-pale-2": {
+    "value": "rgba(111, 136, 201, 0.1)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent-pale-2"
+    ],
+    "description": "The lifted navy at 10 %, the quieter fill (ADR-0007)."
+  },
+  "--mq-accent-highlight": {
+    "value": "#9fb3e8",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent-highlight"
+    ],
+    "description": "The light navy for large highlighted title text: 8.71:1 on the canvas, 7.73:1 on the surface (ADR-0007)."
+  },
+  "--mq-on-accent": {
+    "value": "#11161f",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "on-accent"
+    ],
+    "description": "Near-black on the lifted accent, 5.22:1; white on it is 3.48:1 and is never used (ADR-0007)."
+  },
+  "--mq-ink": {
+    "value": "#f5f4f1",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "ink"
+    ],
+    "description": "Warm white, primary text: 16.48:1 on the canvas, 14.62:1 on the surface (ADR-0007)."
+  },
+  "--mq-muted": {
+    "value": "#c3cbdc",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "muted"
+    ],
+    "description": "Secondary text: 11.13:1 on the canvas, 9.88:1 on the surface (ADR-0007)."
+  },
+  "--mq-tertiary": {
+    "value": "#8f98aa",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "tertiary"
+    ],
+    "description": "Tertiary text, captions and footers: 6.25:1 on the canvas, 5.54:1 on the surface (ADR-0007)."
+  },
+  "--mq-decoration": {
+    "value": "#6b7385",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "decoration"
+    ],
+    "description": "Non-text decoration only, never text: 3.81:1 on the canvas, 3.38:1 on the surface (ADR-0007)."
+  },
+  "--mq-canvas": {
+    "value": "#11161f",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "canvas"
+    ],
+    "description": "A near-black with a navy cast, the background of every dark page (ADR-0007)."
+  },
+  "--mq-surface": {
+    "value": "#1a2131",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "surface"
+    ],
+    "description": "Cards and panels on a dark page (ADR-0007)."
+  },
+  "--mq-surface-alt": {
+    "value": "#141a26",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "surface-alt"
+    ],
+    "description": "Recessed surface on dark: table headers, grouped areas (ADR-0007)."
+  },
+  "--mq-desk": {
+    "value": "#0b0f16",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "desk"
+    ],
+    "description": "On screen only, around a dark page preview (ADR-0007)."
+  },
+  "--mq-border": {
+    "value": "rgba(255, 255, 255, 0.14)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "border"
+    ],
+    "description": "Borders and dividers on dark, white at 14 % (decorative, ADR-0007)."
+  },
+  "--mq-border-light": {
+    "value": "rgba(255, 255, 255, 0.1)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "border-light"
+    ],
+    "description": "Hairlines and card borders on dark, white at 10 % (decorative, ADR-0007)."
+  },
+  "--mq-border-strong": {
+    "value": "#8795b3",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "border-strong"
+    ],
+    "description": "Outline of outlined and dashed state marks on dark: 6.03:1 on the canvas, 5.35:1 on the surface (ADR-0007)."
+  },
+  "--mq-panel-start": {
+    "value": "#2f4c8f",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "panel-start"
+    ],
+    "description": "Light end of the navy panel gradient on dark, white 8.23:1 on it (ADR-0007)."
+  },
+  "--mq-panel-end": {
+    "value": "#0f2a5e",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "panel-end"
+    ],
+    "description": "Dark end of the navy panel gradient on dark (ADR-0007)."
+  },
+  "--mq-on-navy-accent": {
+    "value": "#b2c2ed",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "on-navy",
+      "accent"
+    ],
+    "description": "The one-off accent on the dark navy panel, 4.64:1 on its light end (owner ruling of 2026-10-17, ADR-0007)."
+  },
+  "--mq-on-navy-discreet": {
+    "value": "rgba(255, 255, 255, 0.5)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "on-navy",
+      "discreet"
+    ],
+    "description": "Discreet numbers on the dark navy panel, 3.37:1 on its light end, so large text or non-text only (owner ruling of 2026-10-17, ADR-0007)."
+  },
+  "--mq-success": {
+    "value": "#6fbf73",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "status",
+      "success"
+    ],
+    "description": "Apps only: success on dark, 8.09:1 on the canvas (ADR-0007, ADR-0004)."
+  },
+  "--mq-warning": {
+    "value": "#e0a040",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "status",
+      "warning"
+    ],
+    "description": "Apps only: warning text, icons and borders on dark, 8.00:1 on the canvas (ADR-0007, ADR-0004)."
+  },
+  "--mq-danger": {
+    "value": "#ff6b6b",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "status",
+      "danger"
+    ],
+    "description": "Apps only: errors and destructive actions on dark, 6.53:1 on the canvas (ADR-0007, ADR-0004)."
+  },
+  "--mq-info": {
+    "value": "#64a8f0",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "status",
+      "info"
+    ],
+    "description": "Apps only: information on dark, 7.25:1 on the canvas (ADR-0007, ADR-0004)."
+  },
+  "--mq-on-warning-fill": {
+    "value": "#11161f",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "status",
+      "on-warning-fill"
+    ],
+    "description": "Near-black on the warning fill, 6.18:1; warm white on it is 2.67:1 (ADR-0007)."
+  },
+  "--mq-warning-fill": {
+    "value": "#d4850a",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "warning-fill"
+    ],
+    "description": "The warning fill, unchanged on dark (ADR-0007)."
+  },
+  "--mq-warning-tint": {
+    "value": "rgba(212, 133, 10, 0.16)",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "warning-tint"
+    ],
+    "description": "The warning fill at 16 % behind ink text, 11.63:1 on the surface (ADR-0007)."
+  },
+  "--mq-dim": {
+    "value": "#8f98aa",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "dim"
+    ],
+    "description": "Retired name of the old tertiary grey; resolves to tertiary on dark too (ADR-0007).",
+    "deprecated": "Use --mq-tertiary for text or --mq-decoration for non-text decoration."
+  },
+  "--mq-accent-on-dark": {
+    "value": "#b2c2ed",
+    "type": "color",
+    "path": [
+      "semantic",
+      "color",
+      "accent-on-dark"
+    ],
+    "description": "Retired name of the accent on navy; resolves to the on-navy accent on dark too (owner ruling of 2026-10-17, ADR-0007).",
+    "deprecated": "Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent."
+  },
+  "--mq-focus-ring-color": {
+    "value": "#9fb3e8",
+    "type": "color",
+    "path": [
+      "semantic",
+      "focus",
+      "ring",
+      "color"
+    ],
+    "description": "Focus ring on dark backgrounds, the light navy: 8.71:1 on the canvas (ADR-0007)."
+  },
+  "--mq-shadow-panel": {
+    "value": "0px 0px 0px 1px rgba(159, 179, 232, 0.35)",
+    "type": "shadow",
+    "path": [
+      "semantic",
+      "shadow",
+      "panel"
+    ],
+    "description": "Navy panels on dark: a 1 px light-navy outline, no glow (ADR-0007, owner 2026-10-15)."
+  }
+}

@@ -262,7 +262,7 @@ test("the deprecation note of --mq-accent-on-dark names the replacement per use"
   assert.ok(built, "--mq-accent-on-dark is not in dist/tokens.json");
   assert.match(built.deprecated ?? "", note, "tokens.json deprecation note");
   assert.match(readDist(distCss).split("\n").find((line) => line.includes("--mq-accent-on-dark:")) ?? "", note, "tokens.css comment");
-  assert.match(readDist(join(root, "dist/llms-full.txt")).split("\n").find((line) => line.includes("`--mq-accent-on-dark`")) ?? "", note, "llms-full.txt row");
+  assert.match(readDist(join(root, "dist/llms-full.txt")).split("\n").find((line) => line.startsWith("| `--mq-accent-on-dark` |")) ?? "", note, "llms-full.txt token row");
 });
 
 test("focus ring is 2 px navy with an offset, white on navy", () => {

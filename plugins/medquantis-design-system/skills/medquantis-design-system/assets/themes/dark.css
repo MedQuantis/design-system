@@ -1,0 +1,46 @@
+/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+.dark {
+  --mq-chart-series-1: #9fb3e8; /** Series 1 on dark, the lightest first: 8.71:1 on the canvas (ADR-0007). */
+  --mq-chart-series-2: #6f88c9; /** Series 2 on dark: 5.22:1 on the canvas (ADR-0007). */
+  --mq-chart-series-3: #5d6f91; /** Series 3 on dark: 3.58:1 on the canvas (ADR-0007). */
+  --mq-chart-series-4: #3a4560; /** Series 4 on dark, context bars: 1.90:1 on the canvas (ADR-0007). */
+  --mq-chart-rest: #232b3d; /** Remainder fill on dark, drawn with a series 4 outline: 1.28:1 on the canvas (ADR-0007). */
+  --mq-chart-axis: #6b7385; /** Axis lines and ticks on dark (non-text): 3.81:1 on the canvas (ADR-0007). */
+  --mq-chart-baseline: rgba(255, 255, 255, 0.1); /** Gridlines and baselines on dark, white at 10 % (decorative, ADR-0007). */
+  --mq-accent: #6f88c9; /** The lifted navy, the accent on dark: 5.22:1 on the canvas, 4.63:1 on the surface (ADR-0007). */
+  --mq-accent-hover: #8aa0d6; /** Hover state of accent-coloured controls on dark, 6.98:1 on the canvas (ADR-0007). */
+  --mq-accent-pale: rgba(111, 136, 201, 0.18); /** The lifted navy at 18 % for a highlighted row, tag or state (ADR-0007). */
+  --mq-accent-pale-2: rgba(111, 136, 201, 0.1); /** The lifted navy at 10 %, the quieter fill (ADR-0007). */
+  --mq-accent-highlight: #9fb3e8; /** The light navy for large highlighted title text: 8.71:1 on the canvas, 7.73:1 on the surface (ADR-0007). */
+  --mq-on-accent: #11161f; /** Near-black on the lifted accent, 5.22:1; white on it is 3.48:1 and is never used (ADR-0007). */
+  --mq-ink: #f5f4f1; /** Warm white, primary text: 16.48:1 on the canvas, 14.62:1 on the surface (ADR-0007). */
+  --mq-muted: #c3cbdc; /** Secondary text: 11.13:1 on the canvas, 9.88:1 on the surface (ADR-0007). */
+  --mq-tertiary: #8f98aa; /** Tertiary text, captions and footers: 6.25:1 on the canvas, 5.54:1 on the surface (ADR-0007). */
+  --mq-decoration: #6b7385; /** Non-text decoration only, never text: 3.81:1 on the canvas, 3.38:1 on the surface (ADR-0007). */
+  --mq-canvas: #11161f; /** A near-black with a navy cast, the background of every dark page (ADR-0007). */
+  --mq-surface: #1a2131; /** Cards and panels on a dark page (ADR-0007). */
+  --mq-surface-alt: #141a26; /** Recessed surface on dark: table headers, grouped areas (ADR-0007). */
+  --mq-desk: #0b0f16; /** On screen only, around a dark page preview (ADR-0007). */
+  --mq-border: rgba(255, 255, 255, 0.14); /** Borders and dividers on dark, white at 14 % (decorative, ADR-0007). */
+  --mq-border-light: rgba(255, 255, 255, 0.1); /** Hairlines and card borders on dark, white at 10 % (decorative, ADR-0007). */
+  --mq-border-strong: #8795b3; /** Outline of outlined and dashed state marks on dark: 6.03:1 on the canvas, 5.35:1 on the surface (ADR-0007). */
+  --mq-panel-start: #2f4c8f; /** Light end of the navy panel gradient on dark, white 8.23:1 on it (ADR-0007). */
+  --mq-panel-end: #0f2a5e; /** Dark end of the navy panel gradient on dark (ADR-0007). */
+  --mq-on-navy-accent: #b2c2ed; /** The one-off accent on the dark navy panel, 4.64:1 on its light end (owner ruling of 2026-10-17, ADR-0007). */
+  --mq-on-navy-discreet: rgba(255, 255, 255, 0.5); /** Discreet numbers on the dark navy panel, 3.37:1 on its light end, so large text or non-text only (owner ruling of 2026-10-17, ADR-0007). */
+  --mq-success: #6fbf73; /** Apps only: success on dark, 8.09:1 on the canvas (ADR-0007, ADR-0004). */
+  --mq-warning: #e0a040; /** Apps only: warning text, icons and borders on dark, 8.00:1 on the canvas (ADR-0007, ADR-0004). */
+  --mq-danger: #ff6b6b; /** Apps only: errors and destructive actions on dark, 6.53:1 on the canvas (ADR-0007, ADR-0004). */
+  --mq-info: #64a8f0; /** Apps only: information on dark, 7.25:1 on the canvas (ADR-0007, ADR-0004). */
+  --mq-on-warning-fill: #11161f; /** Near-black on the warning fill, 6.18:1; warm white on it is 2.67:1 (ADR-0007). */
+  --mq-warning-fill: #d4850a; /** The warning fill, unchanged on dark (ADR-0007). */
+  --mq-warning-tint: rgba(212, 133, 10, 0.16); /** The warning fill at 16 % behind ink text, 11.63:1 on the surface (ADR-0007). */
+  --mq-dim: #8f98aa; /** Retired name of the old tertiary grey; resolves to tertiary on dark too (ADR-0007). */
+  --mq-accent-on-dark: #b2c2ed; /** Retired name of the accent on navy; resolves to the on-navy accent on dark too (owner ruling of 2026-10-17, ADR-0007). */
+  --mq-focus-ring-color: #9fb3e8; /** Focus ring on dark backgrounds, the light navy: 8.71:1 on the canvas (ADR-0007). */
+  --mq-shadow-panel: 0px 0px 0px 1px rgba(159, 179, 232, 0.35); /** Navy panels on dark: a 1 px light-navy outline, no glow (ADR-0007, owner 2026-10-15). */
+}

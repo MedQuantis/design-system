@@ -76,17 +76,6 @@ test("guideline paragraphs are never hard-wrapped: one line per paragraph or lis
   assert.deepEqual(hits, [], `hard-wrapped lines continue a paragraph at ${hits.join(", ")}`);
 });
 
-test("every hex value in the guidelines is a value of dist/tokens.json", () => {
-  const values = new Set(Object.values(distJson()).map(({ value }) => String(value)).filter((value) => /^#[0-9a-f]{3,8}$/i.test(value)).map(normaliseHex));
-  const hits = [];
-  for (const { name, text } of markdown()) {
-    for (const match of text.matchAll(/(?<![\w&/])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![\w-])/g)) {
-      if (!values.has(normaliseHex(match[0]))) hits.push(`${name}: ${match[0]}`);
-    }
-  }
-  assert.deepEqual(hits, [], `hex values outside the token set: ${hits.join(", ")}`);
-});
-
 test("every --mq- token the guidelines cite exists in dist/tokens.css", () => {
   const path = join(root, "dist/tokens.css");
   assert.ok(existsSync(path), "dist/tokens.css is missing: run make build first");
@@ -206,4 +195,144 @@ test("typography.md names the light weight token for the Quantis half of the wor
   const row = read("guidelines/typography.md").split("\n").find((line) => line.startsWith("| Outfit 300 |"));
   assert.ok(row, "no Outfit 300 row in the weights table");
   assert.match(row, /`--mq-font-weight-light`/);
+});
+
+// Plan-0003 increment 02: the dark theme of ADR-0007 in the guidelines, every figure from the build.
+const darkJson = () => {
+  const path = join(root, "dist/themes/dark.json");
+  assert.ok(existsSync(path), "dist/themes/dark.json is missing: run make build first");
+  return JSON.parse(readFileSync(path, "utf8"));
+};
+// How a guideline writes a value: a hex as is, a translucent colour as its alpha in per cent.
+const valueForms = (value) => {
+  const forms = [...String(value).matchAll(/#[0-9a-f]{6}\b/gi)].map(([hex]) => hex.toLowerCase());
+  for (const [, alpha] of String(value).matchAll(/rgba\([^)]*,\s*([\d.]+)\)/g)) forms.push(`${Math.round(Number(alpha) * 100)} %`);
+  return forms;
+};
+// The backgrounds a dark ratio is stated on, as the guideline writes them.
+const GROUNDS = {
+  canvas: ["--mq-canvas"],
+  surface: ["--mq-surface"],
+  "the recessed surface": ["--mq-surface-alt"],
+  "the panel start": ["--mq-panel-start"],
+  "the accent": ["--mq-accent"],
+  "the warning fill": ["--mq-warning-fill"],
+  "the warning tint": ["--mq-warning-tint"],
+  "the pale fill": ["--mq-accent-pale"],
+  "the quiet pale fill": ["--mq-accent-pale-2"],
+};
+const FOREGROUNDS = { ink: "--mq-ink", white: "--mq-on-navy-title" };
+
+test("colour.md has a Dark theme section naming every dark role with its value, and every stated ratio is the built one", async () => {
+  const { evaluatePair } = await import("../../build/contrast-pairs.mjs");
+  const body = section(read("guidelines/colour.md"), /^## Dark theme$/);
+  assert.ok(body, "guidelines/colour.md has no '## Dark theme' section");
+  const text = body.join("\n");
+  assert.doesNotMatch(text, /[\u2013\u2014]/, "no em or en dash");
+  const dark = darkJson();
+  const built = distJson();
+  for (const [name, token] of Object.entries(dark)) {
+    const lines = body.filter((line) => line.includes(`\`${name}\``));
+    assert.ok(lines.length > 0, `the Dark theme section does not name ${name}`);
+    for (const form of valueForms(token.value)) assert.ok(lines.some((line) => line.toLowerCase().includes(form)), `${name}: no line gives its dark value ${form}`);
+  }
+  const grounds = Object.keys(GROUNDS).sort((a, b) => b.length - a.length).join("|");
+  const claim = new RegExp(`(?:\\b(ink|white) )?(\\d+\\.\\d\\d):1 on (${grounds})\\b`, "g");
+  let checked = 0;
+  for (const line of body.filter((entry) => /^(\||- )/.test(entry) && /`--mq-[\w-]+`/.test(entry))) {
+    const role = line.match(/`(--mq-[\w-]+)`/)[1];
+    const ratios = line.match(/\d+\.\d\d:1/g) ?? [];
+    const claims = [...line.matchAll(claim)];
+    assert.equal(claims.length, ratios.length, `every ratio names its background: ${line}`);
+    for (const [, fg, ratio, ground] of claims) {
+      const pair = { fg: FOREGROUNDS[fg] ?? role, bg: GROUNDS[ground], use: "decorative" };
+      assert.equal(evaluatePair(pair, built, dark).ratio.toFixed(2), ratio, `${pair.fg} on ${ground}: ${line}`);
+      checked += 1;
+    }
+    if (line.startsWith("|")) assert.ok(line.split("|").map((cell) => cell.trim()).at(-2), `a dark row has no contrast cell: ${line}`);
+  }
+  assert.ok(checked >= 30, `only ${checked} dark ratios checked`);
+  // Scope (ADR-0007): apps, documents chosen per document at build time, slides; opt in by class.
+  for (const fact of [/apps/i, /documents?/i, /slides?/i, /at build time/, /`\.dark`/, /themes\/dark\.css/, /never .*prefers-color-scheme|prefers-color-scheme.*never/]) assert.match(text, fact);
+  // Owner rulings of 2026-10-17: accent text on the pale fills reads the highlight; the on-navy tier on dark.
+  for (const fact of [/pale KPI value/, /pale badge/, /callout title/, /no glow/i]) assert.match(text, fact);
+  assert.ok(body.some((line) => line.includes("`--mq-on-navy-discreet`") && /large text or non-text/i.test(line)), "the discreet on-navy role is large text or non-text only");
+  for (const name of ["--mq-on-navy-title", "--mq-on-navy-secondary", "--mq-on-navy-second-level", "--mq-on-navy-accent", "--mq-on-navy-discreet"]) {
+    assert.ok(body.some((line) => line.startsWith("|") && line.includes(`\`${name}\``) && /on the panel start/.test(line)), `the on-navy tier on dark lacks ${name} on the panel start`);
+  }
+});
+
+test("colour.md scopes the warm-neutral rule to light and names the light navy a navy tint with its hue figures", async () => {
+  const { toLch } = await import("../../build/color-math.mjs");
+  const neutrals = section(read("guidelines/colour.md"), /^## Neutrals$/).join("\n");
+  const rule = neutrals.split("\n").find((line) => line.includes("never blue-tinted greys"));
+  assert.ok(rule, "the warm-neutral rule is gone from Neutrals");
+  assert.match(rule, /light theme/, "the warm-neutral rule names the light theme");
+  const text = section(read("guidelines/colour.md"), /^## Dark theme$/).join("\n");
+  const hue = (hex) => toLch(hex)[2].toFixed(1);
+  const dark = darkJson();
+  assert.match(text, /navy tint/);
+  assert.match(text, /sky blue/);
+  assert.ok(text.includes(`hue ${hue(dark["--mq-accent-highlight"].value)}`), "the light navy's LCH hue");
+  assert.ok(text.includes(`navy ${hue(distJson()["--mq-accent"].value)}`), "navy's LCH hue");
+  assert.ok(text.includes("sky blue 269.9"), "the retired sky blue's LCH hue");
+});
+
+test("every hex value in the guidelines is a value of dist/tokens.json or of the dark theme", () => {
+  const values = new Set(
+    [...Object.values(distJson()), ...Object.values(darkJson())]
+      .map(({ value }) => String(value))
+      .filter((value) => /^#[0-9a-f]{3,8}$/i.test(value))
+      .map(normaliseHex),
+  );
+  const hits = [];
+  for (const { name, text } of markdown()) {
+    for (const match of text.matchAll(/(?<![\w&/])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![\w-])/g)) {
+      if (!values.has(normaliseHex(match[0]))) hits.push(`${name}: ${match[0]}`);
+    }
+  }
+  assert.deepEqual(hits, [], `hex values outside the token set: ${hits.join(", ")}`);
+});
+
+test("brand.md: the white wordmark on every dark surface, a navy tile on dark takes the panel gradient, the monogram outlined on dark", () => {
+  const brand = read("guidelines/brand.md");
+  const wordmark = section(brand, /^## Wordmark$/).join("\n");
+  assert.match(wordmark, /every dark surface/);
+  assert.match(wordmark, /wordmark-on-navy/);
+  assert.match(wordmark, /navy wordmark is never used on dark|never .*navy wordmark.* on dark/i);
+  const monogram = section(brand, /^## Monogram and favicon$/).join("\n");
+  assert.match(monogram, /dark/);
+  assert.match(monogram, /panel gradient/);
+  assert.match(monogram, /1 px light-navy outline/);
+  assert.match(monogram, /`--mq-shadow-panel`/);
+});
+
+test("the classification sits at the right of the slide footer, before the number, as a label in the deck's language (amends ruling 11)", () => {
+  const legal = section(read("guidelines/brand.md"), /\sLegal line$/).join("\n");
+  const layout = read("guidelines/layout.md");
+  for (const [name, text] of [["brand.md", legal], ["layout.md", layout]]) {
+    assert.match(text, /classification/i, `${name} names the classification`);
+    assert.match(text, /right of the footer, before the (slide )?number/, `${name} places it before the number`);
+    assert.match(text, /ruling 17/, `${name} cites the ruling`);
+  }
+  assert.match(legal, /deck's language/);
+  assert.match(legal, /label/);
+  assert.match(legal, /never the C0 to C3 code/);
+});
+
+test("guidelines/README.md lists the rulings after the bootstrap, numbered on from ruling 11, each with its date, guideline and source", () => {
+  const readme = read("guidelines/README.md");
+  const rulings = section(readme, /rulings after the bootstrap/i);
+  assert.ok(rulings, "guidelines/README.md has no 'Rulings after the bootstrap' section");
+  const rows = tableRows(rulings);
+  assert.ok(rows.length >= 8, `only ${rows.length} rulings`);
+  rows.forEach((row, index) => {
+    const cells = row.split("|").map((cell) => cell.trim()).filter(Boolean);
+    assert.equal(cells[0], String(12 + index), `ruling numbers run on from 11: ${row}`);
+    assert.match(cells[1], /^2026-10-1[57]$/, `ruling date: ${row}`);
+    assert.match(row, /\]\((?:\.\/)?[a-z-]+\.md(?:#[\w-]+)?\)/, `ruling names no guideline file: ${row}`);
+    assert.match(row, /ADR-0007/, `ruling cites ADR-0007: ${row}`);
+  });
+  assert.ok(rows.some((row) => /2026-10-17/.test(row) && /--mq-accent-highlight/.test(row)), "the pale-fill ruling of 2026-10-17");
+  assert.ok(rows.some((row) => /2026-10-17/.test(row) && /--mq-on-navy-accent/.test(row)), "the on-navy ruling of 2026-10-17");
 });

@@ -104,7 +104,7 @@ test("DESIGN.md colours, radii and spacing equal dist/tokens.json, kit role name
   for (const group of Object.keys(GROUPS)) {
     const expected = expectedGroup(group);
     assert.ok(expected.size > 0, `no semantic token in ${group}`);
-    const actual = Object.entries(front[group]).filter(([name]) => !(group === "colors" && name === "primary"));
+    const actual = Object.entries(front[group]).filter(([name]) => !(group === "colors" && (name === "primary" || name.startsWith("dark-"))));
     assert.deepEqual(actual.map(([name]) => name), [...expected.keys()], `${group}: names and order`);
     for (const [name, value] of actual) assert.equal(value, expected.get(name).value, `${group}.${name}`);
   }
@@ -148,7 +148,37 @@ test("DESIGN.md maps every front matter name to its tokens.css name", () => {
     }
   }
   assert.ok(prose.includes("| `colors.primary` | `--mq-accent` |"), "primary maps to the accent");
-  assert.equal(Object.keys(front.colors).length, expectedGroup("colors").size + 1);
+  for (const [name, token] of expectedDark()) {
+    assert.ok(prose.includes(`| \`colors.${name}\` | \`${token.name}\` in \`.dark\` | \`${token.value}\` |`), `no table row for colors.${name}`);
+  }
+  assert.equal(Object.keys(front.colors).length, expectedGroup("colors").size + expectedDark().size + 1);
+});
+
+// Plan-0003 increment 02: the dark theme of ADR-0007. Each light colour the theme re-values comes
+// again as dark-<its DESIGN.md name>, in the same order, with the value of dist/themes/dark.json.
+const darkTheme = () => JSON.parse(read("dist/themes/dark.json"));
+const expectedDark = () => {
+  const dark = darkTheme();
+  return new Map([...expectedGroup("colors")].filter(([, token]) => dark[token.name]).map(([name, token]) => [`dark-${name}`, { name: token.name, value: dark[token.name].value }]));
+};
+
+test("DESIGN.md lists the dark colours as dark-* names equal to dist/themes/dark.json, with no gradient under colors", () => {
+  const { front } = designMd();
+  const expected = expectedDark();
+  const colourRoles = Object.entries(darkTheme()).filter(([, token]) => token.type === "color");
+  assert.ok(expected.size > 0, "no dark colour");
+  assert.deepEqual(new Set([...expected.values()].map((token) => token.name)), new Set(colourRoles.map(([name]) => name)), "every dark colour role is exported");
+  const actual = Object.entries(front.colors).filter(([name]) => name.startsWith("dark-"));
+  assert.deepEqual(actual.map(([name]) => name), [...expected.keys()], "dark names and order");
+  for (const [name, value] of actual) assert.equal(value, expected.get(name).value, `colors.${name}`);
+  assert.equal(front.colors["dark-canvas-bg"], darkTheme()["--mq-canvas"].value);
+  for (const [name, value] of Object.entries(front.colors)) assert.doesNotMatch(String(value), /gradient/i, `colors.${name} is a gradient, which the linter rejects`);
+});
+
+test("DESIGN.md carries the Dark theme section of colour.md under Colors", () => {
+  const { prose } = designMd();
+  const colors = prose.slice(prose.indexOf("## Colors"), prose.indexOf("## Typography"));
+  assert.match(colors, /^### Colour: Dark theme$/m);
 });
 
 test("DESIGN.md prose: Google's sections in order, each guideline section verbatim, ending with the do and don't lines", () => {

@@ -1,4 +1,4 @@
-// Copies the built tokens, the shared CSS, the fonts and the wordmark and monogram files into the
+// Copies the built tokens, the dark theme, the shared CSS, the fonts and the wordmark and monogram files into the
 // Claude skill's assets/, because an installed plugin (or a skill uploaded to claude.ai) cannot
 // reach dist/. The copy is committed; skill.test.mjs fails when it differs from a fresh build.
 import { copyFileSync, mkdirSync, readdirSync, rmSync } from "node:fs";
@@ -17,6 +17,9 @@ export const assetPairs = (root) => {
     .map((entry) => ({ from: `fonts/${entry}`, to: `${ASSETS}/fonts/${entry}` }));
   return [
     ...["tokens.css", "tokens.json", "kit-contract.css"].map((name) => ({ from: `dist/${name}`, to: `${ASSETS}/${name}` })),
+    // The dark theme (ADR-0007): the stylesheet a dark page loads or bundles after tokens.css, and
+    // the values validate.py allows on dark (owner, 2026-10-17).
+    ...["dark.css", "dark.json"].map((name) => ({ from: `dist/themes/${name}`, to: `${ASSETS}/themes/${name}` })),
     ...CSS.map((name) => ({ from: `css/${name}`, to: `${ASSETS}/css/${name}` })),
     ...fonts,
     ...BRAND.map((name) => ({ from: `brand/${name}`, to: `${ASSETS}/brand/${name}` })),

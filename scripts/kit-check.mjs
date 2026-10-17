@@ -14,8 +14,9 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-// Every module of the contract comes from this package since increment 02.
-const FROM_DESIGN_SYSTEM = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "print", "brand", "guidance"];
+// Every module of the contract comes from this package since increment 02; the ten of contract
+// 2.1.0, dark included, since Plan-0003 increment 04.
+const FROM_DESIGN_SYSTEM = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "dark", "print", "brand", "guidance"];
 // The release note's date, so the report renders the same bytes on every run (2026-01-30).
 const SOURCE_DATE_EPOCH = "1769731200";
 

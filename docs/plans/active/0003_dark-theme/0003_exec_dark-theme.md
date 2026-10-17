@@ -50,7 +50,7 @@ Principles:
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
 **Overall Status:** in_progress
-**Current Increment:** 03
+**Current Increment:** 04
 
 ## Prerequisites
 
@@ -159,7 +159,7 @@ Prediction:
 
 ### Increment 04: the kit dark module and the classification cell
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -187,7 +187,7 @@ Exit criteria:
 
 Prediction:
 
-1. New: `dist/kit/dark.css`, the dark-slide baseline. Changed: `kit-manifest.json` (contract 2.1.0, `dark` provided), `dist/kit/slide-frame.css` (the classification cell), `dist/kit/guidance.md` (`## dark`), every `dist/kit/*.css` header only if the module header names the contract version (decided in this increment and stated in `progress.txt`), the two light kit-slide baselines (the classification cell), the kit-render fixtures. Byte-identical: `dist/kit-contract.css`, `dist/tokens.css`, `dist/tailwind.css`.
+1. New: `dist/kit/dark.css`, the dark-slide baseline. Changed: `kit-manifest.json` (contract 2.1.0, `dark` provided), `dist/kit/slide-frame.css` (the classification cell), `dist/kit/guidance.md` (`## dark`), every `dist/kit/*.css` header only if the module header names the contract version (decided in this increment and stated in `progress.txt`), the two light kit-slide baselines (the classification cell), the kit-render fixtures, the Claude Design System previews that inline kit module headers (`dist/claude-design-system/project/components/{Doc,DocKeep,DocLabel,DocSection,DocSectionFlow}/preview.html`, header lines only), `dist/claude-design-system/project/design-system.json` (build timestamp). Source outside Primary files: `tests/unit/package.test.mjs` (the tarball allow-list gains `dist/kit/dark.css`). Byte-identical: `dist/kit-contract.css`, `dist/tokens.css`, `dist/tailwind.css`.
 
 ### Increment 05: README and release 1.2.0
 

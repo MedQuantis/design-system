@@ -1,7 +1,8 @@
-// The homemade-claude-kit modular contract (2.0.0): dist/kit/<module>.css, dist/kit/guidance.md and
+// The homemade-claude-kit modular contract (2.1.0): dist/kit/<module>.css, dist/kit/guidance.md and
 // the root kit-manifest.json, checked against the contract files vendored from the kit
 // (tests/fixtures/kit-contract/, Plan-0002 Principle 4). make kit-check runs the real kit resolver.
 import { test } from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -25,8 +26,9 @@ const pkg = () => readJson("package.json");
 
 const TOKEN_MODULES = ["core", "dataviz", "type", "space-shape", "brand"];
 // The class modules: roles from the kit tier, class rules written by hand in css/kit/ (Plan-0002
-// increment 02, owner decision 4).
-const CLASS_MODULES = ["document", "slide-frame", "print"];
+// increment 02, owner decision 4). dark (contract 2.1.0, Plan-0003 increment 04) takes its roles from
+// the kit tier resolved in the dark theme; its classes are drawn by the kit's own dark layer.
+const CLASS_MODULES = ["document", "slide-frame", "dark", "print"];
 const MODULES = [...TOKEN_MODULES, ...CLASS_MODULES];
 const PROVIDED = [...MODULES, "guidance"];
 // The roles a class module may read. com-release-note inlines core, dataviz, type, space-shape and
@@ -35,7 +37,11 @@ const READS = {
   document: ["core", "type", "space-shape", "dataviz", "document"],
   "slide-frame": ["core", "type", "space-shape", "dataviz", "slide-frame"],
   print: ["core", "type", "space-shape", "dataviz", "print"],
+  dark: ["dark"],
 };
+// The classes the kit's own dark layer draws from the dark roles (com-slide-deck build.py
+// make_dark_css): a design that styled them would compete with it, so css/kit/dark.css adds no rule.
+const KIT_DRAWN = { dark: ["dark", "dark-key", "dark-accent"] };
 const AA = 4.5;
 
 // Custom properties declared outside @font-face, last declaration wins (as the kit reads them).
@@ -63,6 +69,10 @@ const kitTier = () => {
   return entries.map((entry) => ({ ...entry, module: entry.path[1], role: `--${entry.path.at(-1)}` }));
 };
 const builtByPath = () => new Map(Object.values(readJson("dist/tokens.json")).map((token) => [token.path.join("."), token]));
+// The dark module reads the dark theme (dist/themes/dark.json) first; a role dark does not re-value
+// keeps its light value.
+const darkByPath = () =>
+  new Map([...builtByPath(), ...Object.values(readJson("dist/themes/dark.json")).map((token) => [token.path.join("."), token])]);
 
 // Package export lookup, exact or through one * pattern, as the kit's _export_path does.
 const exportTarget = (exports, key) => {
@@ -86,10 +96,10 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.0.0 from homemade-claude-kit cdb01eb", () => {
-  assert.equal(contract().contractVersion, "2.0.0");
+test("the vendored kit contract is 2.1.0 from homemade-claude-kit 43c4763", () => {
+  assert.equal(contract().contractVersion, "2.1.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "cdb01eb", "plugins/delivery-comms/contract/", "2.0.0"]) {
+  for (const fact of ["homemade-claude-kit", "43c4763", "plugins/delivery-comms/contract/", "2.1.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });
@@ -120,8 +130,10 @@ test("every role of a provided module is a token of the kit tier, under its own 
 // A string value may hold several aliases (the print margin): each {reference} is a semantic token,
 // and the module value is the string with every reference replaced by that token's value.
 test("kit tier aliases point at semantic tokens, and each module value equals the aliased tokens", () => {
-  const byPath = builtByPath();
+  const light = builtByPath();
+  const dark = darkByPath();
   for (const { module, role, token, path } of kitTier()) {
+    const byPath = module === "dark" ? dark : light;
     if (typeof token.$value !== "string" || !token.$value.includes("{")) continue;
     const expected = token.$value.replace(/\{([^{}]+)\}/g, (_, alias) => {
       assert.match(alias, /^semantic\./, `${path.join(".")} aliases ${alias}, not a semantic token`);
@@ -220,10 +232,14 @@ test("brand: logo roles are url() values of shipped exports, the legal line come
 });
 
 test("every text pair of the contract reaches WCAG AA, a list pair when any of its roles does", () => {
-  const values = new Map([...TOKEN_MODULES].flatMap((module) => [...declarations(moduleCss(module))]));
-  const { pairs } = contract();
-  assert.equal(pairs.length, 14); // 13, plus --tertiary on --canvas-bg (kit #148)
-  for (const pair of pairs) {
+  const values = new Map([...TOKEN_MODULES, "dark"].flatMap((module) => [...declarations(moduleCss(module))]));
+  const light = contract().pairs;
+  const dark = contract().modules.dark.pairs;
+  assert.equal(light.length, 14); // 13, plus --tertiary on --canvas-bg (kit #148)
+  // Contract 2.1.0: every light pair mirrored onto the dark roles, plus --dark-ink on --dark-key-base and
+  // --dark-accent-text on the dark canvas and surface.
+  assert.equal(dark.length, light.length + 3);
+  for (const pair of [...light, ...dark]) {
     const bg = values.get(pair.bg);
     assert.match(bg ?? "", /^#[0-9a-f]{6}$/i, `${pair.bg} is not a hex colour`);
     const ratios = [pair.fg].flat().map((role) => [role, contrastRatio(parseColor(values.get(role)), parseColor(bg))]);
@@ -291,11 +307,14 @@ for (const module of CLASS_MODULES) {
     assert.ok(built.includes(ruleBody(source).trim()), `dist/kit/${module}.css does not carry the rules of css/kit/${module}.css`);
   });
 
-  test(`css/kit/${module}.css styles every class the contract lists for ${module}`, () => {
+  test(`css/kit/${module}.css styles every class the contract lists for ${module}, apart from those the kit draws`, () => {
     const selectors = classRules(handWritten(module)).map((rule) => rule.selector).join("\n");
     const classes = contract().modules[module].classes;
     assert.ok(classes.length > 0, `the contract lists no class for ${module}`);
-    for (const name of classes) {
+    for (const name of KIT_DRAWN[module] ?? []) {
+      assert.doesNotMatch(selectors, new RegExp(`\\.${name}(?![\\w-])`), `css/kit/${module}.css styles .${name}, which the kit's own layer draws`);
+    }
+    for (const name of classes.filter((name) => !(KIT_DRAWN[module] ?? []).includes(name))) {
       assert.match(selectors, new RegExp(`\\.${name}(?![\\w-])`), `css/kit/${module}.css has no rule for .${name}`);
     }
   });
@@ -334,6 +353,40 @@ test("the class module roles alias semantic tokens by name, each citing its guid
     "--print-margin": "{semantic.space.7} {semantic.space.8}",
     "--print-page-size": "A4",
     "--print-breaking": "{semantic.color.accent}",
+    // dark (contract 2.1.0): each mirrored role aliases the semantic token of its light role, which the
+    // build resolves in the dark theme; the four roles without a light counterpart follow the plan's
+    // kit role mapping (ADR-0007, owner rulings 13 and 14).
+    "--dark-ink": "{semantic.color.ink}",
+    "--dark-muted": "{semantic.color.muted}",
+    "--dark-tertiary": "{semantic.color.tertiary}",
+    "--dark-canvas-bg": "{semantic.color.canvas}",
+    "--dark-surface": "{semantic.color.surface}",
+    "--dark-surface-2": "{semantic.color.surface-alt}",
+    "--dark-border": "{semantic.color.border}",
+    "--dark-accent": "{semantic.color.accent}",
+    "--dark-accent-ink": "{semantic.color.on-accent}",
+    "--dark-success": "{semantic.color.status.success}",
+    "--dark-warning": "{semantic.color.status.warning}",
+    "--dark-danger": "{semantic.color.status.danger}",
+    "--dark-info": "{semantic.color.status.info}",
+    "--dark-shadow": "{semantic.shadow.small}",
+    "--dark-chart-1": "{semantic.chart.series.1}",
+    "--dark-chart-2": "{semantic.chart.series.2}",
+    "--dark-chart-3": "{semantic.chart.series.3}",
+    "--dark-chart-4": "{semantic.chart.series.4}",
+    "--dark-chart-rest": "{semantic.chart.rest}",
+    "--dark-chart-axis": "{semantic.chart.axis}",
+    "--dark-chart-grid": "{semantic.chart.baseline}",
+    "--dark-chart-highlight": "{semantic.chart.series.1}",
+    "--dark-slide-bg": "{semantic.color.canvas}",
+    "--dark-slide-fg": "{semantic.color.ink}",
+    "--dark-doc-page-bg": "{semantic.color.canvas}",
+    "--dark-doc-rule": "{semantic.color.border}",
+    "--dark-print-bg": "{semantic.color.canvas}",
+    "--dark-key-fill": "linear-gradient(160deg, {semantic.color.panel-start} 0%, {semantic.color.panel-end} 100%)",
+    "--dark-key-base": "{semantic.color.panel-start}",
+    "--dark-key-edge": "{semantic.shadow.panel}",
+    "--dark-accent-text": "{semantic.color.accent-highlight}",
   };
   assert.deepEqual([...byRole.keys()].sort(), Object.keys(expected).sort());
   for (const [role, value] of Object.entries(expected)) {
@@ -350,6 +403,42 @@ test("the class module roles alias semantic tokens by name, each citing its guid
   const accent = declarations(moduleCss("core")).get("--accent");
   assert.equal(values.get("--print-breaking"), accent, "documents are navy only (ADR-0004): breaking changes in the accent");
   assert.match(byRole.get("--print-breaking").$description, /ADR-0004/);
+});
+
+test("dist/kit/dark.css: every mirrored role is the dark value of its light role's token, on :root only", () => {
+  const tier = kitTier();
+  const aliasOf = new Map(tier.map((entry) => [entry.role, entry.token.$value]));
+  const { mirror } = contract().modules.dark;
+  const mirrored = mirror.modules.flatMap((module) => Object.keys(contract().modules[module].roles)).filter((role) => !mirror.except.includes(role));
+  assert.equal(mirrored.length, 27);
+  for (const role of mirrored) assert.equal(aliasOf.get(`--dark-${role.slice(2)}`), aliasOf.get(role), `--dark-${role.slice(2)} aliases what ${role} aliases`);
+  const css = moduleCss("dark");
+  const selectors = classRules(css).map((rule) => rule.selector.trim());
+  assert.deepEqual(selectors, [":root"], "the kit refuses a role declared under any selector but :root (design_source.py _refuse_scoped_roles)");
+  const values = declarations(css);
+  // The values of the plan's kit role mapping (ADR-0007).
+  assert.equal(values.get("--dark-canvas-bg"), "#11161f");
+  assert.equal(values.get("--dark-ink"), "#f5f4f1");
+  assert.equal(values.get("--dark-accent"), "#6f88c9");
+  assert.equal(values.get("--dark-accent-ink"), "#11161f", "on-accent near-black, 5.22:1; white on the lifted accent is 3.48:1 (owner, 2026-10-15)");
+  assert.equal(values.get("--dark-key-fill"), "linear-gradient(160deg, #2f4c8f 0%, #0f2a5e 100%)", "the dark panel gradient");
+  assert.equal(values.get("--dark-key-base"), "#2f4c8f", "the panel start, the fill's lightest point");
+  assert.equal(values.get("--dark-key-edge"), readJson("dist/themes/dark.json")["--mq-shadow-panel"].value, "the dark --mq-shadow-panel");
+  assert.match(values.get("--dark-key-edge"), /^0px 0px 0px 1px rgba\(/, "a 1 px outline, no glow (owner ruling 13)");
+  assert.equal(values.get("--dark-accent-text"), "#9fb3e8", "the accent highlight on dark");
+});
+
+test("every dist/kit/*.css header names the contract version of the vendored modules.json", () => {
+  for (const module of MODULES) {
+    const header = moduleCss(module).split("*/")[1] ?? "";
+    assert.match(header, new RegExp(`design contract ${contract().contractVersion.replace(/\./g, "\\.")}[,. ]`), `dist/kit/${module}.css`);
+  }
+});
+
+test("dist/kit-contract.css keeps the bytes of 1.1.0, the old 24-role contract", () => {
+  const hash = createHash("sha256").update(read("dist/kit-contract.css")).digest("hex");
+  // sha256 of dist/kit-contract.css in @medquantis/design-system@1.1.0 as published on npm.
+  assert.equal(hash, "bdd92c7d2ba67ffad2654ee58e9ae87e13f1c62afb9d7fd1f5f0acc9554ac6b1");
 });
 
 test("build/kit-classes.md maps every class of the class modules to a MedQuantis rule or a guideline", () => {
@@ -380,6 +469,10 @@ test("build/kit-classes.md maps every class of the class modules to a MedQuantis
   assert.match(from("slide-number"), /`mq-slide-number`/);
   assert.match(from("slide-label"), /`mq-slide-label`/);
   assert.match(from("report"), /`mq-page`/);
+  assert.match(from("slide-classification"), /owner ruling 17/, "the classification cell cites its ruling");
+  assert.match(from("dark"), /owner ruling 12/, "the dark class cites the dark theme ruling");
+  assert.match(from("dark-key"), /owner rulings? 13/, "the key element cites the no-glow ruling");
+  assert.match(from("dark-accent"), /owner ruling 18|accent-highlight/);
 });
 
 test("css/components.css and css/slide.css read the line-height tokens instead of the literals 1.55 and 1.15", () => {
@@ -397,7 +490,9 @@ test("kit-manifest.json at the package root validates against the vendored schem
   const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
   const data = manifest();
   assert.ok(validate(data), JSON.stringify(validate.errors));
-  assert.equal(data.contractVersion, "2.0.0");
+  assert.equal(data.contractVersion, "2.1.0");
+  assert.equal(data.contractVersion, contract().contractVersion);
+  assert.equal(data.provides.dark, "./kit/dark.css");
   assert.deepEqual(Object.keys(data.provides).sort(), [...PROVIDED].sort());
   assert.equal(data.omitted, undefined, "every module of the contract is provided, nothing is omitted");
   assert.equal(data.provides.guidance, "./kit/guidance.md");

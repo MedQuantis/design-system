@@ -1,4 +1,5 @@
-// The kit class modules (Plan-0002 increment 02) on static copies of the markup the
+// The kit class modules (Plan-0002 increment 02, the dark module and the classification cell of
+// Plan-0003 increment 04) on static copies of the markup the
 // homemade-claude-kit renderers emit (tests/e2e/fixtures/, taken from the make kit-check renders of
 // tests/fixtures/kit-render/), loading dist/kit/*.css, so these baselines need no kit checkout.
 import { test, expect } from "@playwright/test";
@@ -45,31 +46,68 @@ const open = async (page, name) => {
   return new Set(loaded);
 };
 
-test("kit deck: the slide frame puts the legal line bottom left and the number bottom right", async ({ page }) => {
+// The dark slide of contract 2.1.0 (Plan-0003 increment 04): the kit remaps every mirrored role to
+// its --dark- twin on .slide.dark and draws the key element from --dark-key-fill and --dark-key-edge.
+const DARK_CANVAS = "rgb(17, 22, 31)"; // #11161f, the dark canvas (ADR-0007)
+const DARK_INK = "rgb(245, 244, 241)"; // #f5f4f1, warm white
+const DARK_TERTIARY = "rgb(143, 152, 170)"; // #8f98aa
+const KEY_FILL = "linear-gradient(160deg, rgb(47, 76, 143) 0%, rgb(15, 42, 94) 100%)"; // the dark panel gradient
+const KEY_EDGE = "rgba(159, 179, 232, 0.35) 0px 0px 0px 1px"; // the 1 px light-navy outline, no glow (owner ruling 13)
+
+// The footer row of owner rulings 11 and 17: legal line bottom left, then the classification in the
+// deck's language and the number at the right, in tertiary Geist Mono.
+const checkFrame = async (slide, tertiary) => {
+  const frame = await slide.boundingBox();
+  expect(frame.width).toBe(1280);
+  expect(frame.height).toBe(720);
+  const legal = await slide.locator(".slide-legal").boundingBox();
+  const level = await slide.locator(".slide-classification").boundingBox();
+  const number = await slide.locator(".slide-number").boundingBox();
+  expect(Math.abs(legal.x - (frame.x + SIDE)), "legal line at the left margin").toBeLessThanOrEqual(1);
+  expect(Math.abs(number.x + number.width - (frame.x + frame.width - SIDE)), "number at the right margin").toBeLessThanOrEqual(1);
+  expect(level.x + level.width, "the classification before the number").toBeLessThanOrEqual(number.x);
+  expect(level.x, "the classification at the right of the footer").toBeGreaterThan(frame.x + frame.width / 2);
+  for (const box of [legal, level, number]) expect(box.y, "in the footer row").toBeGreaterThan(frame.y + frame.height - SIDE);
+  await expect(slide.locator(".slide-classification"), "the label in the deck's language (lang: fr)").toHaveText("Confidentiel");
+  await expect(slide.locator(".slide-classification"), "the label as written, as the legal line").toHaveCSS("text-transform", "none");
+  await expect(slide.locator(".slide-logo"), "MedQuantis slides carry no logo in the footer row").toBeHidden();
+  for (const cell of [".slide-legal", ".slide-classification", ".slide-number"]) {
+    await expect(slide.locator(cell)).toHaveCSS("color", tertiary);
+    await expect(slide.locator(cell)).toHaveCSS("font-family", /Geist Mono/);
+  }
+  await expect(slide.locator(".slide-label")).toHaveCSS("text-transform", "uppercase");
+};
+
+test("kit deck: the slide frame puts the legal line bottom left, the classification and the number bottom right", async ({ page }) => {
   const fonts = await open(page, "kit-deck.html");
   expect(fonts.has("Geist Mono"), "Geist Mono from dist/kit/core.css").toBe(true);
-  const slides = page.locator(".slide");
+  await expect(page.locator(".slide")).toHaveCount(3);
+  const slides = page.locator(".slide:not(.dark)");
   await expect(slides).toHaveCount(2);
   for (let index = 0; index < 2; index += 1) {
     const slide = slides.nth(index);
-    const frame = await slide.boundingBox();
-    expect(frame.width).toBe(1280);
-    expect(frame.height).toBe(720);
-    const legal = await slide.locator(".slide-legal").boundingBox();
-    const number = await slide.locator(".slide-number").boundingBox();
-    expect(Math.abs(legal.x - (frame.x + SIDE)), "legal line at the left margin").toBeLessThanOrEqual(1);
-    expect(Math.abs(number.x + number.width - (frame.x + frame.width - SIDE)), "number at the right margin").toBeLessThanOrEqual(1);
-    for (const box of [legal, number]) expect(box.y, "in the footer row").toBeGreaterThan(frame.y + frame.height - SIDE);
-    await expect(slide.locator(".slide-logo"), "MedQuantis slides carry no logo in the footer row").toBeHidden();
-    for (const cell of [".slide-legal", ".slide-number"]) {
-      await expect(slide.locator(cell)).toHaveCSS("color", TERTIARY);
-      await expect(slide.locator(cell)).toHaveCSS("font-family", /Geist Mono/);
-    }
+    await checkFrame(slide, TERTIARY);
     await expect(slide).toHaveCSS("background-color", CANVAS);
-    await expect(slide.locator(".slide-label")).toHaveCSS("text-transform", "uppercase");
     await expect(slide).toHaveScreenshot(`kit-slide-${index + 1}.png`);
   }
   await expect(page.locator(".slide-source-bar")).toHaveCSS("font-style", "italic");
+  expect(external).toEqual([]);
+});
+
+test("kit deck: a dark slide reads the dark roles, its key element the panel gradient and outline", async ({ page }) => {
+  await open(page, "kit-deck.html");
+  const slide = page.locator(".slide.dark");
+  await expect(slide).toHaveCount(1);
+  await checkFrame(slide, DARK_TERTIARY);
+  await expect(slide).toHaveCSS("background-color", DARK_CANVAS);
+  await expect(slide).toHaveCSS("color", DARK_INK);
+  await expect(slide.locator(".deck-title")).toHaveCSS("color", DARK_INK);
+  const key = slide.locator(".dark-key");
+  await expect(key).toHaveCount(1);
+  await expect(key).toHaveCSS("background-image", KEY_FILL);
+  await expect(key).toHaveCSS("box-shadow", KEY_EDGE);
+  await expect(key).toHaveCSS("color", DARK_INK);
+  await expect(slide).toHaveScreenshot("kit-slide-dark.png");
   expect(external).toEqual([]);
 });
 

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <!-- mq:illustrative
-Static copy of the page homemade-claude-kit cdb01eb renders for tests/fixtures/kit-render/deck
+Static copy of the page homemade-claude-kit 43c4763 (delivery-comms 2.1.0) renders for tests/fixtures/kit-render/deck
 (com-slide-deck build.py), taken from a make kit-check run. The kit inlines the resolved design in one style
 block, the base of each module before the package's own; here that block is replaced by links to
-dist/kit/*.css for the modules the renderer inlines (core, dataviz, type, space-shape, document, slide-frame, print), in the kit's order, with the kit's
+dist/kit/*.css for the modules the renderer inlines (core, dataviz, type, space-shape, document, slide-frame, dark, print), in the kit's order, with the kit's
 base slide-frame rules inline where that module is inlined, so tests/e2e/kit-modules.spec.mjs runs
 without the kit. The CSS comments of the kit's own style blocks are left out. Fictitious content.
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kit fixture deck</title>
+
 
 <link rel="stylesheet" href="../../../dist/kit/core.css">
 <link rel="stylesheet" href="../../../dist/kit/dataviz.css">
@@ -93,8 +94,18 @@ without the kit. The CSS comments of the kit's own style blocks are left out. Fi
 }
 </style>
 <link rel="stylesheet" href="../../../dist/kit/slide-frame.css">
+<link rel="stylesheet" href="../../../dist/kit/dark.css">
 <link rel="stylesheet" href="../../../dist/kit/print.css">
 <style>
+.slide-classification {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: var(--tertiary);
+}
+.slide-classification + .slide-number { margin-left: 0; }
+
 .deck-title {
   position: absolute;
   top: var(--slide-padding);
@@ -116,6 +127,26 @@ without the kit. The CSS comments of the kit's own style blocks are left out. Fi
   margin: 0;
   max-width: 760px;
   color: var(--muted);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+.deck-key {
+  position: absolute;
+  top: calc(var(--slide-padding) * 2);
+  left: var(--slide-padding);
+  width: 480px;
+  padding: var(--space-lg);
+  border-radius: var(--card-radius);
+}
+.deck-key-figure {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+.deck-key-text {
+  margin: var(--space-sm) 0 0;
   font-size: var(--font-size-md);
   line-height: var(--line-height-body);
 }
@@ -161,6 +192,47 @@ body.presenting .slide.active {
   }
 }
 
+.slide.dark, .doc.dark {
+  --ink: var(--dark-ink);
+  --muted: var(--dark-muted);
+  --tertiary: var(--dark-tertiary);
+  --canvas-bg: var(--dark-canvas-bg);
+  --surface: var(--dark-surface);
+  --surface-2: var(--dark-surface-2);
+  --border: var(--dark-border);
+  --accent: var(--dark-accent);
+  --accent-ink: var(--dark-accent-ink);
+  --success: var(--dark-success);
+  --warning: var(--dark-warning);
+  --danger: var(--dark-danger);
+  --info: var(--dark-info);
+  --shadow: var(--dark-shadow);
+  --chart-1: var(--dark-chart-1);
+  --chart-2: var(--dark-chart-2);
+  --chart-3: var(--dark-chart-3);
+  --chart-4: var(--dark-chart-4);
+  --chart-rest: var(--dark-chart-rest);
+  --chart-axis: var(--dark-chart-axis);
+  --chart-grid: var(--dark-chart-grid);
+  --chart-highlight: var(--dark-chart-highlight);
+  --slide-bg: var(--dark-slide-bg);
+  --slide-fg: var(--dark-slide-fg);
+  --doc-page-bg: var(--dark-doc-page-bg);
+  --doc-rule: var(--dark-doc-rule);
+  --print-bg: var(--dark-print-bg);
+  --kit-on-success: var(--dark-accent-ink);
+  --kit-on-info: var(--dark-accent-ink);
+  --kit-on-warning: var(--dark-accent-ink);
+  --kit-on-danger: var(--dark-accent-ink);
+  --kit-on-muted: var(--dark-accent-ink);
+  --kit-on-chart-1: var(--dark-accent-ink);
+  --kit-on-chart-2: var(--dark-accent-ink);
+  --kit-on-chart-3: var(--dark-ink);
+}
+.slide.dark .slide-logo { background-image: var(--brand-logo-on-dark); }
+.dark .dark-key { background: var(--dark-key-fill); box-shadow: var(--dark-key-edge); color: var(--dark-ink); }
+.dark .dark-accent { color: var(--dark-accent-text); }
+
 </style>
 </head>
 <body>
@@ -169,6 +241,7 @@ body.presenting .slide.active {
   Press <kbd>F</kbd> for fullscreen presentation &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate &middot; <kbd>Esc</kbd> to exit
 </div>
 
+
 <!-- slide 1: Cover -->
 
 <div class="slide">
@@ -176,8 +249,10 @@ body.presenting .slide.active {
   <h1 class="deck-title">A fictitious deck for the kit render check</h1>
   <p class="deck-body">Every line on this slide is invented. It shows the MedQuantis slide frame: the section label at the top left, the legal line at the bottom left and the slide number at the bottom right.</p>
 
-<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-number">01</span></div>
+<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-classification">Confidentiel</span><span class="slide-number">01</span></div>
 </div>
+
+
 
 <!-- slide 2: Content -->
 
@@ -188,8 +263,25 @@ body.presenting .slide.active {
 
 <div class="slide-source-bar">Fixture Institute · Invented survey of slide frames (2026)</div>
 
-<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-number">02</span></div>
+<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-classification">Confidentiel</span><span class="slide-number">02</span></div>
 </div>
+
+
+
+<!-- slide 3: Dark -->
+
+<div class="slide dark">
+  <p class="slide-label">03 · Dark</p>
+  <h1 class="deck-title">A dark slide with one key element</h1>
+  <div class="dark-key deck-key">
+    <p class="deck-key-figure">42</p>
+    <p class="deck-key-text">An invented figure on the key element: the dark panel gradient with its 1 px outline, no glow.</p>
+  </div>
+
+<div class="slide-footer"><span class="slide-logo" data-brand-asset aria-hidden="true"></span><span class="slide-legal">MedQuantis SA · CH-1095 Lutry · medquantis.ch</span><span class="slide-classification">Confidentiel</span><span class="slide-number">03</span></div>
+</div>
+
+
 
 <script>
 // ── Baseline: mobile responsive scaling ──

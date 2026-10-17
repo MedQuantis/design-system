@@ -75,8 +75,12 @@ Contrast with the WCAG 2.x formula, on canvas `#11161f` and surface `#1a2131`.
 | `--mq-focus-ring-color` | `#9fb3e8`, the light navy | 8.71:1 | |
 | `--mq-panel-start`, `--mq-panel-end` | `#2f4c8f`, `#0f2a5e` | white 8.23:1 at the start | |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow | | |
+| `--mq-on-navy-accent` | `#b2c2ed`, a lighter navy tint (owner, 2026-10-17) | 4.64:1 on the panel start | |
+| `--mq-on-navy-discreet` | white at 50 %, large text or non-text only (owner, 2026-10-17) | 3.37:1 on the panel start | |
 
 The light navy `#9fb3e8` (8.71:1) is also kept for large highlighted title text, through a new role `--mq-accent-highlight` that is the accent itself in light.
+
+Accent text on the pale fills (the pale KPI value, the pale badge and the callout title) reads `--mq-accent-highlight` (owner, 2026-10-17): on dark the lifted navy is 3.57:1 on `--mq-accent-pale` and 4.05:1 on `--mq-accent-pale-2`, the light navy 5.97:1 and 6.77:1 (the fills laid over the surface, the worse case). On the panel start the light on-navy accent `#8795b3` would be 2.74:1 and white at 40 % 2.71:1, hence the two on-navy rows above; light keeps `#8795b3` (4.61:1) and white at 40 % (3.44:1).
 
 ### Brand on dark
 

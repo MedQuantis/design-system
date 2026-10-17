@@ -467,6 +467,7 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-accent-hover` | `#061a4d` | Hover state of accent-coloured controls. |
 | `--mq-accent-pale` | `#eaeef7` | Pale accent fill for a highlighted row, tag or state. |
 | `--mq-accent-pale-2` | `#f2f4f9` | Quieter pale accent fill. |
+| `--mq-accent-highlight` | `#0a2463` | Large highlighted title text; the accent itself in light, the light navy in dark (ADR-0007). |
 | `--mq-on-accent` | `#ffffff` | Text and icons on an accent fill, 14.53:1 on navy. |
 | `--mq-ink` | `#1a1a1a` | Primary text. |
 | `--mq-muted` | `#555555` | Secondary text. |
@@ -493,6 +494,7 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-warning` | `#a06400` | Owner ruling 5, 2026-10-09: warning text, icons and borders; apps only (ADR-0004). |
 | `--mq-danger` | `#d8232a` | Apps only: errors and destructive actions, always with an icon or a word (ADR-0003, ADR-0004). |
 | `--mq-info` | `#1565c0` | Apps only: information, always with an icon or a word (ADR-0004). |
+| `--mq-on-warning-fill` | `#1a1a1a` | Text on the warning fill: ink in light (5.93:1), near-black in dark (6.18:1), where warm white on the fill is 2.67:1 (ADR-0007, amends owner ruling 5). |
 | `--mq-warning-fill` | `#d4850a` | Owner ruling 5, 2026-10-09: warning badge and highlight fill, always with ink text; white on it is forbidden (2.93:1). |
 | `--mq-warning-tint` | `#fbf3e7` | Owner ruling 5, 2026-10-09: warning tint behind ink text; warning strong only for icons and borders on it. |
 | `--mq-focus-ring-color` | `#0a2463` | Focus ring on light backgrounds: 2 px navy with an offset, 13.90:1 on canvas (research note 0001, section 7). |

@@ -27,6 +27,8 @@ Source: ADR-0007 (#17); the design-pass decision log (gitignored, `var/design-pa
 | `--mq-on-warning-fill` | `--mq-ink` (5.93:1 on the fill) | `#11161f` (6.18:1) | Warm white on the amber fill is 2.67:1 (ADR-0007) |
 | `--mq-accent-highlight` | `--mq-accent` | `#9fb3e8` (8.71:1 on canvas) | Large highlighted title text; on light it is the accent itself |
 
+**Owner rulings of 2026-10-17** (from Inc 01, recorded in ADR-0007): accent text on the pale fills (pale KPI value, pale badge, callout title) reads `--mq-accent-highlight`, which is the accent in light; on the dark panel start, `--mq-on-navy-accent` is `#b2c2ed` (4.64:1) and `--mq-on-navy-discreet` white at 50 % (3.37:1, large text or non-text only), light values unchanged.
+
 **Kit role mapping** (the `dark` module of kit Plan-0006 as reworked in kit #153: `--dark-<role>` mirrors every colour role of `core`, `dataviz`, `slide-frame`, `document` and `print`; Inc 04 follows the role list of the kit 2.1.0 that merges):
 
 | Kit roles | MedQuantis dark value |
@@ -47,8 +49,8 @@ Principles:
 6. Navy stays the single accent (ADR-0003): on dark it shows as the lifted tint, the light tint and the panel gradient; no new hue.
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
-**Overall Status:** pending
-**Current Increment:** --
+**Overall Status:** in_progress
+**Current Increment:** 01
 
 ## Prerequisites
 
@@ -59,7 +61,7 @@ Principles:
 
 ### Increment 01: the themes tier and the dark values
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -87,7 +89,7 @@ Exit criteria:
 Prediction:
 
 1. New: `dist/themes/dark.css`, `dist/themes/dark.json`.
-2. Changed by the two new roles only: `dist/tokens.css`, `dist/tokens.json`, `dist/tailwind.css` (gains `--color-accent-highlight`, not the status role), `dist/llms-full.txt`, `dist/DESIGN.md` colours, `dist/claude-design-system/project/tokens.json`, the skill's colour tables and eval graders and its asset copies (`make skill`), the specimen's colour and contrast parts and their two baselines (`part-colour`, `part-contrast`).
+2. Changed by the two new roles only: `dist/tokens.css`, `dist/tokens.json`, `dist/tailwind.css` (gains `--color-accent-highlight`, not the status role), `dist/llms-full.txt`, `dist/DESIGN.md` colours, `dist/claude-design-system/project/tokens.json`, the skill's colour tables and eval graders and its asset copies (`make skill`), the specimen's colour and contrast parts and their two baselines (`part-colour`, `part-contrast`); `css/components.css` (the pale KPI value, the pale badge and the callout title read `--mq-accent-highlight`, owner 2026-10-17) and `css/app.css` (the filled warning status reads `--mq-on-warning-fill`) with their skill asset copies; the `part-app-status` baseline (the on-warning-fill pair row in the status table); the `part-shape`, `focus-on-light` and `focus-on-navy` baselines, sub-pixel layout shifts from the taller contrast table with no content or colour change (owner, 2026-10-17).
 3. Byte-identical: `dist/kit-contract.css`, every `dist/kit/*.css`.
 
 ### Increment 02: the guideline, DESIGN.md, the Claude Design System and the skill
@@ -244,7 +246,7 @@ Exit criteria:
 
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| M1: Dark theme defined | 01, 02 | pending | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
+| M1: Dark theme defined | 01, 02 | in_progress | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
 | M2: Dark on screen | 03 | pending | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
 | M3: Dark slides through the kit | 04 | pending | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
 | M4: Release 1.2.0 | 05 | pending | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |

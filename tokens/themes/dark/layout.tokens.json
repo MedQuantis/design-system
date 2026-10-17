@@ -1,0 +1,11 @@
+{
+  "semantic": {
+    "shadow": {
+      "$type": "shadow",
+      "panel": {
+        "$value": "{core.shadow.panel-outline}",
+        "$description": "Navy panels on dark: a 1 px light-navy outline, no glow (ADR-0007, owner 2026-10-15)."
+      }
+    }
+  }
+}

@@ -56,6 +56,8 @@ const sourceTokens = () => {
 };
 
 const ALIAS = /^\{([^{}]+)\}$/;
+const darkJson = join(root, "dist/themes/dark.json");
+const darkTheme = () => JSON.parse(readDist(darkJson));
 // Colour tokens only: a border shorthand names its width token before its colour.
 const colourNames = () => new Set(Object.entries(builtTokens()).filter(([, token]) => token.type === "color").map(([name]) => name));
 
@@ -136,12 +138,53 @@ test("dist/tokens.json lists every CSS property with the same value", () => {
   }
 });
 
-test("status colours are exactly success, warning, danger and info (ADR-0004)", () => {
+test("status colours are exactly success, warning, danger and info (ADR-0004), plus the text on the warning fill", () => {
   const tokens = sourceTokens();
   const status = [...tokens.values()]
     .filter(({ path }) => path[0] === "semantic" && path[1] === "color" && path[2] === "status")
     .map(({ path }) => path.slice(3).join("."));
-  assert.deepEqual(status.sort(), ["danger", "info", "success", "warning"]);
+  assert.deepEqual(status.sort(), ["danger", "info", "on-warning-fill", "success", "warning"]);
+});
+
+test("the two roles dark needed exist in light too: text on the warning fill is ink, the highlight is the accent (ADR-0007)", () => {
+  assert.equal(value("--mq-on-warning-fill"), value("--mq-ink"));
+  assert.equal(value("--mq-accent-highlight"), value("--mq-accent"));
+  const tailwind = readDist(join(root, "dist/tailwind.css"));
+  assert.match(tailwind, /--color-accent-highlight: var\(--mq-accent-highlight\);/);
+  assert.doesNotMatch(tailwind, /on-warning-fill/, "a status role must stay out of the Tailwind theme (ADR-0004)");
+});
+
+test("every token under tokens/themes/dark/ has the path of an existing semantic token (a theme never invents a role)", () => {
+  const dir = join(root, "tokens/themes/dark");
+  assert.ok(existsSync(dir), "tokens/themes/dark/ is missing");
+  const files = readdirSync(dir).filter((name) => name.endsWith(".tokens.json"));
+  assert.ok(files.length > 0, "no tokens/themes/dark/*.tokens.json");
+  const tokens = sourceTokens();
+  for (const file of files) {
+    for (const { path, token, type } of walk(JSON.parse(readFileSync(join(dir, file), "utf8")))) {
+      const key = path.join(".");
+      assert.equal(path[0], "semantic", `${key} is outside the semantic tier`);
+      assert.ok(tokens.has(key), `${key} re-values no existing semantic token`);
+      assert.equal(type, tokens.get(key).type, `${key} changes the $type of its role`);
+      assert.ok(typeof token.$description === "string" && token.$description.length > 0, `${key} has no $description`);
+      if (typeof token.$value === "string" && ALIAS.test(token.$value)) {
+        assert.ok(tokens.has(token.$value.match(ALIAS)[1]), `${key} references missing ${token.$value}`);
+      }
+    }
+  }
+});
+
+test("the new translucent core values use the alpha form, white at 10 % and 14 % (ADR-0007)", () => {
+  const tokens = sourceTokens();
+  for (const [key, alpha] of [["core.color.white-alpha-10", 0.1], ["core.color.white-alpha-14", 0.14]]) {
+    const token = tokens.get(key)?.token;
+    assert.ok(token, `${key} is missing`);
+    assert.deepEqual(token.$value.components, [1, 1, 1], `${key} is not white`);
+    assert.equal(token.$value.alpha, alpha, `${key} alpha`);
+  }
+  const dark = darkTheme();
+  assert.equal(dark["--mq-border"]?.value, "rgba(255, 255, 255, 0.14)");
+  assert.equal(dark["--mq-border-light"]?.value, "rgba(255, 255, 255, 0.1)");
 });
 
 test("ruled colour values: danger, tertiary, decoration, warning split and document backgrounds", () => {
@@ -276,15 +319,36 @@ test("categorical chart palette: ordered, at most seven hues, distinct under col
   }
 });
 
-test("every declared contrast pair passes its threshold", async () => {
+test("every declared contrast pair passes its threshold in both themes, the dark values resolved over the light ones", async () => {
   const { loadPairs: readPairs, evaluatePair } = await loadPairs();
   const pairs = readPairs(pairsFile);
   assert.ok(pairs.length > 0, "no contrast pair declared");
   const built = builtTokens();
-  for (const pair of pairs) {
-    const result = evaluatePair(pair, built);
-    assert.ok(result.pass, `${pair.fg} on ${[pair.bg].flat().join(" over ")} is ${result.ratio.toFixed(2)}:1, ${pair.use} needs ${result.required}:1`);
+  const failures = [];
+  for (const [theme, values] of [["light", {}], ["dark", darkTheme()]]) {
+    for (const pair of pairs.filter((entry) => entry.themes.includes(theme))) {
+      const result = evaluatePair(pair, built, values);
+      if (!result.pass) failures.push(`${theme}: ${pair.fg} on ${[pair.bg].flat().join(" over ")} is ${result.ratio.toFixed(2)}:1, ${pair.use} needs ${result.required}:1`);
+    }
   }
+  assert.deepEqual(failures, []);
+});
+
+test("a pair is checked in both themes unless its note gives the rule that keeps it out of one", async () => {
+  const { loadPairs: readPairs } = await loadPairs();
+  for (const pair of readPairs(pairsFile)) {
+    assert.ok(pair.themes.length > 0, `${pair.fg} on ${pair.bg.join(" over ")} is checked in no theme`);
+    if (pair.themes.length < 2) assert.ok(pair.note, `${pair.fg} on ${pair.bg.join(" over ")} skips a theme without a note`);
+  }
+});
+
+test("a translucent background is checked over canvas and surface, the worst counting", async () => {
+  const { evaluatePair } = await loadPairs();
+  const built = builtTokens();
+  const dark = darkTheme();
+  const pair = { fg: "--mq-ink", bg: ["--mq-warning-tint"], use: "text" };
+  // ADR-0007: ink on the dark warning tint is 11.63:1, the tint laid over the surface.
+  assert.equal(evaluatePair(pair, built, dark).ratio.toFixed(2), "11.63");
 });
 
 test("the contrast allow-list covers every pair the plan requires", async () => {
@@ -295,7 +359,7 @@ test("the contrast allow-list covers every pair the plan requires", async () => 
     ...["--mq-ink", "--mq-muted", "--mq-tertiary"].flatMap((fg) => ["--mq-canvas", "--mq-surface"].map((bg) => [fg, bg, "text"])),
     ...["title", "secondary", "second-level", "accent", "discreet"].flatMap((role) => navy.map((bg) => [`--mq-on-navy-${role}`, bg, "any"])),
     ...["rule", "pill"].map((role) => [`--mq-on-navy-${role}`, "--mq-accent", "any"]),
-    ["--mq-ink", "--mq-warning-fill", "text"],
+    ["--mq-on-warning-fill", "--mq-warning-fill", "text"],
     ["--mq-warning", "--mq-surface", "text"],
     ["--mq-warning", "--mq-warning-tint", "any"],
     ["--mq-ink", "--mq-warning-tint", "text"],
@@ -305,6 +369,17 @@ test("the contrast allow-list covers every pair the plan requires", async () => 
   ];
   for (const [fg, bg, use] of required) {
     assert.ok(isDeclared(pairs, { fg, bg: [bg], use }), `${fg} on ${bg} (${use}) is not declared`);
+  }
+  // ADR-0007: ink on the warning fill fails in dark (2.67:1); text on the fill reads its own role.
+  assert.ok(!pairs.some((pair) => pair.fg === "--mq-ink" && pair.bg[0] === "--mq-warning-fill"), "--mq-ink on --mq-warning-fill is still declared");
+  // Owner ruling of 2026-10-17: accent text on the pale fills reads the highlight, which passes on dark.
+  for (const bg of ["--mq-accent-pale", "--mq-accent-pale-2"]) {
+    assert.ok(isDeclared(pairs, { fg: "--mq-accent-highlight", bg: [bg], use: "text" }), `--mq-accent-highlight on ${bg} is not declared as text`);
+  }
+  // The accent carries links and labels on every page background, so it is declared as text.
+  for (const bg of ["--mq-canvas", "--mq-surface", "--mq-surface-alt"]) {
+    const pair = pairs.find((entry) => entry.fg === "--mq-accent" && entry.bg.length === 1 && entry.bg[0] === bg);
+    assert.equal(pair?.use, "text", `--mq-accent on ${bg} must be declared as text`);
   }
 });
 

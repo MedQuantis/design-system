@@ -130,23 +130,25 @@ test("README documents CDN use with an exact version and an SRI hash, never a ra
 
 // Increment 05 of Plan-0002: a consumer repo learns from the README how to render with the
 // delivery-comms kit, where DESIGN.md is, and how to enable the plugin and brief its agents.
-const KIT_MODULES = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "print", "brand", "guidance"];
+// Plan-0003 increment 05 adds the dark module (contract 2.1.0).
+const KIT_MODULES = ["core", "dataviz", "type", "space-shape", "document", "slide-frame", "dark", "print", "brand", "guidance"];
+
+// A level-two README section, to the next level-two heading outside a code block (the AGENTS.md lines hold one).
+function readmeSection(readme, heading) {
+  const lines = readme.split("\n");
+  const start = lines.indexOf(heading);
+  if (start < 0) return undefined;
+  let fenced = false;
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (lines[i].startsWith("```")) fenced = !fenced;
+    else if (!fenced && lines[i].startsWith("## ")) return lines.slice(start, i).join("\n");
+  }
+  return lines.slice(start).join("\n");
+}
 
 test("README explains use from the delivery-comms kit, DESIGN.md, the agent lines and the plugin settings", () => {
   const readme = read("README.md");
-  // The section runs to the next level-two heading outside a code block (the AGENTS.md lines hold one).
-  const lines = readme.split("\n");
-  const start = lines.indexOf("## Using it from the delivery-comms kit");
-  let fenced = false;
-  let end = lines.length;
-  for (let i = start + 1; start >= 0 && i < lines.length; i += 1) {
-    if (lines[i].startsWith("```")) fenced = !fenced;
-    else if (!fenced && lines[i].startsWith("## ")) {
-      end = i;
-      break;
-    }
-  }
-  const section = start >= 0 ? lines.slice(start, end).join("\n") : undefined;
+  const section = readmeSection(readme, "## Using it from the delivery-comms kit");
   assert.ok(section, "README has no section Using it from the delivery-comms kit");
   assert.match(section, /docs\/ux\/package\.json/);
   assert.match(section, /ux-design-system point @medquantis\/design-system@\d+\.\d+\.\d+/);
@@ -162,4 +164,25 @@ test("README explains use from the delivery-comms kit, DESIGN.md, the agent line
   assert.deepEqual(settings.extraKnownMarketplaces?.medquantis?.source, { source: "github", repo: "MedQuantis/design-system" });
   assert.equal(settings.enabledPlugins?.["medquantis-design-system@medquantis"], true);
   assert.doesNotMatch(section, /[–—]/, "the kit section carries an em or en dash");
+  // Plan-0003 increment 05: the kit version the dark module needs, and the classification cell.
+  assert.match(section, /delivery-comms 2\.1\.0/, "the kit section does not name the kit version the dark module needs");
+  assert.match(section, /2\.0 kit refuses the unknown `dark` module/);
+  assert.match(section, /classification:/, "the kit section does not say how a deck sets its classification");
+});
+
+// Plan-0003 increment 05: a consumer learns from the README how to turn the dark theme on.
+test("README explains the dark theme: the exported file, the .dark class, the Tailwind 4 variant and build-time documents", () => {
+  const readme = read("README.md");
+  const section = readmeSection(readme, "## Dark theme");
+  assert.ok(section, "README has no section Dark theme");
+  const exports = JSON.parse(read("package.json")).exports;
+  const imports = [...section.matchAll(/@import "@medquantis\/design-system\/([^"]+)"/g)].map((match) => `./${match[1]}`);
+  assert.ok(imports.includes("./themes/dark.css"), "the dark theme section does not import themes/dark.css");
+  for (const path of imports) assert.ok(exports[path], `${path} is not a package export`);
+  assert.ok(imports.indexOf("./themes/dark.css") > imports.indexOf("./tailwind.css"), "themes/dark.css loads after the tokens");
+  assert.match(section, /`\.dark`/);
+  assert.match(section, /@custom-variant dark \(&:where\(\.dark, \.dark \*\)\);/);
+  assert.match(section, /Nuxt UI 4/);
+  assert.match(section, /build time/);
+  assert.doesNotMatch(section, /[–—]/, "the dark theme section carries an em or en dash");
 });

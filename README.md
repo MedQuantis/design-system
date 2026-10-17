@@ -11,13 +11,14 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `dist/tokens.css` | Every consumer: `--mq-*` custom properties ([ADR-0006](docs/architecture/decisions/adr-0006-mq-token-prefix.md)) |
 | `dist/tokens.json` | Scripts and pipelines that need resolved values |
 | `dist/tailwind.css` | Tailwind 4 and Nuxt UI apps (`@theme` with 50 to 950 scales); imports `tokens.css` itself |
+| `dist/themes/dark.css`, `dist/themes/dark.json` | The dark theme: the semantic roles re-valued under `.dark`, for apps, documents and slides (see Dark theme) |
 | `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app. Carries the latin fonts as embedded data, since the renderers inline this one file |
 | `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media (see Shared CSS) |
 | `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
-| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.0.0): the manifest declares nine modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
+| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.1.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
 | `dist/DESIGN.md` | Tools and agents outside the kit: the tokens as [Google DESIGN.md](https://github.com/google-labs-code/design.md) front matter, then the guidelines as prose |
 | `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |
 | `plugins/medquantis-design-system/` | The Claude skill, as a Claude Code plugin and as a zip for claude.ai (see Claude skill) |
@@ -67,6 +68,24 @@ Every `mq-` component is `trial` until a consumer uses it in production; it beco
 
 Consumers lint their own CSS with the same rules: `export { default } from "@medquantis/design-system/stylelint";` in their `stylelint.config.mjs`. It rejects literal colours, fonts and shadows, `!important`, unknown custom properties, any radius other than the three `--mq-radius-*` tokens (so no pill shape can be drawn), and a local `--app-*`, `--site-*`, `--viz-*` or `--deck-*` property set to a literal instead of a `var(--mq-*)` reference (a `calc()` that scales tokens by a plain number is allowed). The config loads two stylelint plugins that the package does not install for you, so a consumer that lints adds them as its own dev dependencies, at the versions this release is tested with: `npm install --save-dev --save-exact stylelint@17.16.0 stylelint-declaration-strict-value@1.12.1 stylelint-value-no-unknown-custom-properties@6.1.1`.
 
+## Dark theme
+
+MedQuantis has one dark theme ([ADR-0007](docs/architecture/decisions/adr-0007-medquantis-has-a-dark-theme.md)). It re-values the semantic `--mq-*` roles under the `.dark` class and ships in its own files: `dist/themes/dark.css` (exported as `@medquantis/design-system/themes/dark.css`) and its resolved values in `dist/themes/dark.json`. `tokens.css` keeps the light values only, and a role the theme does not name keeps its light value, so the `mq-` components and the Tailwind utilities, which all read `var(--mq-*)`, turn dark with no second class name. The values and every contrast pair are in [guidelines/colour.md](guidelines/colour.md), Dark theme.
+
+- **Opt in:** load `themes/dark.css` after `tokens.css` (or after `tailwind.css`, which imports it), then set `.dark` on `<html>` for a whole page, or on one slide. The design system never switches on `prefers-color-scheme` by itself.
+- **Apps:** the app decides how the viewer chooses, and may follow the viewer's setting by toggling `.dark`. A Tailwind 4 app declares the class as its dark variant, since Tailwind's `dark:` follows `prefers-color-scheme` by default; Nuxt UI 4 already declares it, so a Nuxt UI app adds only the theme file.
+
+```css
+@import "tailwindcss";
+@import "@medquantis/design-system/tailwind.css";
+@import "@medquantis/design-system/themes/dark.css";
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+- **Documents and decks** (A4 reports, papers, PDFs, slides): light or dark is the author's choice, set at build time by putting `.dark` in the page, never taken from the reader's screen. A dark document stays dark in its PDF; light stays the default for anything likely to be printed on paper. Through the kit, see Using it from the delivery-comms kit.
+
+`.dark` is a generic class name: a page that loads `themes/dark.css` and already uses `.dark` for something else gets the theme there too.
+
 ## Specimen
 
 The specimen is the visual reference of the design system: every colour token with its contrast pairings and their allowed use, the type scale, the radii and shadows, every `mq-` component, a 1280 x 720 slide, an A4 page, the brand files and the app status layer. `make specimen` generates it into `dist/specimen/index.html` from `dist/tokens.json`, `css/` and the fictitious data in `examples/`, and the same page in the dark theme into `dist/specimen/dark.html` from `dist/themes/dark.json`; open either file in a browser. The folder holds its own copies of the CSS, fonts and brand files, so it works offline and requests nothing outside itself. It is never edited by hand and never committed. `make build` does not build it, so the package outputs stay free of it.
@@ -111,15 +130,17 @@ Every other shipped file (`css/*.css`, `fonts/fonts.css`, `dist/kit-contract.css
 
 ## Using it from the delivery-comms kit
 
-The homemade-claude-kit renders decks (`com-slide-deck`), artefact views (`com-artefact-viz`) and release notes (`com-release-note`) with the design system a project pins. A project pins this package once, with the kit's `ux-design-system` skill, at an exact version (1.1.0 is the first release with the kit modules):
+The homemade-claude-kit renders decks (`com-slide-deck`), artefact views (`com-artefact-viz`) and release notes (`com-release-note`) with the design system a project pins. A project pins this package once, with the kit's `ux-design-system` skill, at an exact version (1.1.0 is the first release with the kit modules; 1.2.0 adds the `dark` module and the classification cell):
 
 ```sh
-python3 <skill-dir>/scripts/design_system.py point @medquantis/design-system@1.1.0
+python3 <skill-dir>/scripts/design_system.py point @medquantis/design-system@1.2.0
 ```
 
-In the kit's words this is `ux-design-system point @medquantis/design-system@1.1.0`. It writes the pin to `docs/ux/package.json`, checks the package's `kit-manifest.json` through the kit resolver and prints the Dependabot entry (`directory: "/docs/ux"`) that turns later releases into pull requests. Change the pin only with `point`, never by hand, and never add a `docs/ux/tokens.css`. Each render writes `<output>.provenance.json`, which names the module each value came from.
+In the kit's words this is `ux-design-system point @medquantis/design-system@1.2.0`. It writes the pin to `docs/ux/package.json`, checks the package's `kit-manifest.json` through the kit resolver and prints the Dependabot entry (`directory: "/docs/ux"`) that turns later releases into pull requests. Change the pin only with `point`, never by hand, and never add a `docs/ux/tokens.css`. Each render writes `<output>.provenance.json`, which names the module each value came from.
 
-`kit-manifest.json`, at the top of the package, declares all nine modules of the contract, so the kit's base theme fills none of them:
+The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declares contract 2.1.0 and the `dark` module, and a 2.0 kit refuses the unknown `dark` module. A project on a 2.0 kit updates the kit before it points at 1.2.0, or stays on 1.1.0.
+
+`kit-manifest.json`, at the top of the package, declares all ten modules of the contract, so the kit's base theme fills none of them:
 
 | Module | File | Carries |
 | :-- | :-- | :-- |
@@ -128,10 +149,13 @@ In the kit's words this is `ux-design-system point @medquantis/design-system@1.1
 | `type` | `dist/kit/type.css` | The type scale, the body and tight line heights, weights 400 and 500 |
 | `space-shape` | `dist/kit/space-shape.css` | The smallest and largest spacing steps, the small radius, the 6 px maximum radius (no pill shapes) and the hairline stroke |
 | `document` | `dist/kit/document.css` | The A4 document: page colour, text size, rules, and the MedQuantis rules for the kit's document classes |
-| `slide-frame` | `dist/kit/slide-frame.css` | The 1280 by 720 slide: canvas, padding, section label, and the footer row with the legal line and slide number |
+| `slide-frame` | `dist/kit/slide-frame.css` | The 1280 by 720 slide: canvas, padding, section label, and the footer row with the legal line, the classification cell and the slide number |
+| `dark` | `dist/kit/dark.css` | The dark twin of every colour role (`--dark-<role>`), with the MedQuantis dark values, and the key element on dark: the navy panel gradient with its 1 px light-navy outline, never a glow |
 | `print` | `dist/kit/print.css` | The release-note report: page size, margins, and breaking changes in navy, never a status hue |
 | `brand` | `dist/kit/brand.css` | The wordmarks on light and on navy, the monogram and the legal line |
 | `guidance` | `dist/kit/guidance.md` | The rules from `guidelines/` that the kit's skills read before writing a page |
+
+A kit deck turns dark per slide, with `dark` on the slide's root (`<div class="slide dark">`), or whole, with `theme: dark` in its `config.yaml`, which also serves a `mode: document`; the kit draws the key element (`dark-key`) and the highlighted text (`dark-accent`) from the `dark` roles. `classification:` in `config.yaml` prints the deck's classification at the right of the footer, before the slide number, in the small tertiary mono of the legal line: the label only, in the deck's language (`lang:`), never a code ([guidelines/brand.md](guidelines/brand.md)).
 
 The kit lines a consumer repository adds to its `AGENTS.md` (or `CLAUDE.md`) are the kit's own: copy the [AGENTS.md block of `ux-design-system`](https://github.com/VictorHueni/homemade-claude-kit/blob/release/2.0/plugins/delivery-comms/skills/ux-design-system/references/agents-md-block.md) as it stands at the kit version you use, rather than a copy kept here. Below it, add the MedQuantis lines:
 
@@ -182,7 +206,7 @@ make skill-zip    # zip the skill for claude.ai into dist/
 make kit-check    # run the homemade-claude-kit resolver and renderers on the packed package (needs KIT_DIR)
 ```
 
-`make kit-check` packs the package as npm would publish it, unpacks it into a fresh temporary folder and runs the kit resolver (`plugins/delivery-comms/shared/design_source.py provenance`) on it, through the kit's own mise environment, expecting all nine modules from this package. It then renders the fictitious fixtures of `tests/fixtures/kit-render/` with the kit's own renderers (a deck, an A4 document and a release-note report) and requires `PASS: no findings` from the kit validator `check_render.py` on each; `KIT_CHECK_OUT=<folder>` keeps a copy of the three pages. `KIT_DIR` names a local homemade-claude-kit checkout, for example `KIT_DIR=../homemade-claude-kit make kit-check`; without it the target prints a skip message and exits 0. It is a separate gate, not part of `make check`, because CI has no kit checkout. `kit-manifest.json` is a build output at the repository root (gitignored), because the kit reads the manifest only at the top of the package.
+`make kit-check` packs the package as npm would publish it, unpacks it into a fresh temporary folder and runs the kit resolver (`plugins/delivery-comms/shared/design_source.py provenance`) on it, through the kit's own mise environment, expecting all ten modules from this package. It then renders the fictitious fixtures of `tests/fixtures/kit-render/` with the kit's own renderers (a deck, an A4 document and a release-note report) and requires `PASS: no findings` from the kit validator `check_render.py` on each; `KIT_CHECK_OUT=<folder>` keeps a copy of the three pages. `KIT_DIR` names a local homemade-claude-kit checkout, for example `KIT_DIR=../homemade-claude-kit make kit-check`; without it the target prints a skip message and exits 0. It is a separate gate, not part of `make check`, because CI has no kit checkout. `kit-manifest.json` is a build output at the repository root (gitignored), because the kit reads the manifest only at the top of the package.
 
 `fonts/` and `icons/` are committed copies of exact-pinned packages because they ship in the npm package; a unit test fails when they drift, so a Dependabot bump of a font or of Lucide needs `make assets` in the same PR. The screen wordmarks use live text, which renders in Outfit only where the page loads `fonts.css` (inline SVG); in an `<img>` use the `-print` variant.
 

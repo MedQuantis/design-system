@@ -1,11 +1,11 @@
 // Style Dictionary 5.6.0 build: DTCG sources in tokens/ to dist/tokens.css, dist/tokens.json,
 // dist/tailwind.css, dist/kit-contract.css and the kit modules dist/kit/<module>.css. The named
-// export darkTheme is the second run, for dist/themes/dark.css and dist/themes/dark.json
-// (scripts/build-themes.mjs, ADR-0007).
+// export darkTheme is the second run, for dist/themes/dark.css, dist/themes/dark.json and the kit's
+// dark module dist/kit/dark.css (scripts/build-themes.mjs, ADR-0007).
 import { fileURLToPath } from "node:url";
 import StyleDictionary from "style-dictionary";
 import { kitContractFormat } from "./formats/kit-contract.mjs";
-import { KIT_MODULES, kitModuleFormat } from "./formats/kit-modules.mjs";
+import { KIT_DARK_MODULES, KIT_LIGHT_MODULES, KIT_MODULES, kitModuleFormat } from "./formats/kit-modules.mjs";
 import { legalLine } from "./guidelines.mjs";
 import { LICENCE_BANNER } from "./licence-banner.mjs";
 import { tailwindFormat } from "./formats/tailwind.mjs";
@@ -125,7 +125,7 @@ export default {
         { destination: "tokens.json", format: "mq/json", filter: light },
         { destination: "tailwind.css", format: "mq/tailwind", filter: light },
         { destination: "kit-contract.css", format: "mq/kit-contract" },
-        ...KIT_MODULES.map((module) => ({ destination: `kit/${module}.css`, format: `mq/kit-${module}` })),
+        ...KIT_LIGHT_MODULES.map((module) => ({ destination: `kit/${module}.css`, format: `mq/kit-${module}` })),
       ],
     },
   },
@@ -134,10 +134,11 @@ export default {
 // The dark theme (ADR-0007): the core and semantic tiers are included, the dark sources override
 // the roles they re-value, and only those roles are written, under .dark. Each re-valued role
 // collides with its light definition by design, so this run alone lets collisions through; a
-// broken reference still fails it.
+// broken reference still fails it. The kit tier is included too, so the kit's dark module
+// (kit.dark, contract 2.1.0) resolves its semantic aliases to their dark values, on :root.
 export const darkTheme = {
   usesDtcg: true,
-  include: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json"],
+  include: ["tokens/core/*.tokens.json", "tokens/semantic/*.tokens.json", "tokens/kit/*.tokens.json"],
   source: ["tokens/themes/dark/*.tokens.json"],
   log: { verbosity: "default", warnings: "disabled" },
   preprocessors: ["mq/from-guidelines"],
@@ -156,6 +157,12 @@ export const darkTheme = {
         },
         { destination: "dark.json", format: "mq/json", filter: (token) => token.isSource },
       ],
+    },
+    kit: {
+      prefix: "mq",
+      transforms: cssTransforms,
+      buildPath: "dist/kit/",
+      files: KIT_DARK_MODULES.map((module) => ({ destination: `${module}.css`, format: `mq/kit-${module}` })),
     },
   },
 };

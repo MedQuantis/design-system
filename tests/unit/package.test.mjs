@@ -36,7 +36,7 @@ const DIST_FILES = [
   "dist/themes/dark.css",
   "dist/themes/dark.json",
   "dist/kit-contract.css",
-  ...["core", "dataviz", "type", "space-shape", "brand", "document", "slide-frame", "print"].map((module) => `dist/kit/${module}.css`),
+  ...["core", "dataviz", "type", "space-shape", "brand", "document", "slide-frame", "dark", "print"].map((module) => `dist/kit/${module}.css`),
   "dist/kit/guidance.md",
   "dist/DESIGN.md",
   "dist/llms.txt",

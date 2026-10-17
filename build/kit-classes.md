@@ -1,6 +1,6 @@
 # Kit classes and the MedQuantis rules they reproduce
 
-The homemade-claude-kit renderers emit their own class names, listed under `classes` in the kit contract (`tests/fixtures/kit-contract/modules.json`). The MedQuantis document, slide-frame and print modules restyle them by hand, in `css/kit/document.css`, `css/kit/slide-frame.css` and `css/kit/print.css`, against contract roles only (Plan-0002 increment 02, owner decision 4). This table names, for each kit class, the MedQuantis rule whose look it reproduces, or the guideline it follows where MedQuantis has no counterpart. `tests/unit/kit-modules.test.mjs` checks that every class has a row and that every named `mq-` class exists in `css/`.
+The homemade-claude-kit renderers emit their own class names, listed under `classes` in the kit contract (`tests/fixtures/kit-contract/modules.json`). The MedQuantis document, slide-frame and print modules restyle them by hand, in `css/kit/document.css`, `css/kit/slide-frame.css` and `css/kit/print.css`, against contract roles only (Plan-0002 increment 02, owner decision 4). The dark module (contract 2.1.0, Plan-0003 increment 04) styles none of its classes: the kit's own dark layer draws them from the dark roles, so `css/kit/dark.css` holds no rule. This table names, for each kit class, the MedQuantis rule whose look it reproduces, or the guideline it follows where MedQuantis has no counterpart. `tests/unit/kit-modules.test.mjs` checks that every class has a row and that every named `mq-` class exists in `css/`.
 
 Where a MedQuantis value has no contract role, the closest role stands in, as noted: the 12.5 px note size `--font-size-sm` (13 px), the 18 px slide text `--font-size-md` (16.5 px), the medium shadow `--shadow` (the small one). The print rules use the literal A4 print sizes of guidelines/typography.md, which are not yet tokens, and the heading weight 500.
 
@@ -20,7 +20,11 @@ Where a MedQuantis value has no contract role, the closest role stands in, as no
 | `slide-footer` | `slide-frame` | `mq-slide-foot`: one row 24 px above the bottom edge at the 72 px side margins, legal line at the left and number at the right, Geist Mono (owner ruling 11) |
 | `slide-logo` | `slide-frame` | `mq-slide-foot`: hidden, the MedQuantis footer row carries no logo (owner ruling 11) |
 | `slide-legal` | `slide-frame` | `mq-slide-foot`: the legal line, bottom left (guidelines/brand.md, Legal line) |
+| `slide-classification` | `slide-frame` | `mq-slide-foot`: the deck's classification at the right of the footer row, before the number, in the same small tertiary Geist Mono as the legal line, the label in the deck's language (owner ruling 17) |
 | `slide-number` | `slide-frame` | `mq-slide-number`: bottom right at the eyebrow size, tabular figures |
+| `dark` | `dark` | follows guidelines/colour.md, Dark theme: a dark slide or page; the kit's own layer reads every role from its `--dark-` twin, which the dark module maps to the dark value of the same MedQuantis token (owner ruling 12) |
+| `dark-key` | `dark` | `mq-panel`: the navy panel gradient of the dark theme with its 1 px light-navy outline, no glow, drawn by the kit's own layer from `--dark-key-fill` and `--dark-key-edge` (owner rulings 13 and 14) |
+| `dark-accent` | `dark` | follows guidelines/colour.md, Dark theme: highlighted text in `--mq-accent-highlight`, drawn by the kit's own layer from `--dark-accent-text` (owner ruling 18) |
 | `report` | `print` | `mq-page`: the A4 sheet on the canvas colour in ink, with the 48 and 72 px page margins of `--print-margin` |
 | `report-framing` | `print` | `mq-lead`: Newsreader italic in the secondary text colour, 11.5 pt |
 | `report-kicker` | `print` | `mq-eyebrow`: Geist Mono 500 capitals in navy, 7.5 pt |

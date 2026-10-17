@@ -8,8 +8,9 @@
  * right (owner ruling 11, guidelines/brand.md).
  *
  * Cascade: the kit inlines its base slide-frame.css before this module, so these rules restyle
- * it; com-slide-deck adds its baseline (controls hint, presentation mode) after the design layer,
- * so the rules for those classes carry one more element in their selector.
+ * it; com-slide-deck adds its baseline (controls hint, presentation mode) and the classification
+ * cell after the design layer, so the rules for those classes carry one more element in their
+ * selector.
  * The footer row and the source line use --tertiary, the tertiary grey of owner ruling 1.
  */
 
@@ -54,6 +55,18 @@
 
 .slide-legal {
   margin: 0;
+}
+
+/* The deck's classification (owner ruling 17): at the right of the footer row, before the number,
+   in the legal line's small tertiary mono, the label as written in the deck's language. The kit's
+   cell rule (margin-left: auto, capitals) comes after the design layer, so this one carries the
+   footer in its selector. */
+.slide-footer .slide-classification {
+  margin-left: auto;
+  color: var(--tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  text-transform: none;
 }
 
 /* mq-slide-number: the eyebrow size, tabular figures. */

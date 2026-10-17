@@ -157,7 +157,7 @@ The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declar
 
 A kit deck turns dark per slide, with `dark` on the slide's root (`<div class="slide dark">`), or whole, with `theme: dark` in its `config.yaml`, which also serves a `mode: document`; the kit draws the key element (`dark-key`) and the highlighted text (`dark-accent`) from the `dark` roles. `classification:` in `config.yaml` prints the deck's classification at the right of the footer, before the slide number, in the small tertiary mono of the legal line: the label only, in the deck's language (`lang:`), never a code ([guidelines/brand.md](guidelines/brand.md)).
 
-The kit lines a consumer repository adds to its `AGENTS.md` (or `CLAUDE.md`) are the kit's own: copy the [AGENTS.md block of `ux-design-system`](https://github.com/VictorHueni/homemade-claude-kit/blob/release/2.0/plugins/delivery-comms/skills/ux-design-system/references/agents-md-block.md) as it stands at the kit version you use, rather than a copy kept here. Below it, add the MedQuantis lines:
+The kit lines a consumer repository adds to its `AGENTS.md` (or `CLAUDE.md`) are the kit's own: copy the [AGENTS.md block of `ux-design-system`](https://github.com/VictorHueni/homemade-claude-kit/blob/main/plugins/delivery-comms/skills/ux-design-system/references/agents-md-block.md) as it stands at the kit version you use, rather than a copy kept here. Below it, add the MedQuantis lines:
 
 ```markdown
 ## MedQuantis brand

@@ -27,6 +27,7 @@ Interactive apps and tools, the only medium allowed status colours. The sections
 - Sign-in, access refused and error pages
 - Overview: queue boxes and coverage cards
 - Review table: filters, condition tile, status pill, code chips
+- Decision modal
 - Phones
 - No em dash, no en dash
 - Titles
@@ -530,6 +531,72 @@ The list behind every review screen: a filter toolbar, then a table whose rows c
 The change colours are apps only and never carry the change alone: the "+" and the strike say it in every theme and in greyscale (charts, App categorical palette).
 
 Stays in the app: the conditions and their codes, the wording of each state, the sort keys, the keyboard shortcuts beyond Arrow and Enter, and which code is the key code.
+
+## Decision modal
+
+Source: guidelines/app-patterns.md
+
+A large dialog where one decision is taken: context on the left, process on the right, actions at the foot. Its proportions and pane heights stay fixed from item to item, so nothing jumps while a person works through a list.
+
+**Frame.** On the surface with the overlay radius (`--mq-radius-overlay`) and `--mq-shadow-medium`, inset `--mq-space-5` from the viewport plus the safe-area insets, at most 1320 px wide. Escape closes it, focus stays inside while it is open and returns to the row it came from. Below 768 px it fills the screen with no radius, and its panes stack and scroll as one.
+
+**Header**, with a hairline below:
+
+- at the left, the condition tile (32 px) and the condition's name as the dialog title in Outfit 500 at the h3 size; under it the subject (the product) and an edition badge in the outline mark ("Edition 01.10.2026");
+- in the centre, the progress line at a fixed width;
+- at the right, the position in mono ("3 / 12"), previous and next buttons, and close.
+
+**Progress line.** Three steps (detected, review, decided): a 22 px circle and a label each, joined by 1.5 px lines.
+
+| Step | Mark |
+| :-- | :-- |
+| Done | `--mq-accent-pale` circle with a navy ring and a tick; the line after it navy |
+| Current | A navy circle with its number in `--mq-on-accent` and a 3 px `--mq-accent-pale` ring; the label in navy Outfit 600 |
+| To come | A `--mq-border-strong` ring on the surface, the label tertiary; the line after it `--mq-border` |
+| Optional review | The circle dashed, with "optional" in its detail line |
+| Required review | The detail line in `--mq-warning` with a warning icon: "required: your confirmation" |
+
+Labels keep one line, cut with an ellipsis and given in full in a tooltip. Where the header is too narrow for title, line and navigation side by side, the line takes its own row under the title.
+
+**Left pane: context**, on the canvas, a hairline on its right edge:
+
+- "The problem": a card with a fixed height of four lines, what the condition means for this item;
+- underline tabs (layout, App patterns): the source text (limitation-text marks) and the decision history with its count (history timeline). The chosen tab stays chosen from item to item.
+
+**Right pane: process**, on the surface, in numbered steps (a 22 px navy circle with the number in `--mq-on-accent`, then the step's name in Outfit 500):
+
+1. **Evidence**: one row per code in play, the code chip (review table, above), its name, and its source tag; a reason or quote an agent gave sits under its row in Newsreader italic, muted. The list has a fixed height and scrolls inside.
+2. **Decision**: the choice cards, then the form fields.
+3. **Result**: what is served today and what will be served after.
+
+**Source tags**, one mark style per source (colour, States by mark style), each with its word:
+
+| Source | Mark |
+| :-- | :-- |
+| Attached by the regulator | Solid |
+| Printed in the text | Pale, like the printed-code mark in the text |
+| Proposed by the agent | Dashed: not yet confirmed |
+| Candidate from the title | Outline |
+| Close code | Quiet |
+| Removed by the regulator | Struck through |
+
+**Choice cards.** A radio group of cards, one per answer: a `--mq-border-light` border and the small radius; the title in Outfit 500, one muted line of explanation, and at the right the codes the answer would serve, or "no code" in tertiary italic. Hover on `--mq-surface-alt`; selected: a navy border on `--mq-accent-pale-2`; invalid: a `--mq-danger` border with the error in words under the group. A card that restates what is served today says so in its explanation.
+
+**Result card.** A dashed `--mq-border-strong` border with the medium radius, two rows labelled in Geist Mono capitals, "Today" and "After": the code chips of each, an added code with its "+", a removed one struck through, both in the change-type colours, and "unchanged" in tertiary when nothing moves. Its height is fixed; long names are cut with a tooltip.
+
+**Held decision card.** While a colleague's review is pending it replaces the decision form: `--mq-warning-tint` with a `--mq-warning-fill` border and the medium radius, its title ("Decision to review") in `--mq-warning`, then rows of label and value: the held answer, its reason, the comment, who asked and when. The reviewer sees approve and send back, where send back asks for a comment; the person who asked sees withdraw. Everyone else sees it read-only.
+
+**Alerts**, above the form, each with an icon and a sentence:
+
+- a refused write: a `--mq-danger` border, what was refused and why; the form keeps what the person entered;
+- a stale write: an `--mq-info` border, "Decided meanwhile by a colleague, at 14:20"; the item reloads with that decision at the top of its history;
+- after a decision: a notice that the change reaches the public site after the next refresh.
+
+**Footer** on the canvas with a hairline above: facts at the left (muted label, ink value), actions at the right, secondary first and the primary last, such as "Confirm and go to next". An action the person cannot take is disabled with its reason shown in words beside it ("Role required: Maintainer"), never refused after a click on an enabled button.
+
+**Closed item.** It opens in its last state, read-only: no form, the result card showing what is served, and only navigation and close in the footer.
+
+Stays in the app: the choices and what each serves, which actions are allowed and why not, the wording of refusals and alerts, the sources and the data.
 
 ## Phones
 

@@ -191,6 +191,11 @@ test("forced focus state: navy ring on light, white ring on navy", async ({ page
   }
 });
 
+test("light: the slide frame keeps its medium shadow, the edge drawing nothing in light", async ({ page }) => {
+  await expect(page.locator("#slide .mq-slide")).toHaveCSS("box-shadow", "rgba(0, 0, 0, 0.07) 0px 3px 12px 0px");
+  await expect(page.locator("#slide .specimen-wide")).toHaveCSS("box-shadow", "rgba(0, 0, 0, 0) 0px 0px 0px 0px");
+});
+
 test("PDF export, tagged and with an outline, succeeds", async ({ page }) => {
   const pdf = await page.pdf({ tagged: true, outline: true, printBackground: true, preferCSSPageSize: true });
   expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
@@ -254,4 +259,102 @@ test("a column legend beside the ring: items stacked, values right-aligned in Ge
   const arcs = await ring.locator("circle[data-value]").evaluateAll((nodes) => nodes.map((node) => Number(node.dataset.value)));
   expect(arcs.reduce((sum, value) => sum + value, 0)).toBe(100);
   expect(await ring.locator('circle:not([pathLength="100"])').count()).toBe(0);
+});
+
+// Plan-0003 Inc 03: the same specimen in the dark theme (ADR-0007), dist/specimen/dark.html. The
+// light tests above keep their baselines; the dark page has its own, prefixed dark-.
+const darkUrl = pathToFileURL(join(root, "dist/specimen/dark.html")).href;
+const darkTheme = () => JSON.parse(readFileSync(join(root, "dist/themes/dark.json"), "utf8"));
+const rgb = (hex) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
+
+test.describe("dark theme", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(darkUrl);
+    await page.evaluate(() => document.fonts.ready);
+  });
+
+  test("dark: the page sets .dark, paints the dark canvas and requests nothing outside its folder", async ({ page }) => {
+    await expect(page.locator("html")).toHaveClass("dark");
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb(darkTheme()["--mq-canvas"].value));
+    await expect(page.locator("body")).toHaveCSS("color", rgb(darkTheme()["--mq-ink"].value));
+    expect(external).toEqual([]);
+  });
+
+  test("dark: swatches show the dark values and the contrast table the dark ratios", async ({ page }) => {
+    const built = tokens();
+    const theme = darkTheme();
+    for (const [name, token] of Object.entries(theme)) {
+      if (token.type !== "color" || built[name].deprecated) continue;
+      await expect(page.locator(`[data-swatch="${name}"]`), `${name} swatch`).toContainText(String(token.value));
+    }
+    for (const pair of loadPairs(join(root, "tokens/contrast-pairs.json"))) {
+      const row = page.locator(`[data-pair="${pair.fg} on ${pair.bg.join(" ")}"]`);
+      if (!pair.themes.includes("dark")) {
+        await expect(row).toHaveCount(0);
+        continue;
+      }
+      await expect(row).toContainText(`${evaluatePair(pair, built, theme).ratio.toFixed(2)}:1`);
+    }
+  });
+
+  test("dark: components take the dark roles: the warning fill text, the navy tiles' edge, the monogram outline", async ({ page }) => {
+    const theme = darkTheme();
+    await expect(page.locator(".mq-status.is-warning.is-filled")).toHaveCSS("color", rgb(theme["--mq-on-warning-fill"].value));
+    const edge = theme["--mq-shadow-panel"].value.replace(/^(.*) (rgba\(.*\))$/, "$2 $1");
+    for (const selector of ["#components .mq-panel", "#components .mq-kpi.is-navy", "#brand .specimen-brand-tile.is-navy", "#brand .mq-monogram"]) {
+      await expect(page.locator(selector).first(), selector).toHaveCSS("box-shadow", edge);
+    }
+    await expect(page.locator("#brand .specimen-brand-tile.is-navy").first()).toHaveCSS("background-image", /linear-gradient/);
+    const series = await page.locator("#components .mq-segment.is-1").first().evaluate((node) => getComputedStyle(node).backgroundColor);
+    expect(series).toBe(rgb(theme["--mq-chart-series-1"].value));
+  });
+
+  test("dark: the slide frame draws the panel's edge over the dark medium shadow, so it stands off the canvas", async ({ page }) => {
+    const theme = darkTheme();
+    const css = (value) => value.replace(/^(.*) (rgba\(.*\))$/, "$2 $1");
+    await expect(page.locator("#slide .specimen-wide")).toHaveCSS("box-shadow", css(theme["--mq-shadow-edge"].value));
+    await expect(page.locator("#slide .mq-slide")).toHaveCSS("box-shadow", css(theme["--mq-shadow-medium"].value));
+  });
+
+  test("dark: brand shows the white on-navy files only, and the monogram", async ({ page }) => {
+    await expect(page.locator('[src*="wordmark-on-light"], [data-brand="wordmark-on-light.svg"]')).toHaveCount(0);
+    await expect(page.locator('#brand [data-brand="wordmark-on-navy.svg"] svg text')).toHaveCount(2);
+    const outlined = page.locator('#brand img[src="brand/wordmark-on-navy-print.svg"]');
+    await expect(outlined).toHaveCount(2);
+    for (const img of await outlined.all()) expect(await img.evaluate((node) => node.naturalWidth)).toBeGreaterThan(0);
+    await expect(page.locator('#brand img.mq-monogram[src="brand/monogram.svg"]')).toHaveCount(1);
+  });
+
+  test("dark: no accessibility violation (axe, WCAG 2.2 AA)", async ({ page }) => {
+    const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
+    const found = results.violations.map((violation) => `${violation.id} (${violation.impact}): ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`);
+    expect(found).toEqual([]);
+  });
+
+  test("dark: every part of the page except the focus section has a screenshot baseline", async ({ page }) => {
+    const ids = await page.locator("section.specimen-section").evaluateAll((sections) => sections.map((section) => section.id));
+    expect(ids.filter((id) => id !== "focus")).toEqual(SCREENSHOT_PARTS.filter((part) => !["header", "footer"].includes(part)));
+  });
+
+  for (const part of SCREENSHOT_PARTS) {
+    test(`dark: screenshot of the ${part} part matches its baseline`, async ({ page }) => {
+      const locator = partLocator(page, part);
+      await expect(locator).toHaveCount(1);
+      await expect(locator).toHaveScreenshot(`dark-part-${part}.png`);
+    });
+  }
+
+  test("dark: forced focus state: light navy ring on the dark canvas, white ring on navy", async ({ page }) => {
+    const section = page.locator("#focus");
+    for (const [target, colour, name] of [
+      ["#focus-light", rgb(darkTheme()["--mq-focus-ring-color"].value), "dark-focus-on-canvas.png"],
+      ["#focus-navy", "rgb(255, 255, 255)", "dark-focus-on-navy.png"],
+    ]) {
+      const link = page.locator(target);
+      await link.focus();
+      expect(await link.evaluate((element) => element.matches(":focus-visible"))).toBe(true);
+      await expect(link).toHaveCSS("outline-color", colour);
+      await expect(section).toHaveScreenshot(name);
+    }
+  });
 });

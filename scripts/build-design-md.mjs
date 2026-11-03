@@ -77,10 +77,22 @@ const typography = Object.entries(TYPOGRAPHY).flatMap(([name, properties]) =>
 );
 
 const groups = Object.fromEntries(Object.keys(GROUPS).map((key) => [key, group(key)]));
+
+// The dark theme (ADR-0007): each colour the theme re-values, again as dark-<its name above>, with
+// the value of dist/themes/dark.json. Colours only: the panel gradient is two stops, never a
+// gradient value, which the linter rejects under colors.
+const darkTheme = JSON.parse(readFileSync(join(root, "dist/themes/dark.json"), "utf8"));
+const darkColors = groups.colors.filter(([, token]) => darkTheme[token.name]).map(([name, token]) => [`dark-${name}`, { name: token.name, value: darkTheme[token.name].value }]);
+const missingDark = Object.entries(darkTheme).filter(([name, token]) => token.type === "color" && !darkColors.some(([, entry]) => entry.name === name));
+if (missingDark.length) throw new Error(`dark colours without a DESIGN.md name: ${missingDark.map(([name]) => name).join(", ")}`);
 const front = {
   name: "MedQuantis",
   description: `The MedQuantis design system ${version}. Generated from tokens/ and guidelines/ by the design-system build. Do not edit. Names are the homemade-claude-kit role names where the kit has a role, else the tokens.css name without --mq-; the tables below map each to its --mq-* token.`,
-  colors: { primary: "{colors.accent}", ...Object.fromEntries(groups.colors.map(([name, token]) => [name, token.value])) },
+  colors: {
+    primary: "{colors.accent}",
+    ...Object.fromEntries(groups.colors.map(([name, token]) => [name, token.value])),
+    ...Object.fromEntries(darkColors.map(([name, token]) => [name, token.value])),
+  },
   typography: Object.fromEntries(
     Object.entries(TYPOGRAPHY).map(([name, properties]) => [name, Object.fromEntries(Object.entries(properties).map(([property, role]) => [property, kitRoles.get(role).value]))]),
   ),
@@ -114,7 +126,7 @@ const SECTIONS = [
   ],
   [
     "Colors",
-    [["colors.primary", "--mq-accent", "{colors.accent}"], ...rows("colors")],
+    [["colors.primary", "--mq-accent", "{colors.accent}"], ...rows("colors"), ...darkColors.map(([name, token]) => [`colors.${name}`, `${token.name}\` in \`.dark`, token.value])],
     [
       ["colour.md", ""],
       ["colour.md", "The medium split"],
@@ -124,6 +136,7 @@ const SECTIONS = [
       ["colour.md", "States by mark style (documents)"],
       ["colour.md", "Status colours (apps only)"],
       ["colour.md", "Chart colours"],
+      ["colour.md", "Dark theme"],
       ["charts.md", ""],
       ["charts.md", "The ordered palette"],
       ["charts.md", "Common cases"],

@@ -27,3 +27,25 @@
   font-size: var(--font-size-md);
   line-height: var(--line-height-body);
 }
+/* The key element of the dark slide: position and type only; the kit's dark layer draws its fill,
+   outline and text colour from the dark roles. */
+.deck-key {
+  position: absolute;
+  top: calc(var(--slide-padding) * 2);
+  left: var(--slide-padding);
+  width: 480px;
+  padding: var(--space-lg);
+  border-radius: var(--card-radius);
+}
+.deck-key-figure {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+.deck-key-text {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}

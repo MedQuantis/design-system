@@ -8,7 +8,7 @@ The MedQuantis brand, writing, colour, type, layout, chart, data and accessibili
 | [brand.md](brand.md) | Name, tagline, legal line, wordmark, monogram, favicon, icons |
 | [voice.md](voice.md) | Tone, words to prefer and avoid, languages, terminology in French, German, Italian and English |
 | [writing.md](writing.md) | No em or en dash, titles, sentences and lists, French typography |
-| [colour.md](colour.md) | Semantic colour tokens, the medium split, navy panels, states by mark style, status colours in apps |
+| [colour.md](colour.md) | Semantic colour tokens, the medium split, navy panels, states by mark style, status colours in apps, the dark theme |
 | [typography.md](typography.md) | Families, weights, roles, sizes and line heights |
 | [layout.md](layout.md) | Media, report skeleton, widths and spacing, radius, components, tables, app patterns, print |
 | [charts.md](charts.md) | The ordered palette, highlight on grey, sequential and diverging use, marks, legends |
@@ -20,7 +20,7 @@ The values themselves live in `tokens/` and reach these pages as `--mq-*` names;
 
 ## Where the legacy rules went
 
-These guidelines replace five earlier documents, which competed and partly contradicted each other: the platform brand document, the platform design-system document, the platform report design system of 2026-10-08, the platform style guide and the Paracel design document. Every rule found in them is listed below, rewritten, either as carried over (with the file that now holds it) or as dropped (with the reason). Rulings cited by number are the owner rulings of 2026-10-09 and 2026-10-10 recorded in the bootstrap plan; ADRs are in `docs/architecture/decisions/`.
+These guidelines replace five earlier documents, which competed and partly contradicted each other: the platform brand document, the platform design-system document, the platform report design system of 2026-10-08, the platform style guide and the Paracel design document. Every rule found in them is listed below, rewritten, either as carried over (with the file that now holds it) or as dropped (with the reason). Rulings cited by number are the owner rulings of 2026-10-09 and 2026-10-10 recorded in the bootstrap plan (1 to 11) and the later ones listed under "Rulings after the bootstrap" (12 on); ADRs are in `docs/architecture/decisions/`.
 
 | Source | Rules found | Carried over | Dropped |
 | :-- | --: | --: | --: |
@@ -308,3 +308,18 @@ These guidelines replace five earlier documents, which competed and partly contr
 | Copy-paste root block of custom properties | Paracel design document | Superseded by ADR-0002 and ADR-0006 (generated --mq- tokens) |
 | Machine-readable kit token section with the red accent | Paracel design document | Superseded by ADR-0006: the kit contract is generated |
 | Workflow stage colours with white text inside the bar segments | Paracel design document | Superseded by ADR-0004 (status hues for system status only) and the contrast pairs (white fails on the light series) |
+
+## Rulings after the bootstrap
+
+Owner rulings taken after the bootstrap plan, numbered on from ruling 11. Each is recorded in its decision record and applied in the guideline named.
+
+| Ruling | Date | Rule | Now in | Source |
+| :-- | :-- | :-- | :-- | :-- |
+| 12 | 2026-10-15 | MedQuantis has a dark theme: the semantic roles re-valued under `.dark` and shipped in `themes/dark.css`, for apps, documents and slides | [colour.md](colour.md) | ADR-0007, design pass of 2026-10-15 |
+| 13 | 2026-10-15 | No glow on dark: a navy panel on dark draws a 1 px light-navy outline (`--mq-shadow-panel`) | [colour.md](colour.md), [layout.md](layout.md) | ADR-0007, design pass of 2026-10-15 |
+| 14 | 2026-10-15 | The white wordmark on every dark surface, never the navy one; a navy tile on dark takes the panel gradient; the monogram takes the panel's outline | [brand.md](brand.md) | ADR-0007, design pass of 2026-10-15 |
+| 15 | 2026-10-15 | A document is light or dark, chosen by its author at build time, never from the reader's screen | [colour.md](colour.md) | ADR-0007, design pass of 2026-10-15 |
+| 16 | 2026-10-15 | Status and chart values on dark; text on the warning fill reads `--mq-on-warning-fill`, ink in light | [colour.md](colour.md) | ADR-0007, design pass of 2026-10-15 |
+| 17 | 2026-10-15 | A deck's classification sits at the right of the slide footer, before the number, in the deck's language: the label only, never the C0 to C3 code. Amends ruling 11 | [layout.md](layout.md), [brand.md](brand.md) | Design pass of 2026-10-15 (the ADR-0007 decision log), Plan-0003 |
+| 18 | 2026-10-17 | Accent text on the pale fills (the pale KPI value, the pale badge, the callout title) reads `--mq-accent-highlight`, the accent itself in light | [colour.md](colour.md) | ADR-0007 |
+| 19 | 2026-10-17 | On the dark panel start, `--mq-on-navy-accent` is `#b2c2ed` and `--mq-on-navy-discreet` white at 50 %, large text or non-text only; the light values are unchanged | [colour.md](colour.md) | ADR-0007 |

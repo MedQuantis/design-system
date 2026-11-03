@@ -10,6 +10,10 @@ export const THRESHOLDS = { text: 4.5, large: 3, "non-text": 3, decorative: 0 };
 
 const DEFAULT_BACKGROUNDS = [["--mq-canvas"], ["--mq-surface"]];
 
+// Every pair is checked in both themes (ADR-0007) unless it names the ones it applies to, with a
+// note giving the rule that keeps it out of the others.
+export const THEMES = ["light", "dark"];
+
 export function loadPairs(file) {
   const { pairs } = JSON.parse(readFileSync(file, "utf8"));
   if (!Array.isArray(pairs)) throw new Error(`${file}: "pairs" must be an array`);
@@ -22,24 +26,36 @@ export function loadPairs(file) {
     }
     if (!(pair.use in THRESHOLDS)) throw new Error(`${where}: use must be one of ${Object.keys(THRESHOLDS).join(", ")}`);
     if (pair.use === "decorative" && !pair.note) throw new Error(`${where}: a decorative pair needs a note`);
-    return { ...pair, bg };
+    const themes = pair.themes ?? THEMES;
+    if (!Array.isArray(themes) || themes.length === 0 || themes.some((theme) => !THEMES.includes(theme))) {
+      throw new Error(`${where}: themes must list some of ${THEMES.join(", ")}`);
+    }
+    if (pair.themes && !pair.note) throw new Error(`${where}: a pair kept out of a theme needs a note`);
+    return { ...pair, bg, themes };
   });
 }
 
-const resolve = (name, tokens) => {
-  const token = tokens[name];
+// A theme is a map of the roles it re-values (dist/themes/<theme>.json), read over the light tokens.
+const resolve = (name, tokens, theme = {}) => {
+  const token = theme[name] ?? tokens[name];
   if (!token) throw new Error(`${name} is not a built token`);
   return token.value;
 };
 
 // Layers are listed top first; the bottom one must be opaque.
-export function flatten(layers, tokens) {
-  const colors = layers.map((name) => resolve(name, tokens)).reverse();
+export function flatten(layers, tokens, theme = {}) {
+  const colors = layers.map((name) => resolve(name, tokens, theme)).reverse();
   return colors.slice(1).reduce((below, above) => composite(above, below), parseColor(colors[0]));
 }
 
-export function evaluatePair(pair, tokens) {
-  const ratio = contrastRatio(resolve(pair.fg, tokens), flatten([pair.bg].flat(), tokens));
+// A translucent bottom layer (a tint of the dark theme) is laid over the canvas and over the
+// surface, the page backgrounds it sits on, and the worst result counts.
+export function evaluatePair(pair, tokens, theme = {}) {
+  const fg = resolve(pair.fg, tokens, theme);
+  const layers = [pair.bg].flat();
+  const opaque = parseColor(resolve(layers.at(-1), tokens, theme)).a === 1;
+  const stacks = opaque ? [layers] : DEFAULT_BACKGROUNDS.map((page) => [...layers, ...page]);
+  const ratio = Math.min(...stacks.map((stack) => contrastRatio(fg, flatten(stack, tokens, theme))));
   const required = THRESHOLDS[pair.use];
   return { ratio, required, pass: ratio >= required };
 }

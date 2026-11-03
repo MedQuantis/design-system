@@ -1,0 +1,37 @@
+{
+  "semantic": {
+    "chart": {
+      "$type": "color",
+      "series": {
+        "1": {
+          "$value": "{core.color.navy-light}",
+          "$description": "Series 1 on dark, the lightest first: 8.71:1 on the canvas (ADR-0007)."
+        },
+        "2": {
+          "$value": "{core.color.navy-lifted}",
+          "$description": "Series 2 on dark: 5.22:1 on the canvas (ADR-0007)."
+        },
+        "3": {
+          "$value": "{core.color.bluegrey-1}",
+          "$description": "Series 3 on dark: 3.58:1 on the canvas (ADR-0007)."
+        },
+        "4": {
+          "$value": "{core.color.night-600}",
+          "$description": "Series 4 on dark, context bars: 1.90:1 on the canvas (ADR-0007)."
+        }
+      },
+      "rest": {
+        "$value": "{core.color.night-700}",
+        "$description": "Remainder fill on dark, drawn with a series 4 outline: 1.28:1 on the canvas (ADR-0007)."
+      },
+      "axis": {
+        "$value": "{core.color.night-500}",
+        "$description": "Axis lines and ticks on dark (non-text): 3.81:1 on the canvas (ADR-0007)."
+      },
+      "baseline": {
+        "$value": "{core.color.white-alpha-10}",
+        "$description": "Gridlines and baselines on dark, white at 10 % (decorative, ADR-0007)."
+      }
+    }
+  }
+}

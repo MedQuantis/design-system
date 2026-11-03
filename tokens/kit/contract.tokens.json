@@ -266,6 +266,141 @@
         "$description": "Kit contract: slide canvas height, 720 px, as css/slide.css (guidelines/layout.md, Media)."
       }
     },
+    "dark": {
+      "color": {
+        "$type": "color",
+        "dark-ink": {
+          "$value": "{semantic.color.ink}",
+          "$description": "Kit contract 2.1.0: on dark, primary text; the dark value of color.ink (guidelines/colour.md, Dark theme)."
+        },
+        "dark-muted": {
+          "$value": "{semantic.color.muted}",
+          "$description": "Kit contract 2.1.0: on dark, secondary text; the dark value of color.muted (guidelines/colour.md, Dark theme)."
+        },
+        "dark-tertiary": {
+          "$value": "{semantic.color.tertiary}",
+          "$description": "Kit contract 2.1.0: on dark, tertiary text for slide footers, legal lines and slide numbers; the dark value of color.tertiary (guidelines/colour.md, Dark theme)."
+        },
+        "dark-canvas-bg": {
+          "$value": "{semantic.color.canvas}",
+          "$description": "Kit contract 2.1.0: on dark, the page background, a near-black with a navy cast; the dark value of color.canvas (guidelines/colour.md, Dark theme)."
+        },
+        "dark-surface": {
+          "$value": "{semantic.color.surface}",
+          "$description": "Kit contract 2.1.0: on dark, the card and panel background; the dark value of color.surface (guidelines/colour.md, Dark theme)."
+        },
+        "dark-surface-2": {
+          "$value": "{semantic.color.surface-alt}",
+          "$description": "Kit contract 2.1.0: on dark, the recessed or group background; the dark value of color.surface-alt (guidelines/colour.md, Dark theme)."
+        },
+        "dark-border": {
+          "$value": "{semantic.color.border}",
+          "$description": "Kit contract 2.1.0: on dark, hairlines and dividers; the dark value of color.border (guidelines/colour.md, Dark theme)."
+        },
+        "dark-accent": {
+          "$value": "{semantic.color.accent}",
+          "$description": "Kit contract 2.1.0: on dark, the lifted navy for actions, links and identifiers; the dark value of color.accent (guidelines/colour.md, Dark theme)."
+        },
+        "dark-accent-ink": {
+          "$value": "{semantic.color.on-accent}",
+          "$description": "Kit contract 2.1.0: on dark, text on accent fills, near-black at 5.22:1, since white on the lifted accent is 3.48:1 (owner, 2026-10-15); the dark value of color.on-accent (guidelines/colour.md, Dark theme)."
+        },
+        "dark-success": {
+          "$value": "{semantic.color.status.success}",
+          "$description": "Kit contract 2.1.0: on dark, the positive state; the dark value of color.status.success (guidelines/colour.md, Dark theme)."
+        },
+        "dark-warning": {
+          "$value": "{semantic.color.status.warning}",
+          "$description": "Kit contract 2.1.0: on dark, the caution state; the dark value of color.status.warning (guidelines/colour.md, Dark theme)."
+        },
+        "dark-danger": {
+          "$value": "{semantic.color.status.danger}",
+          "$description": "Kit contract 2.1.0: on dark, the negative state; the dark value of color.status.danger (guidelines/colour.md, Dark theme)."
+        },
+        "dark-info": {
+          "$value": "{semantic.color.status.info}",
+          "$description": "Kit contract 2.1.0: on dark, the informational state; the dark value of color.status.info (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-1": {
+          "$value": "{semantic.chart.series.1}",
+          "$description": "Kit contract 2.1.0: on dark, the first series, the lightest first; the dark value of chart.series.1 (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-2": {
+          "$value": "{semantic.chart.series.2}",
+          "$description": "Kit contract 2.1.0: on dark, the second series; the dark value of chart.series.2 (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-3": {
+          "$value": "{semantic.chart.series.3}",
+          "$description": "Kit contract 2.1.0: on dark, the third series; the dark value of chart.series.3 (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-4": {
+          "$value": "{semantic.chart.series.4}",
+          "$description": "Kit contract 2.1.0: on dark, the fourth series; the dark value of chart.series.4 (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-rest": {
+          "$value": "{semantic.chart.rest}",
+          "$description": "Kit contract 2.1.0: on dark, every series past the fourth; the dark value of chart.rest (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-axis": {
+          "$value": "{semantic.chart.axis}",
+          "$description": "Kit contract 2.1.0: on dark, axis lines and ticks; the dark value of chart.axis (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-grid": {
+          "$value": "{semantic.chart.baseline}",
+          "$description": "Kit contract 2.1.0: on dark, the one baseline; the dark value of chart.baseline (guidelines/colour.md, Dark theme)."
+        },
+        "dark-chart-highlight": {
+          "$value": "{semantic.chart.series.1}",
+          "$description": "Kit contract 2.1.0: on dark, the highlighted mark, series 1; the dark value of chart.series.1 (guidelines/colour.md, Dark theme)."
+        },
+        "dark-slide-bg": {
+          "$value": "{semantic.color.canvas}",
+          "$description": "Kit contract 2.1.0: on dark, the slide background, the dark canvas; the dark value of color.canvas (guidelines/colour.md, Dark theme)."
+        },
+        "dark-slide-fg": {
+          "$value": "{semantic.color.ink}",
+          "$description": "Kit contract 2.1.0: on dark, the slide text colour; the dark value of color.ink (guidelines/colour.md, Dark theme)."
+        },
+        "dark-doc-page-bg": {
+          "$value": "{semantic.color.canvas}",
+          "$description": "Kit contract 2.1.0: on dark, the paper sheet of a dark document, the dark canvas (owner ruling 15); the dark value of color.canvas (guidelines/colour.md, Dark theme)."
+        },
+        "dark-doc-rule": {
+          "$value": "{semantic.color.border}",
+          "$description": "Kit contract 2.1.0: on dark, the rule between document sections; the dark value of color.border (guidelines/colour.md, Dark theme)."
+        },
+        "dark-print-bg": {
+          "$value": "{semantic.color.canvas}",
+          "$description": "Kit contract 2.1.0: on dark, the printed page background of a dark document; the dark value of color.canvas (guidelines/colour.md, Dark theme)."
+        },
+        "dark-key-base": {
+          "$value": "{semantic.color.panel-start}",
+          "$description": "Kit contract 2.1.0: the background of the key element's text pair, the panel start, the lightest point of the key fill (ink 7.48:1 on it; guidelines/colour.md, Dark theme)."
+        },
+        "dark-accent-text": {
+          "$value": "{semantic.color.accent-highlight}",
+          "$description": "Kit contract 2.1.0: highlighted text on dark, the accent highlight, 8.71:1 on the canvas (owner ruling 18; guidelines/colour.md, Dark theme)."
+        }
+      },
+      "elevation": {
+        "$type": "shadow",
+        "dark-shadow": {
+          "$value": "{semantic.shadow.small}",
+          "$description": "Kit contract 2.1.0: on dark, card elevation; the dark small shadow, black at 40 % (guidelines/colour.md, Dark theme)."
+        },
+        "dark-key-edge": {
+          "$value": "{semantic.shadow.panel}",
+          "$description": "Kit contract 2.1.0: the outline of a dark slide's key element, the dark panel shadow: a 1 px light-navy outline, no glow (owner ruling 13; guidelines/colour.md, Dark theme)."
+        }
+      },
+      "fill": {
+        "dark-key-fill": {
+          "$type": "other",
+          "$value": "linear-gradient(160deg, {semantic.color.panel-start} 0%, {semantic.color.panel-end} 100%)",
+          "$description": "Kit contract 2.1.0: the fill of a dark slide's key element, the navy panel gradient in the dark theme (owner ruling 14; guidelines/colour.md, Dark theme). A gradient string over the two panel stops, as --print-margin is over two spacing steps."
+        }
+      }
+    },
     "print": {
       "print-bg": {
         "$type": "color",

@@ -27,6 +27,8 @@ Source: ADR-0007 (#17); the design-pass decision log (gitignored, `var/design-pa
 | `--mq-on-warning-fill` | `--mq-ink` (5.93:1 on the fill) | `#11161f` (6.18:1) | Warm white on the amber fill is 2.67:1 (ADR-0007) |
 | `--mq-accent-highlight` | `--mq-accent` | `#9fb3e8` (8.71:1 on canvas) | Large highlighted title text; on light it is the accent itself |
 
+**Owner rulings of 2026-10-17** (from Inc 01, recorded in ADR-0007): accent text on the pale fills (pale KPI value, pale badge, callout title) reads `--mq-accent-highlight`, which is the accent in light; on the dark panel start, `--mq-on-navy-accent` is `#b2c2ed` (4.64:1) and `--mq-on-navy-discreet` white at 50 % (3.37:1, large text or non-text only), light values unchanged.
+
 **Kit role mapping** (the `dark` module of kit Plan-0006 as reworked in kit #153: `--dark-<role>` mirrors every colour role of `core`, `dataviz`, `slide-frame`, `document` and `print`; Inc 04 follows the role list of the kit 2.1.0 that merges):
 
 | Kit roles | MedQuantis dark value |
@@ -47,8 +49,8 @@ Principles:
 6. Navy stays the single accent (ADR-0003): on dark it shows as the lifted tint, the light tint and the panel gradient; no new hue.
 7. The real kit is the judge: `make kit-check` reads the kit from `KIT_DIR` at the 2.1.0 checkout and renders a dark slide with a classification.
 
-**Overall Status:** pending
-**Current Increment:** --
+**Overall Status:** done
+**Current Increment:** 05
 
 ## Prerequisites
 
@@ -59,7 +61,7 @@ Principles:
 
 ### Increment 01: the themes tier and the dark values
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -87,12 +89,12 @@ Exit criteria:
 Prediction:
 
 1. New: `dist/themes/dark.css`, `dist/themes/dark.json`.
-2. Changed by the two new roles only: `dist/tokens.css`, `dist/tokens.json`, `dist/tailwind.css` (gains `--color-accent-highlight`, not the status role), `dist/llms-full.txt`, `dist/DESIGN.md` colours, `dist/claude-design-system/project/tokens.json`, the skill's colour tables and eval graders and its asset copies (`make skill`), the specimen's colour and contrast parts and their two baselines (`part-colour`, `part-contrast`).
+2. Changed by the two new roles only: `dist/tokens.css`, `dist/tokens.json`, `dist/tailwind.css` (gains `--color-accent-highlight`, not the status role), `dist/llms-full.txt`, `dist/DESIGN.md` colours, `dist/claude-design-system/project/tokens.json`, the skill's colour tables and eval graders and its asset copies (`make skill`), the specimen's colour and contrast parts and their two baselines (`part-colour`, `part-contrast`); `css/components.css` (the pale KPI value, the pale badge and the callout title read `--mq-accent-highlight`, owner 2026-10-17) and `css/app.css` (the filled warning status reads `--mq-on-warning-fill`) with their skill asset copies; the `part-app-status` baseline (the on-warning-fill pair row in the status table); the `part-shape`, `focus-on-light` and `focus-on-navy` baselines, sub-pixel layout shifts from the taller contrast table with no content or colour change (owner, 2026-10-17).
 3. Byte-identical: `dist/kit-contract.css`, every `dist/kit/*.css`.
 
 ### Increment 02: the guideline, DESIGN.md, the Claude Design System and the skill
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -100,13 +102,13 @@ Scope:
    - extend `tests/unit/guidelines.test.mjs`: `guidelines/colour.md` has a "Dark theme" section naming every dark role, its value and its contrast, with no em dash; `guidelines/brand.md` has the dark rules for the wordmark and monogram; `guidelines/layout.md` and `brand.md` place the classification at the right of the footer, before the number (amending ruling 11's two-cell footer).
    - extend `tests/unit/design-md.test.mjs`: `dist/DESIGN.md` carries the "Dark theme" section and lists the dark colours as `dark-*` names equal to `dist/themes/dark.json`, with no gradient under `colors` (the linter rejects one); `@google/design.md@0.4.0` lints with no error and no warning.
    - extend `tests/unit/claude-design-system.test.mjs`: `tokens.json` carries the dark values with their usage notes; the README brand book carries the "Dark theme" section.
-   - extend `tests/unit/skill.test.mjs`: the slides, documents and apps references each carry the "Dark theme" section.
+   - extend `tests/unit/skill.test.mjs`: the slides, documents and apps references each carry the "Dark theme" section, with a skill note naming `assets/themes/dark.css` and `.dark`; the skill ships `assets/themes/dark.css` and `dark.json` byte-equal to `dist/themes/`, and `validate.py` passes a page that bundles the dark theme and uses dark literal values while still failing a colour in neither theme, with status values apps only (owner, 2026-10-17: skill dark check in Inc 02).
 2. `guidelines/colour.md` "Dark theme": the scope (apps, documents chosen per document, slides), the values and contrast, the navy panel on dark, status and charts on dark; the warm-neutral rule ("never blue-tinted greys") scoped to the light theme; the light navy named a navy tint, not the retired sky blue (LCH hue 280.4 against sky blue 269.9 and navy 293.7, from the review). `guidelines/brand.md`: the white wordmark on every dark surface, a navy tile takes the panel gradient, the monogram's outline. `guidelines/layout.md`: the classification cell. `guidelines/README.md`: the provenance rows (owner rulings of 2026-10-15, ADR-0007), under the next ruling numbers.
-3. `scripts/build-design-md.mjs`: `["colour.md", "Dark theme"]` in the Colors section, the dark colours from `dist/themes/dark.json`. `scripts/build-claude-design-system.mjs`: the dark values and the section. `scripts/build-skill.mjs`: `["colour.md", "Dark theme"]` in `MEDIA.slides`, `MEDIA.documents` and `MEDIA.apps`; run `make skill`.
+3. `scripts/build-design-md.mjs`: `["colour.md", "Dark theme"]` in the Colors section, the dark colours from `dist/themes/dark.json`. `scripts/build-claude-design-system.mjs`: the dark values and the section. `scripts/build-skill.mjs`: `["colour.md", "Dark theme"]` in `MEDIA.slides`, `MEDIA.documents` and `MEDIA.apps`, with the skill note under it; `scripts/sync-skill-assets.mjs` copies `dist/themes/dark.css` and `dark.json` into the skill's `assets/themes/`; the skill's `scripts/validate.py` allows the dark semantic values under the same medium rules as light; run `make skill`.
 
 Primary files:
 
-1. `guidelines/colour.md`, `guidelines/brand.md`, `guidelines/layout.md`, `guidelines/README.md`, `scripts/build-design-md.mjs`, `scripts/build-claude-design-system.mjs`, `scripts/build-skill.mjs`, `plugins/medquantis-design-system/` (regenerated)
+1. `guidelines/colour.md`, `guidelines/brand.md`, `guidelines/layout.md`, `guidelines/README.md`, `scripts/build-design-md.mjs`, `scripts/build-claude-design-system.mjs`, `scripts/build-skill.mjs`, `scripts/sync-skill-assets.mjs`, `plugins/medquantis-design-system/` (regenerated, and `scripts/validate.py`)
 2. `tests/unit/guidelines.test.mjs`, `tests/unit/design-md.test.mjs`, `tests/unit/claude-design-system.test.mjs`, `tests/unit/skill.test.mjs`
 
 Test gate:
@@ -119,19 +121,20 @@ Exit criteria:
 
 Prediction:
 
-1. Changed: the four guidelines, `dist/DESIGN.md`, `dist/llms-full.txt`, `dist/claude-design-system/project/`, the skill's references and evals. No CSS output changes.
+1. Changed: the four guidelines, `dist/DESIGN.md`, `dist/llms-full.txt`, `dist/llms.txt` (the colour.md index line), `dist/kit/guidance.md` (the guideline sections it copies), `dist/claude-design-system/project/`, the skill's references and evals, `validate.py`. New: the skill's `assets/themes/dark.css` and `assets/themes/dark.json`. No CSS output changes (owner, 2026-10-17).
 
 ### Increment 03: components and the specimen in both themes
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
 1. **Write first, expect red:**
-   - extend `tests/unit/css.test.mjs`: no colour literal anywhere in `css/` or `scripts/specimen.css`; the navy panel, the KPI tile and the brand tile read the panel roles and `--mq-shadow-panel` only; text on the warning fill reads `--mq-on-warning-fill`; a `mq-monogram` class draws the outline from a role that is none in light.
+   - extend `tests/unit/css.test.mjs`: no colour literal anywhere in `css/` or `scripts/specimen.css`; the navy panel reads the panel roles and `--mq-shadow-panel`, the navy KPI tile and the navy brand tile the panel roles and `--mq-shadow-edge` (none in light, the panel outline on dark; owner approval of 2026-10-17), never the accent; the specimen frames its slide with `--mq-shadow-edge`, on screen only; text on the warning fill reads `--mq-on-warning-fill`; a `mq-monogram` class draws the outline from `--mq-shadow-edge`, a role that is none in light; the highlighted row's key cell reads `--mq-accent-highlight` (ruling 18).
    - extend `tests/unit/specimen.test.mjs`: the build writes `dist/specimen/dark.html` with `class="dark"` on `<html>` and `themes/dark.css` loaded; every swatch prints its dark value and every contrast row its dark ratio; the brand section shows the on-navy files on dark.
    - extend `tests/e2e/specimen.spec.mjs`: the dark page passes axe with no violation; a screenshot baseline per part of the dark page; the light baselines unchanged.
-2. `css/components.css` and `css/app.css`: text on the warning fill reads `--mq-on-warning-fill`; the `mq-monogram` class. `scripts/build-specimen.mjs`: renders once per theme, with the values and ratios of that theme; the brand tiles pick the files by theme.
+   - extend `tests/unit/themes.test.mjs`: on dark, `--mq-shadow-small` is black at 40 % (0 1px 2px) and `--mq-shadow-medium` black at 50 % (0 3px 12px), the design-pass values (owner approval of 2026-10-17); light unchanged.
+2. `css/components.css` and `css/app.css`: text on the warning fill reads `--mq-on-warning-fill`; the `mq-monogram` class; the navy KPI tile's edge. `tokens/themes/dark/`: the edge role and the dark small and medium shadows (core raw values tagged dark-only). `scripts/build-specimen.mjs`: renders once per theme, with the values and ratios of that theme; the brand tiles pick the files by theme.
 
 Primary files:
 
@@ -148,11 +151,15 @@ Exit criteria:
 
 Prediction:
 
-1. New: `dist/specimen/dark.html` and its baselines. Changed: `dist/tokens.css`, `dist/tokens.json`, `dist/themes/dark.*` (the monogram outline role), the light warning-badge baseline only if its text colour value changes (it should not: `--mq-on-warning-fill` is ink in light).
+1. New: `dist/specimen/dark.html` and its baselines (11 `dark-part-*`, `dark-focus-on-canvas`, `dark-focus-on-navy`). Changed: `dist/tokens.css`, `dist/tokens.json` (the edge role and the core `shadow.none`), `dist/themes/dark.*` (the edge role, the dark small and medium shadows), the light warning-badge baseline only if its text colour value changes (it should not: `--mq-on-warning-fill` is ink in light).
+2. Ripples (owner approval of 2026-10-17): `dist/llms-full.txt`, `dist/DESIGN.md`, `dist/claude-design-system/project/` (`README.md`, `tokens.json`, `design-system.json` by its build timestamp), the skill's asset copies (`css/components.css`, `tokens.css`, `tokens.json`, `themes/dark.css`, `themes/dark.json`) and references (`a4-report`, `app`, `charts`, `slides`, `web`); sources the existing tests require: `guidelines/colour.md` (the dark rows), `README.md` (the `mq-monogram` status row), `tests/unit/themes.test.mjs`; ADR-0007 records the edge and the dark shadows.
+3. Light rendering: the specimen's navy brand tiles take the panel gradient (approved 2026-10-17); the `part-brand` baseline passes within tolerance and is not rewritten. Every other light baseline unchanged.
+4. Dark baselines re-captured after the dark small and medium shadows and the slide frame's edge (owner approval of 2026-10-17): `dark-part-shape`, `dark-part-slide`, and, since cards draw the small shadow and the A4 page the medium one, `dark-part-components` and `dark-part-print`.
+5. Byte-identical: `dist/kit-contract.css`, every `dist/kit/*`, `kit-manifest.json`, `dist/tailwind.css`.
 
 ### Increment 04: the kit dark module and the classification cell
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -180,11 +187,11 @@ Exit criteria:
 
 Prediction:
 
-1. New: `dist/kit/dark.css`, the dark-slide baseline. Changed: `kit-manifest.json` (contract 2.1.0, `dark` provided), `dist/kit/slide-frame.css` (the classification cell), `dist/kit/guidance.md` (`## dark`), every `dist/kit/*.css` header only if the module header names the contract version (decided in this increment and stated in `progress.txt`), the two light kit-slide baselines (the classification cell), the kit-render fixtures. Byte-identical: `dist/kit-contract.css`, `dist/tokens.css`, `dist/tailwind.css`.
+1. New: `dist/kit/dark.css`, the dark-slide baseline. Changed: `kit-manifest.json` (contract 2.1.0, `dark` provided), `dist/kit/slide-frame.css` (the classification cell), `dist/kit/guidance.md` (`## dark`), every `dist/kit/*.css` header only if the module header names the contract version (decided in this increment and stated in `progress.txt`), the two light kit-slide baselines (the classification cell), the kit-render fixtures, the Claude Design System previews that inline kit module headers (`dist/claude-design-system/project/components/{Doc,DocKeep,DocLabel,DocSection,DocSectionFlow}/preview.html`, header lines only), `dist/claude-design-system/project/design-system.json` (build timestamp). Source outside Primary files: `tests/unit/package.test.mjs` (the tarball allow-list gains `dist/kit/dark.css`). Byte-identical: `dist/kit-contract.css`, `dist/tokens.css`, `dist/tailwind.css`.
 
 ### Increment 05: README and release 1.2.0
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -244,7 +251,7 @@ Exit criteria:
 
 | Milestone | Increments | Status | Coherent Outcome | Standalone Test Gate | Exit Criteria | Commit Guidance |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| M1: Dark theme defined | 01, 02 | pending | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
-| M2: Dark on screen | 03 | pending | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
-| M3: Dark slides through the kit | 04 | pending | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
-| M4: Release 1.2.0 | 05 | pending | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |
+| M1: Dark theme defined | 01, 02 | done | Dark values with every pair checked in both themes, documented everywhere an agent reads | `make check` | Every pair passes in both themes | `feat(dark-theme)` |
+| M2: Dark on screen | 03 | done | Components and the specimen in both themes | `make check` | Dark specimen, no axe violation | `feat(dark-theme)` |
+| M3: Dark slides through the kit | 04 | done | The kit 2.1.0 renders a MedQuantis dark slide with a classification | `make check`, `make kit-check` | Ten modules from the design, no finding | `feat(kit)` |
+| M4: Release 1.2.0 | 05 | done | 1.2.0 on npm | `make check`, `make kit-check`, packed-folder render (manual) | Paracel can pin 1.2.0 | `docs` |

@@ -337,3 +337,85 @@ test("slide.css holds a footer row: legal line bottom left, slide number bottom 
   assert.equal(declarationsOf("slide.css", ":where(.mq-slide-number)").position, "absolute");
   assert.equal(declarationsOf("slide.css", ".mq-slide-foot .mq-slide-number").position, "static");
 });
+
+// Plan-0003 Inc 03: components read roles only, so the dark theme (ADR-0007) reaches them by
+// re-valuing the roles under .dark, with no second component name.
+const SPECIMEN_CSS = join(root, "scripts/specimen.css");
+const parseSpecimen = () => postcss.parse(readFileSync(SPECIMEN_CSS, "utf8"), { from: SPECIMEN_CSS });
+const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(|\b(?:white|black|navy|blue|red|green|orange|grey|gray|silver)\b/i;
+const declarationsIn = (tree, needle) => {
+  const found = {};
+  tree.walkRules((rule) => {
+    if (!selectorList(rule.selector).some((part) => part === needle)) return;
+    rule.walkDecls((decl) => {
+      found[decl.prop] = decl.value;
+    });
+  });
+  return found;
+};
+const darkJson = () => JSON.parse(readFileSync(join(root, "dist/themes/dark.json"), "utf8"));
+const lightJson = () => JSON.parse(readFileSync(join(root, "dist/tokens.json"), "utf8"));
+const PANEL_FILL = /^linear-gradient\(160deg, var\(--mq-panel-start\), var\(--mq-panel-end\)\)$/;
+
+test("no colour literal anywhere in css/ or scripts/specimen.css, in either theme a colour is a role", () => {
+  const trees = [...Object.keys(FILES).map((file) => [`css/${file}`, parse(file)]), ["scripts/specimen.css", parseSpecimen()]];
+  for (const [name, tree] of trees) {
+    tree.walkDecls((decl) => {
+      assert.doesNotMatch(decl.value.replace(/var\(--mq-[\w-]+\)/g, ""), COLOUR_LITERAL, `${name}: ${decl.prop}: ${decl.value} is a colour literal`);
+    });
+  }
+});
+
+test("the navy panel, the navy KPI tile and the navy brand tile read the panel roles and the panel's edge only, never the accent", () => {
+  const panel = declarationsIn(parse("components.css"), ":where(.mq-panel)");
+  assert.match(panel.background ?? "", PANEL_FILL, "the navy panel draws the panel gradient");
+  assert.equal(panel["box-shadow"], "var(--mq-shadow-panel)", "the navy panel draws --mq-shadow-panel");
+  const kpi = declarationsIn(parse("components.css"), ":where(.mq-kpi.is-navy)");
+  assert.match(kpi.background ?? "", PANEL_FILL, "the navy KPI tile draws the panel gradient");
+  assert.equal(kpi["box-shadow"], "var(--mq-shadow-edge)", "the navy KPI tile draws the panel's edge on dark");
+  const tile = declarationsIn(parseSpecimen(), ".specimen-brand-tile.is-navy");
+  assert.match(tile.background ?? "", PANEL_FILL, "a navy brand tile takes the panel gradient, never the lifted accent (owner ruling 14)");
+  assert.equal(tile["box-shadow"], "var(--mq-shadow-edge)", "the navy brand tile draws the panel's edge on dark");
+  for (const [name, decls] of [["mq-panel", panel], ["mq-kpi.is-navy", kpi], ["specimen-brand-tile.is-navy", tile]]) {
+    assert.doesNotMatch(Object.values(decls).join(" "), /--mq-accent\b(?!-)/, `.${name} reads the accent`);
+  }
+});
+
+test("text on the warning fill reads --mq-on-warning-fill, ink in light and near-black on dark", () => {
+  const filled = declarationsIn(parse("app.css"), ":where(.mq-status.is-warning.is-filled)");
+  assert.equal(filled["background-color"], "var(--mq-warning-fill)");
+  assert.equal(filled.color, "var(--mq-on-warning-fill)");
+});
+
+test("the panel's edge is none in light and the panel outline on dark; the mq-monogram class draws it (owner ruling 14)", () => {
+  const light = lightJson()["--mq-shadow-edge"];
+  assert.ok(light, "--mq-shadow-edge is not a token");
+  assert.equal(light.type, "shadow");
+  assert.match(light.value, /^0px 0px 0px 0px rgba\(\d+, \d+, \d+, 0\)$/, "in light the edge draws nothing");
+  const dark = darkJson();
+  assert.equal(dark["--mq-shadow-edge"]?.value, dark["--mq-shadow-panel"].value, "on dark the edge is the panel's 1 px outline");
+  assert.ok(classes("components.css").has("mq-monogram"), "components.css lacks .mq-monogram");
+  const monogram = declarationsIn(parse("components.css"), ":where(.mq-monogram)");
+  assert.equal(monogram["box-shadow"], "var(--mq-shadow-edge)");
+  // The 64-unit square has corners of 8 units: 6 px at the 48 px the class sets, so the edge follows them.
+  assert.equal(monogram.width, "var(--mq-space-7)");
+  assert.equal(monogram.height, "var(--mq-space-7)");
+  assert.equal(monogram["border-radius"], "var(--mq-radius-medium)");
+});
+
+test("the specimen frames the slide with the panel's edge, on screen only, so it shows on the dark canvas", () => {
+  let found = null;
+  parseSpecimen().walkRules((rule) => {
+    if (rule.selector !== ".specimen-wide") return;
+    const media = rule.parent.type === "atrule" && rule.parent.name === "media" ? rule.parent.params : null;
+    rule.walkDecls("box-shadow", (decl) => {
+      found = { media, value: decl.value };
+    });
+    if (found) found.radius = rule.nodes.find((node) => node.prop === "border-radius")?.value;
+  });
+  assert.ok(found, "scripts/specimen.css draws no edge on the specimen slide");
+  assert.equal(found.media, "screen", "the edge is for the screen preview, never a printed slide");
+  // The edge is none in light; the slide inside keeps its own medium shadow.
+  assert.equal(found.value, "var(--mq-shadow-edge)");
+  assert.equal(found.radius, "var(--mq-radius-medium)", "the frame follows the slide's corners");
+});

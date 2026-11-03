@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0](https://github.com/MedQuantis/design-system/compare/v1.1.0...v1.2.0) (2026-10-17)
+
+
+### Features
+
+* **dark-theme:** add the themes tier and the dark values of ADR-0007 ([#19](https://github.com/MedQuantis/design-system/issues/19)) ([9425e5b](https://github.com/MedQuantis/design-system/commit/9425e5b0b2a79b3cb6b1eb9037384a7f7ea21dd4))
+* **dark-theme:** document the dark theme in the guidelines, DESIGN.md, the Claude Design System and the skill ([#21](https://github.com/MedQuantis/design-system/issues/21)) ([504088c](https://github.com/MedQuantis/design-system/commit/504088c1444e04209b1215124da9053e8ed87c19))
+* **dark-theme:** render the specimen and components in both themes ([#22](https://github.com/MedQuantis/design-system/issues/22)) ([2adc7ed](https://github.com/MedQuantis/design-system/commit/2adc7edfcab33b4075ad4e477bb31a7a0288ed27))
+* **kit:** provide the dark module and the deck classification cell (contract 2.1.0) ([#23](https://github.com/MedQuantis/design-system/issues/23)) ([e11f659](https://github.com/MedQuantis/design-system/commit/e11f6595c3f9c33650b614f22582a1570a3f3963))
+
 ## [1.1.0](https://github.com/MedQuantis/design-system/compare/v1.0.1...v1.1.0) (2026-10-15)
 
 

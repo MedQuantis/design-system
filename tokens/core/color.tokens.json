@@ -390,6 +390,403 @@
           "hex": "#1565c0"
         },
         "$description": "Info hue for interactive apps (ADR-0004)."
+      },
+      "night-950": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.0431,
+            0.0588,
+            0.0863
+          ],
+          "hex": "#0b0f16"
+        },
+        "$description": "Dark theme only: the on-screen desk around a page preview (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-900": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.0667,
+            0.0863,
+            0.1216
+          ],
+          "hex": "#11161f"
+        },
+        "$description": "Dark theme only: the canvas, a near-black with a navy cast; also text on the lifted accent and on the warning fill (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-850": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.0784,
+            0.102,
+            0.149
+          ],
+          "hex": "#141a26"
+        },
+        "$description": "Dark theme only: the recessed surface (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-800": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.102,
+            0.1294,
+            0.1922
+          ],
+          "hex": "#1a2131"
+        },
+        "$description": "Dark theme only: cards and panels on the page (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-700": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.1373,
+            0.1686,
+            0.2392
+          ],
+          "hex": "#232b3d"
+        },
+        "$description": "Dark theme only: the chart remainder fill, 1.28:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-600": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.2275,
+            0.2706,
+            0.3765
+          ],
+          "hex": "#3a4560"
+        },
+        "$description": "Dark theme only: chart series 4, context bars, 1.90:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-500": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4196,
+            0.451,
+            0.5216
+          ],
+          "hex": "#6b7385"
+        },
+        "$description": "Dark theme only: non-text decoration and chart axes, 3.81:1 on the canvas, never text (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "night-400": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5608,
+            0.5961,
+            0.6667
+          ],
+          "hex": "#8f98aa"
+        },
+        "$description": "Dark theme only: tertiary text, 6.25:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-1": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.1843,
+            0.298,
+            0.5608
+          ],
+          "hex": "#2f4c8f"
+        },
+        "$description": "Dark theme only: lightest stop of the navy panel gradient on dark, white 8.23:1 on it (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-lifted": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4353,
+            0.5333,
+            0.7882
+          ],
+          "hex": "#6f88c9"
+        },
+        "$description": "Dark theme only: the lifted navy, the accent on dark, 5.22:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-lifted-hover": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5412,
+            0.6275,
+            0.8392
+          ],
+          "hex": "#8aa0d6"
+        },
+        "$description": "Dark theme only: hover state of the lifted navy, 6.98:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-light": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.6235,
+            0.702,
+            0.9098
+          ],
+          "hex": "#9fb3e8"
+        },
+        "$description": "Dark theme only: the light navy, a navy tint for the focus ring, highlighted titles and chart series 1, 8.71:1 on the canvas (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-lifted-alpha-18": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4353,
+            0.5333,
+            0.7882
+          ],
+          "alpha": 0.18,
+          "hex": "#6f88c9"
+        },
+        "$description": "Dark theme only: the lifted navy at 18 % for a highlighted fill (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-lifted-alpha-10": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4353,
+            0.5333,
+            0.7882
+          ],
+          "alpha": 0.1,
+          "hex": "#6f88c9"
+        },
+        "$description": "Dark theme only: the lifted navy at 10 % for a quieter fill (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "green-light": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4353,
+            0.749,
+            0.451
+          ],
+          "hex": "#6fbf73"
+        },
+        "$description": "Dark theme only: success hue for interactive apps, 8.09:1 on the canvas (ADR-0007, owner 2026-10-15, ADR-0004).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "amber-light": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.8784,
+            0.6275,
+            0.251
+          ],
+          "hex": "#e0a040"
+        },
+        "$description": "Dark theme only: warning text, icon and border, 8.00:1 on the canvas (ADR-0007, owner 2026-10-15, ADR-0004).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "amber-alpha-16": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.8314,
+            0.5216,
+            0.0392
+          ],
+          "alpha": 0.16,
+          "hex": "#d4850a"
+        },
+        "$description": "Dark theme only: the warning fill at 16 % as the warning tint (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "red-light": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.4196,
+            0.4196
+          ],
+          "hex": "#ff6b6b"
+        },
+        "$description": "Dark theme only: danger hue for interactive apps, 6.53:1 on the canvas (ADR-0007, owner 2026-10-15, ADR-0004).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "blue-light": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.3922,
+            0.6588,
+            0.9412
+          ],
+          "hex": "#64a8f0"
+        },
+        "$description": "Dark theme only: info hue for interactive apps, 7.25:1 on the canvas (ADR-0007, owner 2026-10-15, ADR-0004).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "white-alpha-14": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.14,
+          "hex": "#ffffff"
+        },
+        "$description": "Dark theme only: white at 14 % for borders and dividers (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "white-alpha-10": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.1,
+          "hex": "#ffffff"
+        },
+        "$description": "Dark theme only: white at 10 % for hairlines and chart baselines (ADR-0007, owner 2026-10-15).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "navy-light-2": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.698,
+            0.7608,
+            0.9294
+          ],
+          "hex": "#b2c2ed"
+        },
+        "$description": "Dark theme only: a lighter navy tint for the one-off accent on the dark navy panel, 4.64:1 on its light end (owner ruling of 2026-10-17, ADR-0007).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
+      },
+      "white-alpha-50": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "alpha": 0.5,
+          "hex": "#ffffff"
+        },
+        "$description": "Dark theme only: white at 50 % for discreet numbers on the dark navy panel, 3.37:1, large text or non-text only (owner ruling of 2026-10-17, ADR-0007).",
+        "$extensions": {
+          "com.medquantis.design-system": {
+            "theme": "dark"
+          }
+        }
       }
     }
   }

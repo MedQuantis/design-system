@@ -1,0 +1,6 @@
+/*! @medquantis/design-system | © 2026 MedQuantis SA | MIT License, see LICENSE */
+/*
+ * No class rule (Plan-0003 increment 04): the kit's own dark layer remaps the roles to their
+ * --dark- twins on a dark slide or page and draws .dark-key and .dark-accent from the dark roles,
+ * so a rule here would compete with it. The dark roles come from tokens/kit/, on :root only.
+ */

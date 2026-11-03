@@ -227,9 +227,11 @@
     font-size: var(--mq-font-size-label);
   }
 
+  /* A navy brand tile takes the panel gradient and edge, never the lifted accent (owner ruling 14). */
   .specimen-brand-tile.is-navy {
-    border-color: var(--mq-accent);
-    background-color: var(--mq-accent);
+    border-color: transparent;
+    background: linear-gradient(160deg, var(--mq-panel-start), var(--mq-panel-end));
+    box-shadow: var(--mq-shadow-edge);
     color: var(--mq-on-navy-title);
   }
 
@@ -243,6 +245,16 @@
   .specimen-wide {
     width: var(--mq-slide-width);
     margin: 0 auto;
+  }
+
+  /* The slide shares the page canvas; on dark the panel's edge, drawn by the frame around it,
+     shows where it ends. The edge is none in light, and the slide keeps its own medium shadow.
+     Screen only: a printed slide has no frame. */
+  @media screen {
+    .specimen-wide {
+      border-radius: var(--mq-radius-medium);
+      box-shadow: var(--mq-shadow-edge);
+    }
   }
 
   .specimen-slide-body {

@@ -18,6 +18,10 @@
         "$value": "{core.color.pale-2}",
         "$description": "Quieter pale accent fill."
       },
+      "accent-highlight": {
+        "$value": "{semantic.color.accent}",
+        "$description": "Large highlighted title text; the accent itself in light, the light navy in dark (ADR-0007)."
+      },
       "on-accent": {
         "$value": "{core.color.white}",
         "$description": "Text and icons on an accent fill, 14.53:1 on navy."
@@ -124,6 +128,10 @@
         "info": {
           "$value": "{core.color.blue}",
           "$description": "Apps only: information, always with an icon or a word (ADR-0004)."
+        },
+        "on-warning-fill": {
+          "$value": "{semantic.color.ink}",
+          "$description": "Text on the warning fill: ink in light (5.93:1), near-black in dark (6.18:1), where warm white on the fill is 2.67:1 (ADR-0007, amends owner ruling 5)."
         }
       },
       "warning-fill": {

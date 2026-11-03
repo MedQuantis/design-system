@@ -3,6 +3,8 @@ title: "Kit fixture document"
 author: "Kit fixture"
 lang: "en"
 mode: document
+# The running footer prints the label before the page position (owner ruling 17).
+classification: "Confidential"
 page:
   size: A4
   orientation: portrait

@@ -117,6 +117,19 @@ test("document references carry no status colour; the app reference does (ADR-00
   assert.match(read(`${SKILL}/references/app.md`), STATUS_TOKENS);
 });
 
+// Plan-0003 increment 02: every medium the dark theme serves (ADR-0007: slides, documents, apps and
+// the website) carries the Dark theme section of colour.md; documents without its status lines.
+test("the slides, document, web and app references carry the Dark theme section of colour.md", () => {
+  for (const medium of ["slides", "a4-report", "web", "app"]) {
+    const text = read(`${SKILL}/references/${medium}.md`);
+    assert.ok(text.includes("## Dark theme\n\nSource: guidelines/colour.md\n"), `${medium}.md has no Dark theme section`);
+    assert.match(text, /^- Dark theme$/m, `${medium}.md lists the Dark theme section in its contents`);
+    const body = text.slice(text.indexOf("## Dark theme\n"), text.indexOf("\n## ", text.indexOf("## Dark theme\n") + 1));
+    assert.match(body, /`assets\/themes\/dark\.css`/, `${medium}.md names the skill's dark theme file`);
+    assert.match(body, /In this skill:.*`\.dark`/, `${medium}.md names the class in its skill note`);
+  }
+});
+
 test("skill assets are byte-identical to a fresh build and nothing else sits in assets/", async () => {
   const { assetPairs } = await import("../../scripts/sync-skill-assets.mjs");
   const pairs = assetPairs(root);
@@ -371,6 +384,51 @@ test("bundle.py makes output.html self-contained in place; the validator and the
   writeFileSync(join(dir, "output.html"), text.replace("gap: var(--mq-space-5); color: var(--mq-accent);", "gap: var(--mq-space-5); color: #ff0000;"));
   assert.equal(python([join(root, SKILL, "scripts/validate.py"), "output.html"], { cwd: dir }).status, 1, "the page's own CSS is still checked");
   assert.match(readFileSync(join(dir, "output.html"), "utf8"), palette);
+});
+
+// Owner, 2026-10-17 (Plan-0003 increment 02): the skill can build and check a dark page. It ships
+// the dark theme next to tokens.css, and the validator allows the dark semantic values under the
+// same medium rules as light, while a colour in neither theme still fails.
+test("the skill ships the dark theme, and the validator passes a dark page but not a colour outside both themes", () => {
+  for (const name of ["dark.css", "dark.json"]) {
+    const shipped = join(root, SKILL, "assets/themes", name);
+    assert.ok(existsSync(shipped), `assets/themes/${name} is missing: run make skill`);
+    assert.ok(readFileSync(shipped).equals(readFileSync(join(root, "dist/themes", name))), `assets/themes/${name} differs from dist/themes/${name}`);
+  }
+  const validator = join(root, SKILL, "scripts/validate.py");
+  const dir = mkdtempSync(join(tmpdir(), "mq-dark-"));
+  cpSync(join(root, SKILL, "assets"), join(dir, "assets"), { recursive: true });
+  const page = (ownCss, svgFill) =>
+    [
+      "<!doctype html>",
+      '<html lang="en" class="dark">',
+      "<head>",
+      '<meta charset="utf-8">',
+      '<link rel="stylesheet" href="assets/tokens.css">',
+      '<link rel="stylesheet" href="assets/themes/dark.css">',
+      `<style>${ownCss}</style>`,
+      "</head>",
+      `<body><p class="rep-note">Refunds 2024</p><svg viewBox="0 0 10 10"><rect width="10" height="10" fill="${svgFill}"/></svg></body>`,
+      "</html>",
+      "",
+    ].join("\n");
+  const bundleAndCheck = (name, html, medium = "document") => {
+    writeFileSync(join(dir, name), html);
+    const bundled = python([join(root, SKILL, "scripts/bundle.py"), name, name], { cwd: dir });
+    assert.equal(bundled.status, 0, bundled.stdout + bundled.stderr);
+    return python([validator, "--medium", medium, name], { cwd: dir });
+  };
+  // Dark literal values: the canvas, the lifted navy at 18 %, the light navy as series 1.
+  const dark = bundleAndCheck("dark.html", page(".rep-note { background: #11161f; border-color: rgba(111, 136, 201, 0.18); color: var(--mq-ink); }", "#9fb3e8"));
+  assert.equal(dark.status, 0, dark.stdout + dark.stderr);
+  assert.match(readFileSync(join(dir, "dark.html"), "utf8"), /<style data-mq-bundled="assets\/themes\/dark\.css">[^<]*\.dark \{/, "the dark theme is inlined as a shipped bundle");
+  const foreign = bundleAndCheck("foreign.html", page(".rep-note { color: #123456; }", "#9fb3e8"));
+  assert.equal(foreign.status, 1, "a colour in neither theme must fail");
+  assert.match(foreign.stdout, /#123456/);
+  // Status values stay apps only on dark too (ADR-0004).
+  const status = page(".rep-note { color: var(--mq-ink); }", "#ff6b6b");
+  assert.equal(bundleAndCheck("status.html", status).status, 1, "a dark status value fails in a document");
+  assert.equal(bundleAndCheck("status-app.html", status, "app").status, 0, "a dark status value passes in an app");
 });
 
 test("eval runs are a separate, owner-approved make target, Sonnet by default, outside make check", () => {

@@ -53,6 +53,6 @@
   :where(.mq-status.is-warning.is-filled) {
     border-color: transparent;
     background-color: var(--mq-warning-fill);
-    color: var(--mq-ink);
+    color: var(--mq-on-warning-fill);
   }
 }

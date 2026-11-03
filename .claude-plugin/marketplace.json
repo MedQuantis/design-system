@@ -1,7 +1,7 @@
 {
   "name": "medquantis",
   "description": "MedQuantis Claude Code plugins: the design-system skill for on-brand slides, reports, web pages, apps and charts.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": {
     "name": "MedQuantis SA",
     "url": "https://medquantis.ch"

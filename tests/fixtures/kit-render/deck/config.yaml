@@ -1,13 +1,17 @@
-# Fictitious kit fixture deck, rendered by make kit-check (Plan-0002 increment 02). mq:illustrative
+# Fictitious kit fixture deck, rendered by make kit-check (Plan-0002 increment 02; the classification and the dark slide, Plan-0003 increment 04). mq:illustrative
 title: "Kit fixture deck"
 author: "Kit fixture"
-lang: "en"
+lang: "fr"
 mode: slides
+# The footer prints the label in the deck's language, Confidentiel (owner ruling 17).
+classification: "Confidential"
 slides:
   - file: "01-cover.html"
     label: "Cover"
   - file: "02-content.html"
     label: "Content"
+  - file: "03-dark.html"
+    label: "Dark"
 paths:
   slides_dir: "slides"
   styles_file: "design/styles.css"

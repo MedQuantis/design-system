@@ -4,8 +4,9 @@
 Usage: python3 validate.py [--medium document|app] [--record VERDICT.txt] FILE [FILE ...]
 
 Fails (exit 1) on:
-  - a colour outside the token set (hex, rgb(), hsl() and other colour functions, named colours),
-    in CSS, style attributes, SVG colour attributes and quoted script values;
+  - a colour outside the token set of both themes, light and dark (hex, rgb(), hsl() and other
+    colour functions, named colours), in CSS, style attributes, SVG colour attributes and quoted
+    script values;
   - an unknown --mq-* token, a deprecated one, or a redefined one (consumers never override);
   - in documents (the default medium), any status colour, which is for apps only (ADR-0004);
   - an em dash or en dash in visible text;
@@ -26,6 +27,8 @@ import sys
 from pathlib import Path
 
 TOKENS = Path(__file__).resolve().parent.parent / "assets" / "tokens.json"
+# The dark theme re-values the semantic roles under .dark (ADR-0007); its values are allowed too.
+DARK = Path(__file__).resolve().parent.parent / "assets" / "themes" / "dark.json"
 
 # The CSS Color 4 named colours. A name is a literal colour: write var(--mq-*) instead.
 NAMED = set(
@@ -61,10 +64,12 @@ DASHES = {"\u2014": "em dash", "\u2013": "en dash"}
 
 
 def load_tokens(medium):
-    """Allowed colours and token names for a medium, from the synced tokens.json."""
+    """Allowed colours and token names for a medium, from the synced tokens.json and dark theme."""
     tokens = json.loads(TOKENS.read_text(encoding="utf-8"))
+    dark = json.loads(DARK.read_text(encoding="utf-8")) if DARK.exists() else {}
     names, deprecated, status, allowed = set(tokens), {}, set(), set()
-    for name, token in tokens.items():
+    # The dark entries carry the same names and paths, so the medium rules apply to them unchanged.
+    for name, token in [*tokens.items(), *dark.items()]:
         path = token.get("path", [])
         if token.get("deprecated"):
             deprecated[name] = token["deprecated"]

@@ -33,9 +33,11 @@ node_modules/.package-lock.json: package-lock.json
 # kit-manifest.json, a build output at the root (gitignored) because the kit reads it there only.
 # build-design-md writes dist/DESIGN.md, the Google DESIGN.md export; build-claude-design-system
 # writes dist/claude-design-system/project/, the claude.ai Design System artifact (not packed).
+# build-themes writes dist/themes/, the dark theme (ADR-0007), from a second Style Dictionary run.
 build: node_modules/.package-lock.json
 	rm -rf dist kit-manifest.json
 	node_modules/.bin/style-dictionary build --config build/style-dictionary.config.mjs
+	node scripts/build-themes.mjs
 	node scripts/build-llms.mjs
 	node scripts/build-kit.mjs
 	node scripts/build-design-md.mjs

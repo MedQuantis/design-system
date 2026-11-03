@@ -7,12 +7,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { readGuideline, unlinkRelative } from "../build/guidelines.mjs";
-import { KIT_MODULES } from "../build/formats/kit-modules.mjs";
+import { CONTRACT_VERSION, KIT_MODULES } from "../build/formats/kit-modules.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-// The kit contract version this build targets; tests compare it with the vendored modules.json.
-const CONTRACT_VERSION = "2.0.0";
+// CONTRACT_VERSION, the kit contract version this build targets (2.1.0), is defined with the module
+// list in build/formats/kit-modules.mjs, since every module header names it too.
 
 // The guideline sections each module's guidance carries, in reading order.
 const GUIDANCE = {
@@ -27,6 +27,7 @@ const GUIDANCE = {
   "space-shape": [["layout.md", ["Widths and spacing", "Radius"]]],
   document: [["layout.md", ["Print and PDF"]]],
   "slide-frame": [["layout.md", ["Media"]]],
+  dark: [["colour.md", ["Dark theme"]]],
   print: [["layout.md", ["Report skeleton"]]],
   brand: [["brand.md", ["Legal line", "Wordmark", "Monogram and favicon", "No combined logo yet"]]],
 };

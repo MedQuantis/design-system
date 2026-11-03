@@ -235,6 +235,7 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-accent-hover` | `#061a4d` | Hover state of accent-coloured controls. |
 | `--mq-accent-pale` | `#eaeef7` | Pale accent fill for a highlighted row, tag or state. |
 | `--mq-accent-pale-2` | `#f2f4f9` | Quieter pale accent fill. |
+| `--mq-accent-highlight` | `#0a2463` | Large highlighted title text; the accent itself in light, the light navy in dark (ADR-0007). |
 | `--mq-on-accent` | `#ffffff` | Text and icons on an accent fill, 14.53:1 on navy. |
 | `--mq-ink` | `#1a1a1a` | Primary text. |
 | `--mq-muted` | `#555555` | Secondary text. |
@@ -262,3 +263,4 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-shadow-small` | `0px 1px 2px 0px rgba(0, 0, 0, 0.05)` | Cards (increment 07 component need). |
 | `--mq-shadow-medium` | `0px 3px 12px 0px rgba(0, 0, 0, 0.07)` | A slide or page previewed on the desk, never in print (increment 07 component need). |
 | `--mq-shadow-panel` | `0px 14px 36px 0px rgba(10, 36, 99, 0.24)` | Navy panels (increment 07 component need). |
+| `--mq-shadow-edge` | `0px 0px 0px 0px rgba(0, 0, 0, 0)` | The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). |

@@ -493,14 +493,27 @@ test("the app palette is light only: declared pairs on the surface, kept out of 
   const { loadPairs: readPairs } = await loadPairs();
   const pairs = readPairs(pairsFile);
   const find = (fg, bg, use) => pairs.find((pair) => pair.fg === fg && pair.bg.length === 1 && pair.bg[0] === bg && pair.use === use);
+  // A text pair covers the hue's marks too, since each pairing is declared once at its strictest use.
   for (const hue of ["green", "orange", "vermillion", "blue", "violet", "teal"]) {
-    const pair = find(`--mq-app-cat-${hue}`, "--mq-surface", "non-text");
-    assert.ok(pair, `--mq-app-cat-${hue} on --mq-surface is not declared as non-text`);
+    const name = `--mq-app-cat-${hue}`;
+    const pair = find(name, "--mq-surface", "text") ?? find(name, "--mq-surface", "non-text");
+    assert.ok(pair, `${name} on --mq-surface is not declared`);
     assert.deepEqual(pair.themes, ["light"]);
   }
+  for (const hue of ["orange", "blue", "teal"]) assert.ok(find(`--mq-app-cat-${hue}`, "--mq-surface", "non-text"), `--mq-app-cat-${hue} is a mark on the surface, never text`);
   for (const fg of ["--mq-app-cat-green", "--mq-app-cat-orange-text", "--mq-app-cat-vermillion", "--mq-app-cat-violet"]) {
     for (const bg of ["--mq-surface", "--mq-canvas"]) assert.ok(find(fg, bg, "text"), `${fg} on ${bg} is not declared as text`);
   }
   const dark = JSON.parse(readDist(join(root, "dist/themes/dark.json")));
   assert.deepEqual(Object.keys(dark).filter((name) => /^--mq-(app-cat|change)-/.test(name)), [], "the dark theme re-values no app palette token yet");
+});
+
+test("each foreground and background pairing is declared once, at its strictest use", async () => {
+  const { loadPairs: readPairs } = await loadPairs();
+  const seen = new Map();
+  for (const pair of readPairs(pairsFile)) {
+    const key = `${pair.fg} on ${pair.bg.join(" ")}`;
+    assert.ok(!seen.has(key), `${key} is declared twice (${seen.get(key)} and ${pair.use})`);
+    seen.set(key, pair.use);
+  }
 });

@@ -24,6 +24,7 @@ Interactive apps and tools, the only medium allowed status colours. The sections
 - App patterns
 - App patterns
 - App shell
+- Sign-in, access refused and error pages
 - Phones
 - No em dash, no en dash
 - Titles
@@ -402,6 +403,46 @@ One frame for every screen of the app: a left sidebar, then a main panel that st
 The drawer slides in within 200 ms and appears at once under `prefers-reduced-motion`.
 
 Stays in the app: the routes and their grouping, the count values and which count asks for action, the session and its timeout, the environment and where it comes from, and the search.
+
+## Sign-in, access refused and error pages
+
+Source: guidelines/app-patterns.md
+
+Three ways the app answers a person it cannot serve yet. None of them ever falls back to a framework's default page.
+
+**Sign-in page.** The only page served without a session, so it carries no app bundle: a self-contained page built from `tokens.css` and `fonts.css` alone, on the canvas, centred both ways.
+
+- The wordmark above one card: the surface, a `--mq-border-light` border, the medium radius, `--mq-shadow-small`, `--mq-space-6` padding, at most 420 px wide. The wordmark is not a link, since nothing behind it is reachable yet.
+- In the card, in order: an eyebrow in tertiary mono ("Restricted access"), the product name as the `h1`, one muted sentence on what the tool is for, an optional notice, then the one action: a full-width primary button with a sign-in icon ("Sign in with MedQuantis"), and under it a muted hint at the label size naming the account to use and the role the app asks for.
+- The legal line under the card, in tertiary Geist Mono (brand).
+- One action only: no second link, no password reset, no sign-up, which belong to the identity provider.
+
+| Arrival | Notice above the button |
+| :-- | :-- |
+| First visit | None |
+| After the session expired | An info notice as a `status` region: an `--mq-info` icon and border, the sentence in ink, such as "Your session expired. Sign in to pick up where you left off." |
+| After sign-out | A success notice the same way with `--mq-success`, such as "You are signed out." |
+
+After sign-in the person lands on the page they asked for, never on a default home.
+
+**Access refused page.** For a signed-in person whose account lacks the role the app needs. It replaces the shell, since every page behind it would refuse again: a navbar with the monogram and the product name only (no sidebar, no link into the app), then one card at most 560 px wide.
+
+- A navy icon pill (`--mq-accent-pale`, the medium radius) with a lock icon, the title as the `h1` ("Access refused"), a lead sentence in Outfit 500 naming the missing role in bold, and one muted sentence explaining it.
+- A key-value block on the canvas with a `--mq-border-light` border and the medium radius: the signed-in account (avatar, name, address in mono), then the role asked for as a struck-through role chip, beside "Not assigned to this account" in `--mq-danger` with an icon.
+- How to get the role, in muted text: who assigns it, and that the person signs in again once it is assigned.
+- One primary action, "Switch account": it signs out of the app and of the identity provider, then opens the sign-in page in its signed-out state, and a note under the button says so. Never a redirect back into the app, which would loop.
+
+**Error states inside the shell.** When a screen cannot show its content, the shell stays (sidebar, and the navbar with the screen's own title) and one card takes the content area: centred, at most 560 px wide, on the surface with `--mq-shadow-small`, its text centred. In order: a 40 px icon tile with the medium radius, a status word in Geist Mono capitals at the eyebrow size, the title as an `h2` at the h3 size, one muted sentence no wider than 50 characters, and the actions.
+
+| State | Icon tile | Status word | Body and actions |
+| :-- | :-- | :-- | :-- |
+| Not found (404) | `--mq-decoration` icon on `--mq-surface-alt` | "Not found", tertiary | What was not found and why that may be, the address asked for in tertiary mono, and a primary action back to the list |
+| Service unavailable (503) | `--mq-warning` icon on `--mq-warning-tint` | "Unavailable", `--mq-warning` | That the service does not answer for now, and a primary "Retry". While it retries, the button is disabled with a turning icon; if the service is still down, a muted line under it gives the time of the last attempt ("Still unavailable at the last attempt, at 14:32") in a polite live region. The sidebar's counts are hidden (app shell, above) |
+| Unexpected error (500) | `--mq-danger` icon on `--mq-surface-alt` | "Error", `--mq-danger` | That the request failed and what to do if it happens again; the request ID as selectable mono text in a bordered row labelled `X-Request-Id`, with a "Copy" button that confirms once ("Copied"); a secondary action back to the list |
+
+The status word and the icon carry each state together with its colour, never the colour alone (accessibility). Under `prefers-reduced-motion` the icon does not turn and the button reads "Retrying".
+
+Stays in the app: the sign-in address and its return path, the role name and who assigns it, the request ID value, and the wording of each state.
 
 ## Phones
 

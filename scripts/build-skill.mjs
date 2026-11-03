@@ -164,6 +164,7 @@ export const MEDIA = {
       ["layout.md", "App patterns"],
       ["app-patterns.md", ""],
       ["app-patterns.md", "App shell"],
+      ["app-patterns.md", "Sign-in, access refused and error pages"],
       ["layout.md", "Phones"],
       ["writing.md", "No em dash, no en dash"],
       ["writing.md", "Titles"],

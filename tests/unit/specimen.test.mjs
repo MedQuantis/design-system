@@ -69,7 +69,7 @@ test("make specimen builds the page, make test runs the unit tests and Playwrigh
 test("Playwright and axe are pinned exactly", () => {
   const { devDependencies } = JSON.parse(read("package.json"));
   assert.equal(devDependencies["@playwright/test"], "1.64.1");
-  assert.equal(devDependencies["@axe-core/playwright"], "4.13.0");
+  assert.equal(devDependencies["@axe-core/playwright"], "4.14.0");
 });
 
 test("README names the specimen as the visual reference", () => {

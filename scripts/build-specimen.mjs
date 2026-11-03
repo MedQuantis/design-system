@@ -35,8 +35,13 @@ const escape = (text) =>
 const STATUS = new Set(["--mq-success", "--mq-warning", "--mq-danger", "--mq-info", "--mq-warning-fill", "--mq-warning-tint"]);
 const isStatusPair = (pair) => [pair.fg, ...pair.bg].some((name) => STATUS.has(name));
 
+// The app categorical palette and the change types are apps only too, and light only (ADR-0008).
+const APP_PALETTE = /^--mq-(app-cat|change)-/;
+const isPalettePair = (pair) => [pair.fg, ...pair.bg].some((name) => APP_PALETTE.test(name));
+
 const colourGroup = (name, token) => {
   if (STATUS.has(name)) return "status";
+  if (APP_PALETTE.test(name)) return "app-palette";
   if (token.path[1] === "chart") return "chart";
   if (token.path[1] === "focus") return "focus";
   if (/^--mq-(accent|on-accent|panel|on-navy)/.test(name)) return "navy";
@@ -243,7 +248,8 @@ export function renderSpecimen({ tokens, pairs, examples, version, icons, theme 
   const { kpis, insurers, products } = examples;
   const dark = theme === "dark";
   const shown = pairs.filter((pair) => pair.themes.includes(theme));
-  const documentPairs = shown.filter((pair) => !isStatusPair(pair));
+  const documentPairs = shown.filter((pair) => !isStatusPair(pair) && !isPalettePair(pair));
+  const palettePairs = shown.filter(isPalettePair);
   const statusPairs = shown.filter(isStatusPair);
   const lead = insurers[0];
   const sections = [
@@ -462,6 +468,14 @@ ${insurerTable(insurers)}
 ${swatches(tokens, "status", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">Status pairings</h3>
 ${contrastTable(statusPairs, tokens, "App status pairings", themeTokens)}
+<h3 class="mq-subtitle specimen-sub">App categorical palette and change types</h3>
+${
+  dark
+    ? `<p class="mq-prose">The app categorical palette and the change-type tokens are light only until their dark values are ruled (ADR-0008).</p>`
+    : `<p class="mq-prose">For many-category app charts and data categories, never a status and never in documents (ADR-0008). Marks sit on the surface; text in a hue meets 4.5:1, so orange text reads <code>--mq-app-cat-orange-text</code>. A change type always carries its sign or its word.</p>
+${swatches(tokens, "app-palette", themeTokens)}
+${contrastTable(palettePairs, tokens, "App palette pairings", themeTokens)}`
+}
 </section>
 
 </main>

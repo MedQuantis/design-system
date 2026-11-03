@@ -610,7 +610,8 @@ Colour never carries meaning on its own (WCAG 1.4.1):
 - documents show states by mark style (solid, ring, pale, outline, quiet, dashed, struck through) and a page that uses these marks gives their key once, in a legend or a note;
 - apps pair every status colour with an icon or a word;
 - charts label the marks that use series 3 or 4, or give them an outline, since those colours are below 3:1 on the page (charts);
-- a change in a figure is shown by its sign, not by a colour or an arrow alone.
+- a change in a figure is shown by its sign, not by a colour or an arrow alone;
+- in apps, a mark in the app categorical palette carries a direct label, a legend entry, a sign or a word, since two of its hues share their lightness (charts).
 
 ## Contrast pairs
 

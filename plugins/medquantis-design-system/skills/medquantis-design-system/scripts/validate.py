@@ -8,7 +8,8 @@ Fails (exit 1) on:
     colour functions, named colours), in CSS, style attributes, SVG colour attributes and quoted
     script values;
   - an unknown --mq-* token, a deprecated one, or a redefined one (consumers never override);
-  - in documents (the default medium), any status colour, which is for apps only (ADR-0004);
+  - in documents (the default medium), any status colour, which is for apps only (ADR-0004), and
+    any app palette or change-type colour, apps only too (ADR-0008);
   - an em dash or en dash in visible text;
   - a font or stylesheet loaded from a remote font service.
 Stylesheets that bundle.py inlined from the skill's assets (<style data-mq-bundled>) are the
@@ -67,23 +68,26 @@ def load_tokens(medium):
     """Allowed colours and token names for a medium, from the synced tokens.json and dark theme."""
     tokens = json.loads(TOKENS.read_text(encoding="utf-8"))
     dark = json.loads(DARK.read_text(encoding="utf-8")) if DARK.exists() else {}
-    names, deprecated, status, allowed = set(tokens), {}, set(), set()
+    names, deprecated, status, palette, allowed = set(tokens), {}, set(), set(), set()
     # The dark entries carry the same names and paths, so the medium rules apply to them unchanged.
     for name, token in [*tokens.items(), *dark.items()]:
         path = token.get("path", [])
         if token.get("deprecated"):
             deprecated[name] = token["deprecated"]
         is_status = len(path) > 2 and path[0] == "semantic" and (path[2] == "status" or path[2] in ("warning-fill", "warning-tint"))
+        is_palette = len(path) > 2 and path[0] == "semantic" and path[2] in ("app-cat", "change")
         if is_status:
             status.add(name)
+        if is_palette:
+            palette.add(name)
         # Only semantic values are allowed: a value that exists only as a core token is not a role.
-        if name.startswith("--mq-core-") or (is_status and medium != "app"):
+        if name.startswith("--mq-core-") or ((is_status or is_palette) and medium != "app"):
             continue
         for literal in colour_literals(str(token.get("value", ""))):
             rgba = to_rgba(literal)
             if rgba:
                 allowed.add(rgba)
-    return names, deprecated, status, allowed
+    return names, deprecated, status, palette, allowed
 
 
 def colour_literals(value):
@@ -143,7 +147,7 @@ class Report:
 
 
 def check_value(report, offset, prop, value, rules):
-    names, deprecated, status, allowed, medium = rules
+    names, deprecated, status, palette, allowed, medium = rules
     value = re.sub(r"url\([^)]*\)", "url()", value)
     for literal in colour_literals(value):
         rgba = to_rgba(literal)
@@ -161,6 +165,8 @@ def check_value(report, offset, prop, value, rules):
             report.add(offset, f"deprecated token {name}: {deprecated[name]}")
         elif name in status and medium != "app":
             report.add(offset, f"status colour {name} is for apps only (ADR-0004); documents show state by mark style")
+        elif name in palette and medium != "app":
+            report.add(offset, f"app palette colour {name} is for apps only (ADR-0008); documents use the navy and blue-grey chart series")
 
 
 def check_css(report, css, base, rules):

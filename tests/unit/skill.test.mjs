@@ -560,3 +560,34 @@ test("the kit reference names every module of the kit manifest and SKILL.md link
   }
   assert.deepEqual(relativeLinks(text), [], `${path} links another file: keep references one level deep`);
 });
+
+// ADR-0008: the app categorical palette and the change-type tokens are apps only, like the status
+// colours: the validator and the document references treat them the same way.
+const APP_PALETTE_TOKENS = /--mq-(app-cat|change)-[a-z-]+/;
+
+test("the validator fails an app palette token in a document and passes it in an app (ADR-0008)", () => {
+  const validator = `${SKILL}/scripts/validate.py`;
+  const fixture = "tests/fixtures/skill/app-palette.html";
+  const asDocument = python([validator, fixture]);
+  assert.equal(asDocument.status, 1, "an app palette token in a document must fail");
+  assert.match(asDocument.stdout, /--mq-change-added/);
+  assert.match(asDocument.stdout, /--mq-app-cat-orange/);
+  assert.match(asDocument.stdout, /ADR-0008/);
+  const asApp = python([validator, "--medium", "app", fixture]);
+  assert.equal(asApp.status, 0, asApp.stdout + asApp.stderr);
+});
+
+test("document references carry no app palette token; the app reference does (ADR-0008)", () => {
+  for (const medium of MEDIA.filter((m) => m !== "app")) {
+    assert.doesNotMatch(read(`${SKILL}/references/${medium}.md`), APP_PALETTE_TOKENS, `${medium}.md names an app palette token`);
+  }
+  assert.match(read(`${SKILL}/references/app.md`), APP_PALETTE_TOKENS);
+});
+
+test("the token lookup hides the app palette for documents and shows it for apps (ADR-0008)", () => {
+  const lookup = `${SKILL}/scripts/tokens.py`;
+  const asDocument = python([lookup, "--medium", "document", "app-cat"]);
+  assert.equal(asDocument.status, 1, "no document token matches app-cat");
+  assert.doesNotMatch(asDocument.stdout + asDocument.stderr, APP_PALETTE_TOKENS);
+  assert.match(python([lookup, "--medium", "app", "app-cat"]).stdout, /--mq-app-cat-green/);
+});

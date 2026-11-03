@@ -169,6 +169,7 @@ export const MEDIA = {
       ["app-patterns.md", "Review table: filters, condition tile, status pill, code chips"],
       ["app-patterns.md", "Decision modal"],
       ["app-patterns.md", "Limitation-text marks"],
+      ["app-patterns.md", "History timeline"],
       ["layout.md", "Phones"],
       ["writing.md", "No em dash, no en dash"],
       ["writing.md", "Titles"],

@@ -337,3 +337,23 @@ test("guidelines/README.md lists the rulings after the bootstrap, numbered on fr
   assert.ok(rows.some((row) => /2026-10-17/.test(row) && /--mq-on-navy-accent/.test(row)), "the on-navy ruling of 2026-10-17");
   assert.ok(rows.some((row) => /2026-11-03/.test(row) && /ADR-0008/.test(row) && /app categorical palette/.test(row)), "the app palette ruling of 2026-11-03");
 });
+
+test("app-patterns.md holds the seven Maintainer patterns, reads the #38 tokens and stays apps only", () => {
+  const text = read("guidelines/app-patterns.md");
+  const headings = [...text.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+  assert.deepEqual(headings, [
+    "App shell",
+    "Sign-in, access refused and error pages",
+    "Overview: queue boxes and coverage cards",
+    "Review table: filters, condition tile, status pill, code chips",
+    "Decision modal",
+    "Limitation-text marks",
+    "History timeline",
+  ]);
+  for (const token of ["--mq-sidebar-width", "--mq-sidebar-rail-width", "--mq-shadow-live", "--mq-change-added", "--mq-change-removed"]) assert.ok(text.includes(`\`${token}\``), `app-patterns.md does not name ${token}`);
+  assert.match(text, /app medium only/);
+  // The coverage bar takes the ordered palette and the remainder, never a status colour (owner, 2026-11-03).
+  assert.match(text, /`--mq-chart-series-1` to `--mq-chart-series-4`/);
+  assert.match(text, /never a pill/);
+  for (const section of headings) assert.match(text.split(`## ${section}`)[1], /Stays in the app:/, `${section} does not say what stays in the app`);
+});

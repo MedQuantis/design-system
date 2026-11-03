@@ -189,6 +189,7 @@ const SECTIONS = [
       ["app-patterns.md", "Review table: filters, condition tile, status pill, code chips"],
       ["app-patterns.md", "Decision modal"],
       ["app-patterns.md", "Limitation-text marks"],
+      ["app-patterns.md", "History timeline"],
       ["accessibility.md", "Focus"],
       ["charts.md", "Marks"],
       ["charts.md", "Ring construction"],

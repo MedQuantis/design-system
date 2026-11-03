@@ -17,7 +17,7 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
-| `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules |
+| `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules, and the app patterns of dense internal tools |
 | `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.1.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
 | `dist/DESIGN.md` | Tools and agents outside the kit: the tokens as [Google DESIGN.md](https://github.com/google-labs-code/design.md) front matter, then the guidelines as prose |
 | `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |

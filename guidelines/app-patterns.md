@@ -246,3 +246,36 @@ The contested mark differs from the printed one by its underline, not by colour 
 | Long text | It scrolls inside its box; the legend stays under it |
 
 Stays in the app: the passages and where they fall in the text, which codes need a quote, matching a quote to the text, and the popover's actions.
+
+## History timeline
+
+The decisions on one item, newest first: who did what, with which values, and which row is in force now. It is read on every item and later as an audit view.
+
+**Filters** above it: a row of toggle buttons, "All" then one per source, each with its count in Geist Mono, tertiary; a `--mq-border` border with the small radius, never a pill. A filter that is on is navy (`--mq-on-accent` on `--mq-accent`), its count in `--mq-accent-pale`, and carries `aria-pressed`.
+
+**Rows.** A vertical list joined by a 1 px `--mq-border` line through the dots. Each row is one line that opens to its details:
+
+- the dot, by origin: a person's decision a filled navy dot, an agent's a dashed `--mq-border-strong` ring, the system's a plain ring, a publication a small square in `--mq-decoration`;
+- the date in Geist Mono, muted;
+- the source as an icon with its name (in a narrow pane the icon alone, its name in the tooltip and the accessible name);
+- the event as a chip with the small radius, one mark style per outcome: accepted or applied in the ring mark (navy border and text), rejected dashed, a person's decision pale (`--mq-accent-pale`), a publication quiet (`--mq-surface-alt`);
+- the person, muted; a person the app cannot name reads "Unknown identity" in tertiary italic, never an empty cell or an internal identifier;
+- the values in Geist Mono at the right, or "none" in tertiary italic;
+- the in-force column, then a chevron that turns when the row opens.
+
+Hover on `--mq-surface-alt`. A row opens with a click or Enter: its details sit under it, aligned with the event, in tertiary text at the note size: the reason code in mono, the note, and the run that produced it as a mono link.
+
+**The row in force.** Exactly one row is live: its in-force column shows a 10 px `--mq-success` dot with the live halo (`--mq-shadow-live`), its name ("in force") in the tooltip and the accessible name. Superseded rows leave the column empty.
+
+**Key.** Under the list, after a hairline: each event mark and each dot with its meaning, in tertiary text at the note size, so no mark is read by colour alone.
+
+| State | Shows |
+| :-- | :-- |
+| Collapsed, expanded | One line; the line with its details under it |
+| Live, superseded | The live dot with its halo; an empty column |
+| Filter on, off | The navy toggle; the outlined toggle. "All" turns the others off |
+| Loading | Skeleton rows of the same height; the shimmer stops under `prefers-reduced-motion` |
+| Empty | "No decision yet" in muted text, in the list's place |
+| Unknown person | "Unknown identity", tertiary italic |
+
+Stays in the app: the event types and their wording, the sources, the data, and which row is in force.

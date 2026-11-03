@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/MedQuantis/design-system/compare/v1.2.0...v1.3.0) (2026-11-03)
+
+
+### Features
+
+* **guidelines:** add the Maintainer app patterns and their sidebar and live halo tokens ([#42](https://github.com/MedQuantis/design-system/issues/42)) ([b69c2b9](https://github.com/MedQuantis/design-system/commit/b69c2b9b5e407449b7997afff5473eef3f2878ee))
+* **tokens:** add the app categorical palette and the change-type tokens ([#39](https://github.com/MedQuantis/design-system/issues/39)) ([35292d1](https://github.com/MedQuantis/design-system/commit/35292d11c4520cb269df4883213e8e00d632036e))
+
+
+### Bug Fixes
+
+* **claude-design-system:** carry the app patterns into the brand book and show the live halo in the specimen ([#43](https://github.com/MedQuantis/design-system/issues/43)) ([477f08f](https://github.com/MedQuantis/design-system/commit/477f08f57e93a079d2ad0f7ac59794df71dbe7fc))
+* **kit:** point the kit logo roles at the outlined print wordmarks ([#40](https://github.com/MedQuantis/design-system/issues/40)) ([8fdecc6](https://github.com/MedQuantis/design-system/commit/8fdecc6c4e6f8546be401d54ff3662e8f0f6ffbd)), closes [#32](https://github.com/MedQuantis/design-system/issues/32)
+
 ## [1.2.0](https://github.com/MedQuantis/design-system/compare/v1.1.0...v1.2.0) (2026-10-17)
 
 

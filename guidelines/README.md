@@ -14,6 +14,7 @@ The MedQuantis brand, writing, colour, type, layout, chart, data and accessibili
 | [charts.md](charts.md) | The ordered palette, highlight on grey, sequential and diverging use, marks, legends |
 | [data-patterns.md](data-patterns.md) | Numbers, amounts, dates, null versus zero, confidential and illustrative data |
 | [accessibility.md](accessibility.md) | WCAG 2.2 AA, contrast pairs, focus, targets, motion, structure |
+| [app-patterns.md](app-patterns.md) | Apps only: the app shell, and the review, decision and history patterns of dense internal tools |
 | [specialising.md](specialising.md) | Framework neutrality, the four rules, the promotion tests, the one-off log |
 
 The values themselves live in `tokens/` and reach these pages as `--mq-*` names; when a guideline and a token disagree, the token is right and the guideline is fixed. The generated specimen (`make specimen`) is the visual reference: when a rendering is in doubt, it decides.

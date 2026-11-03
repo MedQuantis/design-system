@@ -136,6 +136,7 @@ Every ratio below is the WCAG 2.x contrast with the dark values, on the dark can
 | `--mq-panel-end` | `#0f2a5e` | Dark end of the navy panel gradient | Background |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow (owner ruling 13) | Navy panels, the report header and the navy KPI tile on dark | Edge of a panel |
 | `--mq-shadow-edge` | the same 1 px outline, light navy at 35 %; none in light | The monogram (`mq-monogram`), the navy KPI tile and a navy brand or app tile, which draw no shadow in light (owner ruling 14) | Edge of a navy mark |
+| `--mq-shadow-live` | a 3 px ring of the dark success green `#6fbf73` at 17 %; in light the success green at 17 % | Apps only: the halo of a live dot, the row in force on a timeline ([app patterns](app-patterns.md)) | Decorative |
 | `--mq-shadow-small` | black at 40 %, 1 px down with a 2 px blur | Cards, figures and tables on dark, where the light 5 % shadow does not show | Elevation |
 | `--mq-shadow-medium` | black at 50 %, 3 px down with a 12 px blur | A slide or page previewed on the dark desk, raised panels and menus | Elevation |
 

@@ -103,6 +103,8 @@ const ADR_0007 = {
   "--mq-chart-rest": "#232b3d",
   "--mq-chart-axis": "#6b7385",
   "--mq-chart-baseline": "rgba(255, 255, 255, 0.1)",
+  // The live halo of the app patterns (#38): the dark success green at 17 %, after ADR-0007.
+  "--mq-shadow-live": "0px 0px 0px 3px rgba(111, 191, 115, 0.17)",
 };
 
 test("dist/themes/dark.css is one .dark block holding exactly the roles tokens/themes/dark/ re-values", () => {
@@ -123,7 +125,7 @@ test("every role of the dark theme is an existing light role, and none is new to
   }
 });
 
-test("the dark values are those of ADR-0007", () => {
+test("the dark values are those of ADR-0007, plus the live halo of the app patterns", () => {
   const dark = darkTokens();
   assert.deepEqual(Object.keys(dark).sort(), Object.keys(ADR_0007).sort(), "the dark theme re-values another set of roles than ADR-0007");
   for (const [name, expected] of Object.entries(ADR_0007)) assert.equal(dark[name].value, expected, name);

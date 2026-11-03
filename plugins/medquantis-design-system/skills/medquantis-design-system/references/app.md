@@ -22,6 +22,8 @@ Interactive apps and tools, the only medium allowed status colours. The sections
 - Elevation and navy blocks
 - Tables
 - App patterns
+- App patterns
+- App shell
 - Phones
 - No em dash, no en dash
 - Titles
@@ -200,6 +202,7 @@ Every ratio below is the WCAG 2.x contrast with the dark values, on the dark can
 | `--mq-panel-end` | `#0f2a5e` | Dark end of the navy panel gradient | Background |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow (owner ruling 13) | Navy panels, the report header and the navy KPI tile on dark | Edge of a panel |
 | `--mq-shadow-edge` | the same 1 px outline, light navy at 35 %; none in light | The monogram (`mq-monogram`), the navy KPI tile and a navy brand or app tile, which draw no shadow in light (owner ruling 14) | Edge of a navy mark |
+| `--mq-shadow-live` | a 3 px ring of the dark success green `#6fbf73` at 17 %; in light the success green at 17 % | Apps only: the halo of a live dot, the row in force on a timeline (app patterns) | Decorative |
 | `--mq-shadow-small` | black at 40 %, 1 px down with a 2 px blur | Cards, figures and tables on dark, where the light 5 % shadow does not show | Elevation |
 | `--mq-shadow-medium` | black at 50 %, 3 px down with a 12 px blur | A slide or page previewed on the dark desk, raised panels and menus | Elevation |
 
@@ -356,6 +359,49 @@ Source: guidelines/layout.md
 - **Empty state:** centred, a dimmed icon, an Outfit 500 title, one muted sentence, and a hint in Geist Mono tertiary.
 - **Stat cards:** stable. No hover lift, no animation: reference data must not move under the pointer.
 - **Breakpoints:** documents switch to one column below 720 px. Apps use 768 px (tablet: navigation menu, narrower gutters) and 480 px (phone: full-width buttons, two stat cards per row, keys of key-value rows above their values).
+
+## App patterns
+
+Source: guidelines/app-patterns.md
+
+Patterns for dense interactive apps (internal review and operations tools) built on the tokens. They describe anatomy, states and the tokens each part reads; the framework components that draw them belong to the app (specialising). Every pattern here is for the app medium only.
+
+## App shell
+
+Source: guidelines/app-patterns.md
+
+One frame for every screen of the app: a left sidebar, then a main panel that stacks an optional environment banner, a navbar, a toolbar and the content. The content scrolls inside the panel; the sidebar, banner, navbar and toolbar stay in place.
+
+**Sidebar.** On the surface (`--mq-surface`) with a `--mq-border-light` hairline on its right edge, `--mq-sidebar-width` wide.
+
+- Brand block at the top: the wordmark, and under it the product name in muted Outfit 500 at the label size. The block keeps one height expanded or collapsed, so the toggle below it never moves.
+- Navigation in groups. A group opens with an eyebrow in tertiary text; the first group may have none. Each link carries a Lucide icon in `--mq-decoration`, its label in muted Outfit 500, and an optional count at the right in Geist Mono, tertiary. Hover: ink on `--mq-surface-alt`. The current page (`aria-current="page"`): navy text and icon on `--mq-accent-pale`, its count navy.
+- A count shows only when it is above zero. A count that asks for the person's action (what waits for them) is a filled badge, `--mq-on-accent` on `--mq-accent`, Geist Mono 600, with the small radius: never a pill. Every other count stays plain text.
+- The signed-in person at the foot, in a block on the canvas with a `--mq-border-light` border and the medium radius: a round avatar with initials (`--mq-on-accent` on `--mq-accent`), the name, the roles as small mono chips (a role not held is struck through in tertiary), and the session line in muted text, such as "Session open · expires after 8 h of inactivity". Sign-out opens from the name.
+- A toggle on the sidebar's edge collapses and expands it. It carries `aria-expanded` and an accessible name that says the action (expand the navigation, collapse the navigation).
+
+**Rail.** The collapsed sidebar, `--mq-sidebar-rail-width` wide. The monogram replaces the wordmark; links become icons alone, centred in 40 by 36 px targets, each label moving to the link's tooltip and accessible name; groups are separated by a hairline instead of their eyebrow; the person shows as the avatar alone. The only count kept is the action badge, at the icon's top right.
+
+**Environment banner.** Above the navbar on every environment except production, an unknown environment included, never on production. One line of ink text at the label size, Outfit 500, on `--mq-warning-tint`, with a `--mq-warning-fill` bottom border and a `--mq-warning` icon, as a `status` region. It is genuine system status, so it takes the warning colours (colour).
+
+**Navbar.** On the surface with a hairline below: a screen icon (a white Lucide icon on a 32 px navy tile with the medium radius), the page title as the page's `h1` in Outfit 500 at the h3 size, and a one-line subtitle in muted text at the label size. Global actions, such as search, sit at the right.
+
+**Toolbar.** On the canvas with a hairline below: the screen's filters in one row that wraps, a flexible gap, then right-aligned controls. Each screen fills it; a screen without filters leaves it out.
+
+**Spacing.** Side padding `--mq-space-6`, `--mq-space-4` on phones, plus the device's safe-area inset.
+
+| State | What changes |
+| :-- | :-- |
+| Expanded | The full sidebar |
+| Rail | As above; the app may start on the rail and keep the person's choice |
+| Drawer, below 768 px | The sidebar leaves the layout. A menu button at the left of the navbar opens it in full over the content, with `--mq-shadow-medium`; it closes on a link, on Escape and on a tap outside. The edge toggle is hidden |
+| Phone, below 480 px | The navbar's subtitle and screen icon are hidden |
+| Service unavailable | The shell stays. Counts are hidden, never shown as 0, since a count that could not be measured is missing, not zero (data patterns); the content shows the error state |
+| Not production | The environment banner shows |
+
+The drawer slides in within 200 ms and appears at once under `prefers-reduced-motion`.
+
+Stays in the app: the routes and their grouping, the count values and which count asks for action, the session and its timeout, the environment and where it comes from, and the search.
 
 ## Phones
 
@@ -638,3 +684,4 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-shadow-medium` | `0px 3px 12px 0px rgba(0, 0, 0, 0.07)` | A slide or page previewed on the desk, never in print (increment 07 component need). |
 | `--mq-shadow-panel` | `0px 14px 36px 0px rgba(10, 36, 99, 0.24)` | Navy panels (increment 07 component need). |
 | `--mq-shadow-edge` | `0px 0px 0px 0px rgba(0, 0, 0, 0)` | The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). |
+| `--mq-shadow-live` | `0px 0px 0px 3px rgba(46, 125, 50, 0.17)` | Apps only: the halo around a live status dot, the row in force on a timeline; built on the success colour, so never in documents (ADR-0004). |

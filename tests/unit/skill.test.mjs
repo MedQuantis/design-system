@@ -591,3 +591,16 @@ test("the token lookup hides the app palette for documents and shows it for apps
   assert.doesNotMatch(asDocument.stdout + asDocument.stderr, APP_PALETTE_TOKENS);
   assert.match(python([lookup, "--medium", "app", "app-cat"]).stdout, /--mq-app-cat-green/);
 });
+
+test("the live halo is apps only: the validator refuses it in a document and allows it in an app", () => {
+  const validator = `${SKILL}/scripts/validate.py`;
+  const fixture = "tests/fixtures/skill/live-halo.html";
+  const asDocument = python([validator, fixture]);
+  assert.equal(asDocument.status, 1);
+  assert.match(asDocument.stdout, /--mq-shadow-live/);
+  const asApp = python([validator, "--medium", "app", fixture]);
+  assert.equal(asApp.status, 0, asApp.stdout + asApp.stderr);
+  for (const medium of MEDIA.filter((m) => m !== "app")) {
+    assert.doesNotMatch(read(`${SKILL}/references/${medium}.md`), /--mq-shadow-live/, `${medium}.md names the live halo`);
+  }
+});

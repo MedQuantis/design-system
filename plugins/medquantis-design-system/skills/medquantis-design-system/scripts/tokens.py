@@ -17,9 +17,9 @@ TOKENS = Path(__file__).resolve().parent.parent / "assets" / "tokens.json"
 
 
 def is_app_only(token):
-    """Status colours (ADR-0004) and the app palette with the change types (ADR-0008)."""
+    """Status colours and the live halo (ADR-0004), and the app palette with the change types (ADR-0008)."""
     path = token.get("path", [])
-    return len(path) > 2 and path[0] == "semantic" and (path[2] in ("status", "warning-fill", "warning-tint", "app-cat", "change"))
+    return len(path) > 2 and path[0] == "semantic" and (path[2] in ("status", "warning-fill", "warning-tint", "app-cat", "change") or path[1:3] == ["shadow", "live"])
 
 
 def main(argv):

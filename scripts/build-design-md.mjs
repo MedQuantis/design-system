@@ -182,6 +182,8 @@ const SECTIONS = [
       ["layout.md", "Document components"],
       ["layout.md", "Tables"],
       ["layout.md", "App patterns"],
+      ["app-patterns.md", ""],
+      ["app-patterns.md", "App shell"],
       ["accessibility.md", "Focus"],
       ["charts.md", "Marks"],
       ["charts.md", "Ring construction"],

@@ -16,6 +16,7 @@ export const GUIDELINE_ORDER = [
   "charts.md",
   "data-patterns.md",
   "accessibility.md",
+  "app-patterns.md",
   "specialising.md",
 ];
 

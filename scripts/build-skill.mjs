@@ -162,6 +162,14 @@ export const MEDIA = {
       ["layout.md", "Elevation and navy blocks"],
       ["layout.md", "Tables"],
       ["layout.md", "App patterns"],
+      ["app-patterns.md", ""],
+      ["app-patterns.md", "App shell"],
+      ["app-patterns.md", "Sign-in, access refused and error pages"],
+      ["app-patterns.md", "Overview: queue boxes and coverage cards"],
+      ["app-patterns.md", "Review table: filters, condition tile, status pill, code chips"],
+      ["app-patterns.md", "Decision modal"],
+      ["app-patterns.md", "Limitation-text marks"],
+      ["app-patterns.md", "History timeline"],
       ["layout.md", "Phones"],
       ["writing.md", "No em dash, no en dash"],
       ["writing.md", "Titles"],
@@ -207,8 +215,9 @@ export const MEDIA = {
   },
 };
 
-// The app-only names: the status colours (ADR-0004) and the app palette (ADR-0008).
-const APP_ONLY_NAME = /--mq-(success|warning|warning-fill|warning-tint|danger|info)\b|--mq-(app-cat|change)-/;
+// The app-only names: the status colours and the live halo built on them (ADR-0004), and the app
+// palette (ADR-0008).
+const APP_ONLY_NAME = /--mq-(success|warning|warning-fill|warning-tint|danger|info|shadow-live)\b|--mq-(app-cat|change)-/;
 
 // The skill's own files for a guideline section, appended under its copied text: the guideline
 // names the npm package paths, a skill page loads the copies in assets/ (owner, 2026-10-17).
@@ -290,7 +299,7 @@ export const offPalettePattern = (root, medium) => {
   // A quoted fragment link (href="#add") is not a colour.
   const quoted = `(?<![\\w:-]=\\s*['"])(?<=['"\`])${hex}(?=['"\`])`;
   const functions = "\\b(?:rgb|hsl|hwb|lab|lch|oklab|oklch)a?\\((?!\\s*(?:255,\\s*255,\\s*255|0,\\s*0,\\s*0|10,\\s*36,\\s*99)\\s*,)";
-  const status = medium === "app" ? [] : ["--mq-(?:success|warning|danger|info|app-cat-|change-)"];
+  const status = medium === "app" ? [] : ["--mq-(?:success|warning|danger|info|shadow-live|app-cat-|change-)"];
   return [near, quoted, functions, ...status].map((alternative) => `(?:${alternative})${OUTSIDE_BUNDLED}`).join("|");
 };
 

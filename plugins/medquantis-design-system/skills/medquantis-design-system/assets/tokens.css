@@ -75,6 +75,9 @@
   --mq-core-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** Medium elevation for a slide or page shown on the desk (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy-tinted elevation for navy panels (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-shadow-none: 0px 0px 0px 0px rgba(0, 0, 0, 0); /** No shadow: a transparent layer of zero size, for a role that draws an edge in one theme only (owner ruling 14). */
+  --mq-core-shadow-live: 0px 0px 0px 3px rgba(46, 125, 50, 0.17); /** A 3 px ring of the success green at 17 %, the halo of a live mark in apps (ADR-0004, #38 component need). */
+  --mq-core-size-64: 64px; /** App sidebar collapsed to an icon rail, 64 px (#38 component need: the Maintainer app shell). */
+  --mq-core-size-248: 248px; /** App sidebar width, 248 px (#38 component need: the Maintainer app shell). */
   --mq-core-size-720: 720px; /** Slide canvas height, 720 px (increment 07 component need: the 1280 by 720 slide canvas). */
   --mq-core-size-760: 760px; /** Reading measure, 760 px (increment 07 component need, Report design system, 2026-10-08). */
   --mq-core-size-1040: 1040px; /** Content width of a screen document, 1040 px (increment 07 component need, Report design system, 2026-10-08). */
@@ -168,12 +171,15 @@
   --mq-shadow-medium: 0px 3px 12px 0px rgba(0, 0, 0, 0.07); /** A slide or page previewed on the desk, never in print (increment 07 component need). */
   --mq-shadow-panel: 0px 14px 36px 0px rgba(10, 36, 99, 0.24); /** Navy panels (increment 07 component need). */
   --mq-shadow-edge: 0px 0px 0px 0px rgba(0, 0, 0, 0); /** The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14). */
+  --mq-shadow-live: 0px 0px 0px 3px rgba(46, 125, 50, 0.17); /** Apps only: the halo around a live status dot, the row in force on a timeline; built on the success colour, so never in documents (ADR-0004). */
   --mq-slide-width: 1280px; /** Slide canvas width (increment 07 component need). */
   --mq-slide-height: 720px; /** Slide canvas height (increment 07 component need). */
   --mq-page-width: 1040px; /** Content width of a screen document (increment 07 component need). */
   --mq-page-measure: 760px; /** Longest line of running text (increment 07 component need). */
   --mq-a4-width: 793.7px; /** A4 sheet width (increment 07 component need). */
   --mq-a4-height: 1122.52px; /** A4 sheet height (increment 07 component need). */
+  --mq-sidebar-width: 248px; /** Apps only: the expanded app sidebar. */
+  --mq-sidebar-rail-width: 64px; /** Apps only: the app sidebar collapsed to an icon rail. */
   --mq-font-family-heading: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Headings, column titles and hero figures (Owner ruling 4, 2026-10-09, Owner ruling 10, 2026-10-09). */
   --mq-font-family-body: Newsreader, Georgia, 'Times New Roman', serif; /** Body text of documents and slides, regulatory text in apps (Owner ruling 10, 2026-10-09). */
   --mq-font-family-ui: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Labels and app UI (Owner ruling 10, 2026-10-09). */

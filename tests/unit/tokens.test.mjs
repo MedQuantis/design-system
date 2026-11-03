@@ -517,3 +517,17 @@ test("each foreground and background pairing is declared once, at its strictest 
     seen.set(key, pair.use);
   }
 });
+
+// The Maintainer app tokens (#38): the sidebar and its rail, and the halo of a live mark.
+test("the app sidebar is 248 px wide and its rail 64 px, the same in both themes", () => {
+  assert.equal(value("--mq-sidebar-width"), "248px");
+  assert.equal(value("--mq-sidebar-rail-width"), "64px");
+  const dark = JSON.parse(readDist(join(root, "dist/themes/dark.json")));
+  assert.equal(dark["--mq-sidebar-width"], undefined, "the sidebar width is not a theme role");
+});
+
+test("the live halo is a 3 px ring of the success colour at 17 %, re-valued on dark", () => {
+  assert.equal(value("--mq-shadow-live"), "0px 0px 0px 3px rgba(46, 125, 50, 0.17)");
+  const dark = JSON.parse(readDist(join(root, "dist/themes/dark.json")));
+  assert.equal(dark["--mq-shadow-live"]?.value, "0px 0px 0px 3px rgba(111, 191, 115, 0.17)");
+});

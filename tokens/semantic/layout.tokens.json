@@ -82,6 +82,10 @@
       "edge": {
         "$value": "{core.shadow.none}",
         "$description": "The navy panel's edge for a navy mark that has no panel shadow: the monogram, a navy KPI tile, a navy brand or app tile. None in light; on dark the panel's 1 px light-navy outline (owner rulings 13 and 14)."
+      },
+      "live": {
+        "$value": "{core.shadow.live}",
+        "$description": "Apps only: the halo around a live status dot, the row in force on a timeline; built on the success colour, so never in documents (ADR-0004)."
       }
     },
     "slide": {
@@ -115,6 +119,17 @@
       "height": {
         "$value": "{core.size.a4-height}",
         "$description": "A4 sheet height (increment 07 component need)."
+      }
+    },
+    "sidebar": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{core.size.248}",
+        "$description": "Apps only: the expanded app sidebar."
+      },
+      "rail-width": {
+        "$value": "{core.size.64}",
+        "$description": "Apps only: the app sidebar collapsed to an icon rail."
       }
     }
   }

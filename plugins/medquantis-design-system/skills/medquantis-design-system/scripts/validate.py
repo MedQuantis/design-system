@@ -9,7 +9,7 @@ Fails (exit 1) on:
     script values;
   - an unknown --mq-* token, a deprecated one, or a redefined one (consumers never override);
   - in documents (the default medium), any status colour, which is for apps only (ADR-0004), and
-    any app palette or change-type colour, apps only too (ADR-0008);
+    any app palette or change-type colour and the live halo, apps only too (ADR-0004, ADR-0008);
   - an em dash or en dash in visible text;
   - a font or stylesheet loaded from a remote font service.
 Stylesheets that bundle.py inlined from the skill's assets (<style data-mq-bundled>) are the
@@ -75,7 +75,7 @@ def load_tokens(medium):
         if token.get("deprecated"):
             deprecated[name] = token["deprecated"]
         is_status = len(path) > 2 and path[0] == "semantic" and (path[2] == "status" or path[2] in ("warning-fill", "warning-tint"))
-        is_palette = len(path) > 2 and path[0] == "semantic" and path[2] in ("app-cat", "change")
+        is_palette = len(path) > 2 and path[0] == "semantic" and (path[2] in ("app-cat", "change") or path[1:3] == ["shadow", "live"])
         if is_status:
             status.add(name)
         if is_palette:
@@ -166,7 +166,7 @@ def check_value(report, offset, prop, value, rules):
         elif name in status and medium != "app":
             report.add(offset, f"status colour {name} is for apps only (ADR-0004); documents show state by mark style")
         elif name in palette and medium != "app":
-            report.add(offset, f"app palette colour {name} is for apps only (ADR-0008); documents use the navy and blue-grey chart series")
+            report.add(offset, f"app-only token {name} is for apps only (ADR-0004, ADR-0008); documents use the navy roles and the chart series")
 
 
 def check_css(report, css, base, rules):

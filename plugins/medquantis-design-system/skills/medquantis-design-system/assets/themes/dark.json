@@ -432,5 +432,15 @@
       "edge"
     ],
     "description": "On dark, the panel's 1 px light-navy outline around a navy KPI tile, a navy brand tile and the monogram, whose navy square is 1.11:1 on the dark surface (owner rulings 13 and 14, ADR-0007)."
+  },
+  "--mq-shadow-live": {
+    "value": "0px 0px 0px 3px rgba(111, 191, 115, 0.17)",
+    "type": "shadow",
+    "path": [
+      "semantic",
+      "shadow",
+      "live"
+    ],
+    "description": "The live halo on dark: a 3 px ring of the dark success green at 17 % (ADR-0004, ADR-0007)."
   }
 }

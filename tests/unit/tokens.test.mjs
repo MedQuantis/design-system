@@ -438,3 +438,82 @@ test("the generated tokens.css, tokens.json, tailwind.css and kit-contract.css n
     assert.doesNotMatch(text, /vue|nuxt|--ui-|react|jsx/i, `dist/${file} names a framework`);
   }
 });
+
+// The app categorical palette and the change-type tokens (#35, ADR-0008): vivid hues for
+// many-category app charts and data categories, light only, never in documents.
+const APP_CAT = {
+  "--mq-app-cat-green": "#1c7e3f",
+  "--mq-app-cat-orange": "#d78000",
+  "--mq-app-cat-orange-text": "#a35f00",
+  "--mq-app-cat-vermillion": "#cf2a00",
+  "--mq-app-cat-blue": "#3a8ff5",
+  "--mq-app-cat-violet": "#5a2fbe",
+  "--mq-app-cat-teal": "#178a91",
+};
+const CHANGE = {
+  "--mq-change-added": "--mq-app-cat-green",
+  "--mq-change-modified": "--mq-app-cat-orange",
+  "--mq-change-modified-text": "--mq-app-cat-orange-text",
+  "--mq-change-removed": "--mq-app-cat-vermillion",
+};
+
+test("the app categorical palette carries the values of ADR-0008, and each change type reads its hue", () => {
+  for (const [name, hex] of Object.entries(APP_CAT)) assert.equal(value(name), hex, name);
+  const built = builtTokens();
+  for (const [name, hue] of Object.entries(CHANGE)) {
+    assert.equal(value(name), value(hue), `${name} is not ${hue}`);
+    assert.match(built[name].description, /ADR-0008/, `${name} must cite ADR-0008`);
+  }
+  assert.deepEqual(
+    Object.keys(built).filter((name) => /^--mq-(app-cat|change)-/.test(name)).sort(),
+    [...Object.keys(APP_CAT), ...Object.keys(CHANGE)].sort(),
+    "no app palette or change-type token beyond ADR-0008",
+  );
+});
+
+test("the six categorical hues stay apart, with navy series 1 beside them, under normal vision and colour-vision deficiency", async () => {
+  const { minPairwiseDistance } = await loadColorMath();
+  const hues = ["green", "orange", "vermillion", "blue", "violet", "teal"].map((hue) => value(`--mq-app-cat-${hue}`));
+  // Achromatopsia is not tested: green and vermillion share their lightness, so the guideline
+  // never lets these hues carry meaning alone (ADR-0008).
+  const floors = { normal: 15, protanopia: 10, deuteranopia: 10, tritanopia: 8 };
+  for (const [kind, floor] of Object.entries(floors)) {
+    const { distance, pair } = minPairwiseDistance([...hues, value("--mq-chart-series-1")], kind);
+    assert.ok(distance >= floor, `${kind}: ${pair.join(" and ")} are only ${distance.toFixed(2)} apart (CIEDE2000, minimum ${floor})`);
+  }
+});
+
+test("removed is a data category, never the danger status: its own name and its own value (ADR-0008)", () => {
+  assert.notEqual(value("--mq-change-removed"), value("--mq-danger"));
+  assert.notEqual(value("--mq-app-cat-green"), value("--mq-success"));
+  assert.notEqual(value("--mq-app-cat-orange"), value("--mq-warning-fill"));
+});
+
+test("the app palette is light only: declared pairs on the surface, kept out of the dark theme by a note", async () => {
+  const { loadPairs: readPairs } = await loadPairs();
+  const pairs = readPairs(pairsFile);
+  const find = (fg, bg, use) => pairs.find((pair) => pair.fg === fg && pair.bg.length === 1 && pair.bg[0] === bg && pair.use === use);
+  // A text pair covers the hue's marks too, since each pairing is declared once at its strictest use.
+  for (const hue of ["green", "orange", "vermillion", "blue", "violet", "teal"]) {
+    const name = `--mq-app-cat-${hue}`;
+    const pair = find(name, "--mq-surface", "text") ?? find(name, "--mq-surface", "non-text");
+    assert.ok(pair, `${name} on --mq-surface is not declared`);
+    assert.deepEqual(pair.themes, ["light"]);
+  }
+  for (const hue of ["orange", "blue", "teal"]) assert.ok(find(`--mq-app-cat-${hue}`, "--mq-surface", "non-text"), `--mq-app-cat-${hue} is a mark on the surface, never text`);
+  for (const fg of ["--mq-app-cat-green", "--mq-app-cat-orange-text", "--mq-app-cat-vermillion", "--mq-app-cat-violet"]) {
+    for (const bg of ["--mq-surface", "--mq-canvas"]) assert.ok(find(fg, bg, "text"), `${fg} on ${bg} is not declared as text`);
+  }
+  const dark = JSON.parse(readDist(join(root, "dist/themes/dark.json")));
+  assert.deepEqual(Object.keys(dark).filter((name) => /^--mq-(app-cat|change)-/.test(name)), [], "the dark theme re-values no app palette token yet");
+});
+
+test("each foreground and background pairing is declared once, at its strictest use", async () => {
+  const { loadPairs: readPairs } = await loadPairs();
+  const seen = new Map();
+  for (const pair of readPairs(pairsFile)) {
+    const key = `${pair.fg} on ${pair.bg.join(" ")}`;
+    assert.ok(!seen.has(key), `${key} is declared twice (${seen.get(key)} and ${pair.use})`);
+    seen.set(key, pair.use);
+  }
+});

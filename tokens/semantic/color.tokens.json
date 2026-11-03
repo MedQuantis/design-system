@@ -151,6 +151,54 @@
         "$value": "{semantic.color.on-navy.accent}",
         "$description": "Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent.",
         "$deprecated": "Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent."
+      },
+      "app-cat": {
+        "green": {
+          "$value": "{core.color.app-green}",
+          "$description": "App categorical hue: a many-category app chart or a data category, never a status and never in documents; text in it meets 4.5:1 (ADR-0008)."
+        },
+        "orange": {
+          "$value": "{core.color.app-orange}",
+          "$description": "App categorical hue for marks and fills on the surface only (3.01:1); text in this hue reads app-cat-orange-text (ADR-0008)."
+        },
+        "orange-text": {
+          "$value": "{core.color.app-orange-dark}",
+          "$description": "Text in the app categorical orange (counts, labels), 5.01:1 on the surface (ADR-0008)."
+        },
+        "vermillion": {
+          "$value": "{core.color.app-vermillion}",
+          "$description": "App categorical hue: a data category, never the danger status, which stays for errors (ADR-0008)."
+        },
+        "blue": {
+          "$value": "{core.color.app-blue}",
+          "$description": "App categorical hue for marks and fills on the surface only (3.27:1), never text (ADR-0008)."
+        },
+        "violet": {
+          "$value": "{core.color.app-violet}",
+          "$description": "App categorical hue: marks, fills and text (ADR-0008)."
+        },
+        "teal": {
+          "$value": "{core.color.app-teal}",
+          "$description": "App categorical hue for marks and fills on the surface only (4.13:1), never text (ADR-0008)."
+        }
+      },
+      "change": {
+        "added": {
+          "$value": "{semantic.color.app-cat.green}",
+          "$description": "Change type added, in apps only, always with its sign or its word: marks, fills and text (ADR-0008)."
+        },
+        "modified": {
+          "$value": "{semantic.color.app-cat.orange}",
+          "$description": "Change type modified, in apps only, always with its word: marks and fills; its text reads change-modified-text (ADR-0008)."
+        },
+        "modified-text": {
+          "$value": "{semantic.color.app-cat.orange-text}",
+          "$description": "Text of the change type modified (counts, labels), in apps only (ADR-0008)."
+        },
+        "removed": {
+          "$value": "{semantic.color.app-cat.vermillion}",
+          "$description": "Change type removed, in apps only, always with its sign or its word; a data category, never the danger status (ADR-0008)."
+        }
       }
     }
   }

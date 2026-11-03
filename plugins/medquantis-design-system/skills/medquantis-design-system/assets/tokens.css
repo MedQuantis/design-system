@@ -36,6 +36,13 @@
   --mq-core-amber-tint: #fbf3e7; /** Owner ruling 5, 2026-10-09: warning tint, the warning fill at 10 % on white; warning strong on it is 4.42:1, so text on the tint stays ink. */
   --mq-core-red: #d8232a; /** Swiss red, kept only as the danger status colour (ADR-0003, ADR-0004). */
   --mq-core-blue: #1565c0; /** Info hue for interactive apps (ADR-0004). */
+  --mq-core-app-green: #1c7e3f; /** App categorical green, a data category in interactive apps only, never the success status (ADR-0008). */
+  --mq-core-app-orange: #d78000; /** App categorical orange, marks and fills only, 3.01:1 on white (ADR-0008). */
+  --mq-core-app-orange-dark: #a35f00; /** Darker app categorical orange for text in that hue, 5.01:1 on white (ADR-0008). */
+  --mq-core-app-vermillion: #cf2a00; /** App categorical vermillion, a data category, never the danger status (ADR-0008). */
+  --mq-core-app-blue: #3a8ff5; /** App categorical blue, marks and fills only, 3.27:1 on white (ADR-0008). */
+  --mq-core-app-violet: #5a2fbe; /** App categorical violet (ADR-0008). */
+  --mq-core-app-teal: #178a91; /** App categorical teal, marks and fills only, 4.13:1 on white (ADR-0008). */
   --mq-core-font-family-outfit: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Outfit, the sans for headings, labels and app UI (Owner ruling 10, 2026-10-09). */
   --mq-core-font-family-newsreader: Newsreader, Georgia, 'Times New Roman', serif; /** Newsreader, the only serif; Georgia and Times New Roman are fallbacks only (Owner ruling 10, 2026-10-09). */
   --mq-core-font-family-geist-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; /** Geist Mono for figures and codes (Owner ruling 10, 2026-10-09). */
@@ -128,6 +135,17 @@
   --mq-warning-tint: #fbf3e7; /** Owner ruling 5, 2026-10-09: warning tint behind ink text; warning strong only for icons and borders on it. */
   --mq-dim: #707070; /** Retired name of the old tertiary grey; resolves to tertiary (Owner ruling 1, 2026-10-09). */
   --mq-accent-on-dark: #8795b3; /** Retired name of the accent on navy; resolves to the on-navy accent (Owner ruling 2, 2026-10-09). Use --mq-on-navy-title for titles and rules, --mq-on-navy-accent for the one-off accent. */
+  --mq-app-cat-green: #1c7e3f; /** App categorical hue: a many-category app chart or a data category, never a status and never in documents; text in it meets 4.5:1 (ADR-0008). */
+  --mq-app-cat-orange: #d78000; /** App categorical hue for marks and fills on the surface only (3.01:1); text in this hue reads app-cat-orange-text (ADR-0008). */
+  --mq-app-cat-orange-text: #a35f00; /** Text in the app categorical orange (counts, labels), 5.01:1 on the surface (ADR-0008). */
+  --mq-app-cat-vermillion: #cf2a00; /** App categorical hue: a data category, never the danger status, which stays for errors (ADR-0008). */
+  --mq-app-cat-blue: #3a8ff5; /** App categorical hue for marks and fills on the surface only (3.27:1), never text (ADR-0008). */
+  --mq-app-cat-violet: #5a2fbe; /** App categorical hue: marks, fills and text (ADR-0008). */
+  --mq-app-cat-teal: #178a91; /** App categorical hue for marks and fills on the surface only (4.13:1), never text (ADR-0008). */
+  --mq-change-added: #1c7e3f; /** Change type added, in apps only, always with its sign or its word: marks, fills and text (ADR-0008). */
+  --mq-change-modified: #d78000; /** Change type modified, in apps only, always with its word: marks and fills; its text reads change-modified-text (ADR-0008). */
+  --mq-change-modified-text: #a35f00; /** Text of the change type modified (counts, labels), in apps only (ADR-0008). */
+  --mq-change-removed: #cf2a00; /** Change type removed, in apps only, always with its sign or its word; a data category, never the danger status (ADR-0008). */
   --mq-focus-ring-color: #0a2463; /** Focus ring on light backgrounds: 2 px navy with an offset, 13.90:1 on canvas (research note 0001, section 7). */
   --mq-focus-ring-color-on-navy: #ffffff; /** Focus ring on navy backgrounds, 14.53:1. */
   --mq-focus-ring-width: 2px; /** Focus ring width (WCAG 2.4.7 and 1.4.11). */

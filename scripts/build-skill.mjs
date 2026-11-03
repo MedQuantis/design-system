@@ -152,6 +152,7 @@ export const MEDIA = {
       ["colour.md", "Accent"],
       ["colour.md", "Neutrals"],
       ["colour.md", "Status colours (apps only)"],
+      ["charts.md", "App categorical palette (apps only)"],
       ["colour.md", "Dark theme"],
       ["typography.md", "Three families, three roles"],
       ["typography.md", "Weights"],
@@ -206,7 +207,8 @@ export const MEDIA = {
   },
 };
 
-const STATUS_NAME = /--mq-(success|warning|warning-fill|warning-tint|danger|info)\b/;
+// The app-only names: the status colours (ADR-0004) and the app palette (ADR-0008).
+const APP_ONLY_NAME = /--mq-(success|warning|warning-fill|warning-tint|danger|info)\b|--mq-(app-cat|change)-/;
 
 // The skill's own files for a guideline section, appended under its copied text: the guideline
 // names the npm package paths, a skill page loads the copies in assets/ (owner, 2026-10-17).
@@ -215,9 +217,9 @@ const SKILL_NOTES = {
     "In this skill: load or inline `assets/themes/dark.css` after `assets/tokens.css` (bundle.py inlines both) and set `.dark` on `<html>` for a dark page or deck, or on one slide. validate.py allows the dark values under the same medium rules as light.",
 };
 
-// Documents never carry status colours, so lines that only matter to apps are left out of their
-// references; the app reference keeps them.
-const forMedium = (body, medium) => (medium === "app" ? body : body.split("\n").filter((line) => !STATUS_NAME.test(line)).join("\n"));
+// Documents never carry the app-only colours, so lines that only matter to apps are left out of
+// their references; the app reference keeps them.
+const forMedium = (body, medium) => (medium === "app" ? body : body.split("\n").filter((line) => !APP_ONLY_NAME.test(line)).join("\n"));
 
 export const renderReference = (root, medium) => {
   const spec = MEDIA[medium];
@@ -279,7 +281,7 @@ const allowedHex = (root, medium) => {
 const OUTSIDE_BUNDLED = "(?<!<style\\b[^>]*\\bdata-mq-bundled\\b[^>]*>[^<]*)";
 
 // A literal colour the token set does not hold, near a colour property or as a quoted script
-// value; for documents also any status token, outside the bundled system CSS. A cheap check on the
+// value; for documents also any app-only token, outside the bundled system CSS. A cheap check on the
 // produced file: the skill's validator is the full one.
 export const offPalettePattern = (root, medium) => {
   const allowed = allowedHex(root, medium).join("|");
@@ -288,7 +290,7 @@ export const offPalettePattern = (root, medium) => {
   // A quoted fragment link (href="#add") is not a colour.
   const quoted = `(?<![\\w:-]=\\s*['"])(?<=['"\`])${hex}(?=['"\`])`;
   const functions = "\\b(?:rgb|hsl|hwb|lab|lch|oklab|oklch)a?\\((?!\\s*(?:255,\\s*255,\\s*255|0,\\s*0,\\s*0|10,\\s*36,\\s*99)\\s*,)";
-  const status = medium === "app" ? [] : ["--mq-(?:success|warning|danger|info)"];
+  const status = medium === "app" ? [] : ["--mq-(?:success|warning|danger|info|app-cat-|change-)"];
   return [near, quoted, functions, ...status].map((alternative) => `(?:${alternative})${OUTSIDE_BUNDLED}`).join("|");
 };
 

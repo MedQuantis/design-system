@@ -196,6 +196,7 @@ test("document CSS reaches no status colour; status badges live in app.css (ADR-
   for (const file of DOCUMENT_FILES) {
     const text = readCss(file);
     assert.doesNotMatch(text, STATUS, `css/${file} references a status colour`);
+    assert.doesNotMatch(text, /--mq-(app-cat|change)-/, `css/${file} references an app palette token (ADR-0008)`);
     assert.doesNotMatch(text, /@import/, `css/${file} must not import another sheet`);
     assert.doesNotMatch(text, /\.is-(success|warning|danger|info)\b/, `css/${file} defines a status variant`);
   }

@@ -1,6 +1,6 @@
 # Charts
 
-Charts use the navy and blue-grey family only, in every medium. Status colours never colour a chart series, not even in an app; a chart that shows system status labels it in words.
+Charts use the navy and blue-grey family, in every medium. An interactive app may also use the app categorical palette, for a chart of more categories than the ordered palette carries and for data categories such as change types; documents never do ([ADR-0008](../docs/architecture/decisions/adr-0008-apps-have-a-categorical-palette.md)). Status colours never colour a chart series, not even in an app; a chart that shows system status labels it in words.
 
 ## The ordered palette
 
@@ -34,6 +34,38 @@ Rules:
 | States of an amount (paid, approved, claimed, not yet claimed) | Series 1, series 3, series 4 with its outline, and the upcoming part dashed in series 3; or the document mark styles of [colour](colour.md) |
 | Ranking with more than four items | Highlight on grey, below |
 | Workflow stages in an app | Series 1 to 4 with the stage name as a label or legend, never status hues, never white text on series 3 or 4 |
+
+## App categorical palette (apps only)
+
+Six hues for interactive apps whose charts or lists show more categories than the four ordered series can carry, and three change types built on them (owner rulings 20 and 21, [ADR-0008](../docs/architecture/decisions/adr-0008-apps-have-a-categorical-palette.md)). They are light only until their dark values are ruled, and they never appear in documents, which keep the ordered palette.
+
+| Token | Value | Contrast on surface | Allowed for |
+| :-- | :-- | :-- | :-- |
+| `--mq-app-cat-green` | `#1c7e3f` | 5.12:1 | Marks, fills and text |
+| `--mq-app-cat-orange` | `#d78000` | 3.01:1 | Marks and fills only |
+| `--mq-app-cat-orange-text` | `#a35f00` | 5.01:1 | Text in the orange hue: counts and labels |
+| `--mq-app-cat-vermillion` | `#cf2a00` | 5.27:1 | Marks, fills and text |
+| `--mq-app-cat-blue` | `#3a8ff5` | 3.27:1 | Marks and fills only |
+| `--mq-app-cat-violet` | `#5a2fbe` | 8.12:1 | Marks, fills and text |
+| `--mq-app-cat-teal` | `#178a91` | 4.13:1 | Marks and fills only |
+
+| Change type | Token | Reads |
+| :-- | :-- | :-- |
+| Added | `--mq-change-added` | The green |
+| Modified | `--mq-change-modified`; its text `--mq-change-modified-text` | The orange; the orange text |
+| Removed | `--mq-change-removed` | The vermillion |
+
+Between the six hues and navy series 1, the smallest CIEDE2000 distance is 17.4 under normal vision, 11.9 under protanopia, 12.9 under deuteranopia and 8.4 under tritanopia (green and teal); the token test holds those floors.
+
+Rules:
+
+- A one-series chart stays navy (`--mq-chart-series-1`). Up to four series, the ordered palette applies in apps too; the categorical hues are for charts of five or more categories and for data categories.
+- Fix each hue to its category across every view of the app; never let a charting library rotate through the palette.
+- No series uses a status token. The vermillion is a data category ("removed from the list"), not an error: `--mq-danger` stays for errors. The green, the orange, the orange text and the vermillion sit CIEDE2000 3.3, 2.2, 2.8 and 7.9 from `--mq-success`, `--mq-warning-fill`, `--mq-warning` and `--mq-danger`, so code tells them apart by token name and the screen by the word or sign each carries, never by hue.
+- Marks sit on the surface (`--mq-surface`), where every hue meets 3:1 and needs no outline. On the canvas the orange falls to 2.88:1, and on the recessed surface the orange and the blue fall below 3:1, so a chart in these hues sits in a white card.
+- Text in a hue meets 4.5:1: the green, the vermillion and the violet may be text, orange text reads `--mq-app-cat-orange-text`, and the blue and the teal are never text.
+- Never colour alone: the green and the vermillion have almost the same lightness, so in greyscale they cannot be told apart. Every mark carries a direct label or a legend entry, and a change type its sign (+, −) or its word; label the green and the teal directly where they touch.
+- A change type keeps its hue wherever a change is listed (badge, dot, filter, count) and keeps its mark style on top: an added value with +, a removed value struck through.
 
 ## Highlight on grey
 

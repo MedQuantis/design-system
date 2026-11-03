@@ -29,7 +29,7 @@ Charts and data visualisation in any medium, apps included. The sections below a
 
 Source: guidelines/charts.md
 
-Charts use the navy and blue-grey family only, in every medium. Status colours never colour a chart series, not even in an app; a chart that shows system status labels it in words.
+Charts use the navy and blue-grey family, in every medium. An interactive app may also use the app categorical palette, for a chart of more categories than the ordered palette carries and for data categories such as change types; documents never do (ADR-0008). Status colours never colour a chart series, not even in an app; a chart that shows system status labels it in words.
 
 ## The ordered palette
 
@@ -206,7 +206,8 @@ Colour never carries meaning on its own (WCAG 1.4.1):
 - documents show states by mark style (solid, ring, pale, outline, quiet, dashed, struck through) and a page that uses these marks gives their key once, in a legend or a note;
 - apps pair every status colour with an icon or a word;
 - charts label the marks that use series 3 or 4, or give them an outline, since those colours are below 3:1 on the page (charts);
-- a change in a figure is shown by its sign, not by a colour or an arrow alone.
+- a change in a figure is shown by its sign, not by a colour or an arrow alone;
+- in apps, a mark in the app categorical palette carries a direct label, a legend entry, a sign or a word, since two of its hues share their lightness (charts).
 
 ## Structure
 

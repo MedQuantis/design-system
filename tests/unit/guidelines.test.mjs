@@ -329,10 +329,11 @@ test("guidelines/README.md lists the rulings after the bootstrap, numbered on fr
   rows.forEach((row, index) => {
     const cells = row.split("|").map((cell) => cell.trim()).filter(Boolean);
     assert.equal(cells[0], String(12 + index), `ruling numbers run on from 11: ${row}`);
-    assert.match(cells[1], /^2026-10-1[57]$/, `ruling date: ${row}`);
+    assert.match(cells[1], /^\d{4}-\d{2}-\d{2}$/, `ruling date: ${row}`);
     assert.match(row, /\]\((?:\.\/)?[a-z-]+\.md(?:#[\w-]+)?\)/, `ruling names no guideline file: ${row}`);
-    assert.match(row, /ADR-0007/, `ruling cites ADR-0007: ${row}`);
+    assert.match(row, /ADR-\d{4}/, `ruling cites no decision record: ${row}`);
   });
   assert.ok(rows.some((row) => /2026-10-17/.test(row) && /--mq-accent-highlight/.test(row)), "the pale-fill ruling of 2026-10-17");
   assert.ok(rows.some((row) => /2026-10-17/.test(row) && /--mq-on-navy-accent/.test(row)), "the on-navy ruling of 2026-10-17");
+  assert.ok(rows.some((row) => /2026-11-03/.test(row) && /ADR-0008/.test(row) && /app categorical palette/.test(row)), "the app palette ruling of 2026-11-03");
 });

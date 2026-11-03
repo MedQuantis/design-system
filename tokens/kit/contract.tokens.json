@@ -427,12 +427,12 @@
       "logo": {
         "$type": "asset",
         "brand-logo-on-light": {
-          "$value": "./brand/wordmark-on-light.svg",
-          "$description": "Kit contract: the wordmark for light backgrounds, a package export path written as url() (guidelines/brand.md, Wordmark)."
+          "$value": "./brand/wordmark-on-light-print.svg",
+          "$description": "Kit contract: the outlined wordmark for light backgrounds, a package export path written as url(); kit outputs are self-contained pages and PDFs where an image cannot load the web font, so the live-text file would fall back to another face and clip (guidelines/brand.md, Wordmark)."
         },
         "brand-logo-on-dark": {
-          "$value": "./brand/wordmark-on-navy.svg",
-          "$description": "Kit contract: the wordmark for navy backgrounds, a package export path written as url() (guidelines/brand.md, Wordmark)."
+          "$value": "./brand/wordmark-on-navy-print.svg",
+          "$description": "Kit contract: the outlined wordmark for navy and dark backgrounds, a package export path written as url(); kit outputs are self-contained pages and PDFs where an image cannot load the web font (guidelines/brand.md, Wordmark)."
         },
         "brand-mark": {
           "$value": "./brand/monogram.svg",

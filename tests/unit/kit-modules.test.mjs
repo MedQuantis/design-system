@@ -217,8 +217,8 @@ test("brand: logo roles are url() values of shipped exports, the legal line come
   const { exports } = pkg();
   const files = tarball();
   const logos = {
-    "--brand-logo-on-light": "./brand/wordmark-on-light.svg",
-    "--brand-logo-on-dark": "./brand/wordmark-on-navy.svg",
+    "--brand-logo-on-light": "./brand/wordmark-on-light-print.svg",
+    "--brand-logo-on-dark": "./brand/wordmark-on-navy-print.svg",
     "--brand-mark": "./brand/monogram.svg",
   };
   for (const [role, key] of Object.entries(logos)) {

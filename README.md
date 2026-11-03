@@ -152,7 +152,7 @@ The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declar
 | `slide-frame` | `dist/kit/slide-frame.css` | The 1280 by 720 slide: canvas, padding, section label, and the footer row with the legal line, the classification cell and the slide number |
 | `dark` | `dist/kit/dark.css` | The dark twin of every colour role (`--dark-<role>`), with the MedQuantis dark values, and the key element on dark: the navy panel gradient with its 1 px light-navy outline, never a glow |
 | `print` | `dist/kit/print.css` | The release-note report: page size, margins, and breaking changes in navy, never a status hue |
-| `brand` | `dist/kit/brand.css` | The wordmarks on light and on navy, the monogram and the legal line |
+| `brand` | `dist/kit/brand.css` | The outlined (`-print`) wordmarks on light and on navy, since kit pages and PDFs cannot load the web font into an image; the monogram and the legal line |
 | `guidance` | `dist/kit/guidance.md` | The rules from `guidelines/` that the kit's skills read before writing a page |
 
 A kit deck turns dark per slide, with `dark` on the slide's root (`<div class="slide dark">`), or whole, with `theme: dark` in its `config.yaml`, which also serves a `mode: document`; the kit draws the key element (`dark-key`) and the highlighted text (`dark-accent`) from the `dark` roles. `classification:` in `config.yaml` prints the deck's classification at the right of the footer, before the slide number, in the small tertiary mono of the legal line: the label only, in the deck's language (`lang:`), never a code ([guidelines/brand.md](guidelines/brand.md)).

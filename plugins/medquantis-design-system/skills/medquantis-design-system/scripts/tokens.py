@@ -5,7 +5,7 @@ Usage: python3 tokens.py [--medium document|app] [--all] [QUERY]
 
 QUERY matches part of a token name (accent, chart, radius) or a value (#0a2463, 6px).
 Without a query, every token usable in the medium is listed. Core and deprecated tokens are
-hidden unless --all is given; --medium document hides the status colours (apps only, ADR-0004).
+hidden unless --all is given; --medium document hides the app-only colours: status (ADR-0004) and the app palette (ADR-0008).
 """
 
 import argparse
@@ -16,15 +16,16 @@ from pathlib import Path
 TOKENS = Path(__file__).resolve().parent.parent / "assets" / "tokens.json"
 
 
-def is_status(token):
+def is_app_only(token):
+    """Status colours (ADR-0004) and the app palette with the change types (ADR-0008)."""
     path = token.get("path", [])
-    return len(path) > 2 and path[0] == "semantic" and (path[2] == "status" or path[2] in ("warning-fill", "warning-tint"))
+    return len(path) > 2 and path[0] == "semantic" and (path[2] in ("status", "warning-fill", "warning-tint", "app-cat", "change"))
 
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Look up MedQuantis design tokens.")
     parser.add_argument("query", nargs="?", default="")
-    parser.add_argument("--medium", choices=("document", "app"), default="app", help="document hides the status colours")
+    parser.add_argument("--medium", choices=("document", "app"), default="app", help="document hides the app-only colours")
     parser.add_argument("--all", action="store_true", help="include core and deprecated tokens")
     args = parser.parse_args(argv)
     tokens = json.loads(TOKENS.read_text(encoding="utf-8"))
@@ -34,7 +35,7 @@ def main(argv):
         value = str(token.get("value", ""))
         if not args.all and (name.startswith("--mq-core-") or token.get("deprecated")):
             continue
-        if args.medium == "document" and is_status(token):
+        if args.medium == "document" and is_app_only(token):
             continue
         if query and query not in name.lower() and query not in value.lower().replace(" ", ""):
             continue

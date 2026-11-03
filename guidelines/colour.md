@@ -7,7 +7,7 @@ Use semantic tokens only. The `--mq-core-*` names hold raw values and exist so s
 | Medium | Colours allowed | How a state is shown |
 | :-- | :-- | :-- |
 | Documents: slides, A4 reports, papers, newsletters, the website | Navy, the neutrals, the blue-grey family, the chart tokens | By mark style: solid, ring, pale, outline, quiet, dashed, struck through |
-| Interactive apps | Everything documents use, plus `--mq-success`, `--mq-warning`, `--mq-danger`, `--mq-info` | Status colour for genuine system status only (errors, validation, alerts, confirmations), always with an icon or a word |
+| Interactive apps | Everything documents use, plus `--mq-success`, `--mq-warning`, `--mq-danger`, `--mq-info`, and the app categorical palette with its change types ([charts](charts.md)) | Status colour for genuine system status only (errors, validation, alerts, confirmations), always with an icon or a word; a categorical hue for a data category only, always with a label, a sign or a word |
 
 Documents never carry green, orange, red, sky blue, pink, purple or turquoise, not even to say good or bad ([ADR-0004](../docs/architecture/decisions/adr-0004-status-colours-in-apps-only.md)). They never load `css/app.css`. A callout in a document is always navy; there is no warning-orange or success-green callout.
 
@@ -96,7 +96,7 @@ Every status colour comes with an icon or a word (WCAG 1.4.1):
 - a flag is a coloured word, and only on the rows that need attention, so normal rows stay quiet;
 - light badge backgrounds come from the 50 and 100 steps of the status scales in `dist/tailwind.css`, never a hand-picked tint.
 
-The red of the old Paracel theme survives only as `--mq-danger` ([ADR-0003](../docs/architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md)). App-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them ([specialising](specialising.md)).
+The red of the old Paracel theme survives only as `--mq-danger` ([ADR-0003](../docs/architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md)). The app categorical palette and the change types (`--mq-app-cat-*`, `--mq-change-*`) are data categories, never statuses; their values and rules are in [charts](charts.md) ([ADR-0008](../docs/architecture/decisions/adr-0008-apps-have-a-categorical-palette.md)). Other app-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them ([specialising](specialising.md)).
 
 ## Chart colours
 

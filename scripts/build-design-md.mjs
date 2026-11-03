@@ -140,6 +140,7 @@ const SECTIONS = [
       ["charts.md", ""],
       ["charts.md", "The ordered palette"],
       ["charts.md", "Common cases"],
+      ["charts.md", "App categorical palette (apps only)"],
       ["charts.md", "Highlight on grey"],
       ["charts.md", "Sequential and diverging use"],
       ["accessibility.md", "Colour is never alone"],

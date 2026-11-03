@@ -219,3 +219,30 @@ Labels keep one line, cut with an ellipsis and given in full in a tooltip. Where
 **Closed item.** It opens in its last state, read-only: no form, the result card showing what is served, and only navigation and close in the footer.
 
 Stays in the app: the choices and what each serves, which actions are allowed and why not, the wording of refusals and alerts, the sources and the data.
+
+## Limitation-text marks
+
+How a verbatim source text shows the passages a decision rests on. The text stays the official text: a mark adds a background or an underline, and never changes a word, its case or its order.
+
+**Text box.** Newsreader at a reading size (about 16.5 px) with a loose line height (about 2.2), so a mark never touches the line above it; on the canvas with a `--mq-border-light` border, the medium radius, and `--mq-space-3` by `--mq-space-4` padding. A long text scrolls inside its box (in the decision modal, inside its tab), never the page.
+
+| Mark | Look | Means |
+| :-- | :-- | :-- |
+| Printed code | Geist Mono, navy text on `--mq-accent-pale`, the small radius | A code the text itself prints |
+| Accepted quote | `--mq-accent-pale-2` with a 2 px navy underline | A passage accepted as evidence for a decision |
+| Contested printed code | The printed mark with a 2 px `--mq-warning` underline | The printed code this item calls into question |
+| Quote pointed at | The accepted quote on `--mq-accent-pale` | While the person points at that quote elsewhere, such as its evidence row |
+
+The contested mark differs from the printed one by its underline, not by colour alone, and the legend names it.
+
+**Legend.** Under the box at the note size in muted text: a swatch for each mark this item uses (the contested mark only where the item has one), then, in tertiary, the editions the text belongs to in mono ("Binding in editions 01.03.2024 to 01.10.2026").
+
+**Quoting a passage.** The text is plain text, so it can be selected with a pointer or the keyboard; the selection shows on `--mq-accent-pale`. When the selection could prove a decision, a popover opens beside it (the surface, a `--mq-border` border, the medium radius, `--mq-shadow-medium`): an eyebrow, "Quote as evidence for", then one small button per code that still needs a quote, its code in mono and its name. When nothing needs a quote, no popover opens. Once quoted, the passage takes the accepted-quote mark, and the decision form lists it as a quote row: a 3 px navy left edge (`--mq-stroke-tab`) on `--mq-accent-pale-2`, the passage in Newsreader italic, and a remove action.
+
+| State | Shows |
+| :-- | :-- |
+| Printed, quoted, contested | The marks above, each in the legend |
+| Selection in progress | The selection on `--mq-accent-pale`; the popover only when a code needs a quote |
+| Long text | It scrolls inside its box; the legend stays under it |
+
+Stays in the app: the passages and where they fall in the text, which codes need a quote, matching a quote to the text, and the popover's actions.

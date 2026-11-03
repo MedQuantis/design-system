@@ -185,6 +185,7 @@ const SECTIONS = [
       ["app-patterns.md", ""],
       ["app-patterns.md", "App shell"],
       ["app-patterns.md", "Sign-in, access refused and error pages"],
+      ["app-patterns.md", "Overview: queue boxes and coverage cards"],
       ["accessibility.md", "Focus"],
       ["charts.md", "Marks"],
       ["charts.md", "Ring construction"],

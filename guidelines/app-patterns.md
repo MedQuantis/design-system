@@ -74,3 +74,38 @@ After sign-in the person lands on the page they asked for, never on a default ho
 The status word and the icon carry each state together with its colour, never the colour alone ([accessibility](accessibility.md)). Under `prefers-reduced-motion` the icon does not turn and the button reads "Retrying".
 
 Stays in the app: the sign-in address and its return path, the role name and who assigns it, the request ID value, and the wording of each state.
+
+## Overview: queue boxes and coverage cards
+
+The overview lands a person on what waits for them, then shows how much of each area is covered, in one grammar for every area.
+
+**Queue boxes.** A row of boxes, one per queue, three across and one column on phones. Each box is a link to its list: the surface, a `--mq-border-light` border, the medium radius and `--mq-shadow-small`, `--mq-space-4` padding; on hover the border turns `--mq-border-strong`. In order:
+
+- the queue's name in Outfit 600, with its total at the right in navy Outfit 500 at the figure size, in tabular figures;
+- optionally one line per area, its name in ink and its count in navy at the right;
+- the age line in tertiary text at the note size: "Oldest waiting for 3 days", the duration in ink.
+
+| State | Shows |
+| :-- | :-- |
+| Zero | The box stays in place, quiet: the total in tertiary, no area lines, and the age line reads "Nothing waits" |
+| The person's own queue, above zero | A navy border and the pale navy fill (`--mq-accent-pale`); the same box at zero is quiet like the others |
+| Overdue | The age turns `--mq-warning` and takes a warning icon, so the state never rests on colour alone. The threshold belongs to the app |
+| Loading | The box keeps its size with skeleton bars on `--mq-surface-alt`; their shimmer stops under `prefers-reduced-motion` |
+
+**Coverage cards.** One card per area, three across, one column below 1100 px; the same card as a queue box but not a link itself. In order:
+
+- the area's title in Outfit 600, with an "Open →" link at the right in navy;
+- the scope in Geist Mono capitals at the eyebrow size, tertiary: what is counted and over which editions ("Coverage of 1'248 texts · every edition served");
+- a segmented bar, 12 px high, its ends rounded with the small radius, never a pill, with 2 px gaps between segments ([charts](charts.md), distribution bar);
+- the legend under it: per segment a 10 px swatch with the small radius, the label (a link when the segment opens a list), the count in Geist Mono, muted, and the percentage in Geist Mono, tertiary, both right-aligned;
+- optionally one take-away line in muted text at the note size.
+
+Rules for the bar:
+
+- The segments take the ordered palette in order, `--mq-chart-series-1` to `--mq-chart-series-4`, and what is left (not yet detected, not yet extracted) takes the remainder fill `--mq-chart-rest`, with a series 4 outline in the bar and the swatch. Five segments therefore need no new hue. A status colour never colours a segment: a segment that needs attention says so in its label.
+- A segment below 1 % keeps a 2 px minimum width in the bar, and its legend line reads "< 1 %"; every other percentage is rounded with the largest-remainder method ([data patterns](data-patterns.md)).
+- A segment that opens a list is a link in both the bar and the legend, with the same accessible name; one that opens nothing is plain text, never a dead link.
+- The bar has an accessible name that states the scope; the legend carries every value in text.
+- One edition or every edition served: the scope line says which; the card does not change shape.
+
+Stays in the app: the segment keys, their counts and labels, which segments link where, the overdue threshold, and the queues themselves.

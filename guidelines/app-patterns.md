@@ -109,3 +109,49 @@ Rules for the bar:
 - One edition or every edition served: the scope line says which; the card does not change shape.
 
 Stays in the app: the segment keys, their counts and labels, which segments link where, the overdue threshold, and the queues themselves.
+
+## Review table: filters, condition tile, status pill, code chips
+
+The list behind every review screen: a filter toolbar, then a table whose rows carry a condition tile, a status pill and code chips. It extends the app table of [layout](layout.md), Tables.
+
+**Filters**, in the shell's toolbar (app shell, above):
+
+- **Select with its label inside**: 32 px high, the surface, a `--mq-border` border, the small radius; the label in muted text, the value in ink Outfit 500. Each option ends with its count, and an option whose count is zero is muted but still listed.
+- **Segmented control** for a filter in two steps: a track on `--mq-surface-alt` with a `--mq-border` border and the medium radius, its segments with the small radius, each with its count in Geist Mono, tertiary. The selected segment is navy Outfit 500 on the surface with `--mq-shadow-small`; an empty segment is tertiary. A 1 px `--mq-border-strong` rule, 16 px high, separates the two steps. It is a radio group: arrow keys move, and the selection is announced.
+- **Clear filters**: a ghost text button that appears once any filter differs from its default, and puts every filter back.
+
+**Table.** The app table wrapper: the surface, a `--mq-border-light` border, the medium radius, `--mq-shadow-small`, scrolling sideways inside itself below its minimum width. Header row on `--mq-surface-alt`, never a navy band; cells with `--mq-space-3` padding and a `--mq-border-light` hairline between rows; text at the table text size.
+
+| State | Shows |
+| :-- | :-- |
+| Loading | Skeleton rows of the same height, bars on `--mq-surface-alt`; the shimmer stops under `prefers-reduced-motion` |
+| Sorted | The sorted header is underlined and carries `aria-sort`; the sort reads in the header's accessible name |
+| Hover | The row on `--mq-surface-alt` |
+| Keyboard | Rows are reachable with the keyboard (Arrow or J and K keys move, Enter opens); the focused row shows the focus ring, and moving never opens |
+| Selected (the open item) | `--mq-accent-pale`, with a 3 px navy edge (`--mq-stroke-tab`) on its first cell |
+| Waiting for you | The quiet pale fill `--mq-accent-pale-2`, on that row only, so the others stay quiet |
+| Empty | The app empty state ([layout](layout.md), App patterns) in the table's place: "No open item", or, under filters, "No item matches these filters" with a clear-filters action |
+
+**Condition tile.** A short code that identifies a review condition (R1, R2): a navy square (`--mq-on-accent` on `--mq-accent`), the medium radius, the code in Geist Mono 600, 30 px in the list and 32 px in a dialog header, followed by the condition's name in Outfit 600. A tooltip on the tile gives what raised it. It is an identifier, not a state, so every tile is the same navy.
+
+**Status pill.** The item's step, a word in Outfit 500 at the label size with the small radius (never a pill shape despite its name), and under it a detail line in tertiary text at the note size (who, since when). The four states differ by mark style, and each carries its word:
+
+| State | Mark |
+| :-- | :-- |
+| To decide | Outline: `--mq-border-strong` border, muted text on the surface |
+| Confirmation required | The warning mark: `--mq-warning` text and a `--mq-warning-fill` border on `--mq-warning-tint`, since it asks the person to act |
+| Under review by a colleague | Pale: navy text and border on `--mq-accent-pale`; the detail line names the colleague |
+| Under review by you | Pale, plus a 2 px `--mq-accent-pale` ring around it, and its row takes the waiting-for-you fill |
+
+**Code chip.** A mono code with its name: the code in Geist Mono at the note size on `--mq-surface-alt` with the small radius, then the name in ink. A name too long for its cell is cut with an ellipsis and given in full in a tooltip and the accessible name; a code without a name shows the code alone, never an empty name.
+
+| Variant | Mark |
+| :-- | :-- |
+| Plain | As above |
+| Key code (the one the row is about) | `--mq-accent-pale` with navy text |
+| Added | A leading "+" and the code in `--mq-change-added`, with a 1 px ring of the same colour |
+| Removed | Struck through, the code in `--mq-change-removed` |
+
+The change colours are apps only and never carry the change alone: the "+" and the strike say it in every theme and in greyscale ([charts](charts.md), App categorical palette).
+
+Stays in the app: the conditions and their codes, the wording of each state, the sort keys, the keyboard shortcuts beyond Arrow and Enter, and which code is the key code.

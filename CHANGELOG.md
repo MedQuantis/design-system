@@ -5,14 +5,21 @@
 
 ### Features
 
-* **guidelines:** add the Maintainer app patterns and their sidebar and live halo tokens ([#42](https://github.com/MedQuantis/design-system/issues/42)) ([b69c2b9](https://github.com/MedQuantis/design-system/commit/b69c2b9b5e407449b7997afff5473eef3f2878ee))
-* **tokens:** add the app categorical palette and the change-type tokens ([#39](https://github.com/MedQuantis/design-system/issues/39)) ([35292d1](https://github.com/MedQuantis/design-system/commit/35292d11c4520cb269df4883213e8e00d632036e))
+* **guidelines:** add the Maintainer app patterns and their sidebar and live halo tokens ([#42](https://github.com/MedQuantis/design-system/issues/42)) ([b69c2b9](https://github.com/MedQuantis/design-system/commit/b69c2b9b5e407449b7997afff5473eef3f2878ee)), closes [#38](https://github.com/MedQuantis/design-system/issues/38)
+* **tokens:** add the app categorical palette and the change-type tokens ([#39](https://github.com/MedQuantis/design-system/issues/39)) ([35292d1](https://github.com/MedQuantis/design-system/commit/35292d11c4520cb269df4883213e8e00d632036e)), closes [#35](https://github.com/MedQuantis/design-system/issues/35)
 
 
 ### Bug Fixes
 
 * **claude-design-system:** carry the app patterns into the brand book and show the live halo in the specimen ([#43](https://github.com/MedQuantis/design-system/issues/43)) ([477f08f](https://github.com/MedQuantis/design-system/commit/477f08f57e93a079d2ad0f7ac59794df71dbe7fc))
 * **kit:** point the kit logo roles at the outlined print wordmarks ([#40](https://github.com/MedQuantis/design-system/issues/40)) ([8fdecc6](https://github.com/MedQuantis/design-system/commit/8fdecc6c4e6f8546be401d54ff3662e8f0f6ffbd)), closes [#32](https://github.com/MedQuantis/design-system/issues/32)
+
+
+### Dependencies
+
+* **icons:** the committed `icons/` build is Lucide 1.59.0 ([#28](https://github.com/MedQuantis/design-system/issues/28))
+* **dev:** style-dictionary 5.7.0, postcss 8.5.30, @playwright/test 1.64.1, @axe-core/playwright 4.14.0 ([#31](https://github.com/MedQuantis/design-system/issues/31), [#26](https://github.com/MedQuantis/design-system/issues/26), [#30](https://github.com/MedQuantis/design-system/issues/30), [#29](https://github.com/MedQuantis/design-system/issues/29)); the generated outputs are unchanged
+* **ci:** jdx/mise-action 5.2.3, actions/upload-artifact 7.0.2 ([#37](https://github.com/MedQuantis/design-system/issues/37), [#18](https://github.com/MedQuantis/design-system/issues/18))
 
 ## [1.2.0](https://github.com/MedQuantis/design-system/compare/v1.1.0...v1.2.0) (2026-10-17)
 

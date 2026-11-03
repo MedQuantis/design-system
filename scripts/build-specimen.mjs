@@ -329,6 +329,8 @@ ${typeScale(tokens)}
 <div class="specimen-row" style="margin-top: var(--mq-space-5)">
 ${["small", "medium", "panel"].map((name) => `<div class="specimen-elevation" style="box-shadow: var(--mq-shadow-${name})">--mq-shadow-${name}</div>`).join("\n")}
 </div>
+<!-- The live halo is apps only (ADR-0004): it rings a status dot, a circle the radius ruling allows, drawn inline since the shared lint admits only the three radius tokens. -->
+<div class="specimen-live" data-shadow="--mq-shadow-live"><span class="specimen-live-dot" style="border-radius: 50%" aria-hidden="true"></span><code>--mq-shadow-live</code> · the halo of a live dot, apps only</div>
 </section>
 
 <section class="mq-wrap specimen-section" id="components" aria-labelledby="components-title">

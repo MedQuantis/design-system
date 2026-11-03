@@ -156,7 +156,11 @@ test("every text pair of tokens/contrast-pairs.json reaches 4.5:1 with the value
 // The brand book: README.md for principles, colour, typography, writing, charts and data patterns,
 // one further section file for each other guideline, every section verbatim with its token names.
 const README_GUIDELINES = ["principles.md", "colour.md", "typography.md", "writing.md", "charts.md", "data-patterns.md"];
-const SECTION_GUIDELINES = ["brand.md", "voice.md", "layout.md", "accessibility.md", "specialising.md"];
+// Every guideline the README does not hold is a further section, read from guidelines/ so a new
+// guideline cannot be left out of the brand book.
+const SECTION_GUIDELINES = readdirSync(join(root, "guidelines"))
+  .filter((name) => name.endsWith(".md") && name !== "README.md" && !README_GUIDELINES.includes(name))
+  .sort();
 const expectSections = (text, name, level) => {
   const guideline = readGuideline(root, name);
   if (guideline.intro) assert.ok(text.includes(unlinkRelative(guideline.intro)), `${name}: introduction`);

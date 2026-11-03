@@ -191,6 +191,13 @@ test("forced focus state: navy ring on light, white ring on navy", async ({ page
   }
 });
 
+test("the live halo: a success dot ringed by --mq-shadow-live, labelled apps only", async ({ page }) => {
+  const live = page.locator('#shape [data-shadow="--mq-shadow-live"]');
+  await expect(live).toHaveCount(1);
+  await expect(live).toContainText(/apps only/i);
+  await expect(live.locator(".specimen-live-dot")).toHaveCSS("box-shadow", "rgba(46, 125, 50, 0.17) 0px 0px 0px 3px");
+});
+
 test("light: the slide frame keeps its medium shadow, the edge drawing nothing in light", async ({ page }) => {
   await expect(page.locator("#slide .mq-slide")).toHaveCSS("box-shadow", "rgba(0, 0, 0, 0.07) 0px 3px 12px 0px");
   await expect(page.locator("#slide .specimen-wide")).toHaveCSS("box-shadow", "rgba(0, 0, 0, 0) 0px 0px 0px 0px");
@@ -307,6 +314,11 @@ test.describe("dark theme", () => {
     await expect(page.locator("#brand .specimen-brand-tile.is-navy").first()).toHaveCSS("background-image", /linear-gradient/);
     const series = await page.locator("#components .mq-segment.is-1").first().evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(series).toBe(rgb(theme["--mq-chart-series-1"].value));
+  });
+
+  test("dark: the live halo takes the dark success green", async ({ page }) => {
+    const css = (value) => value.replace(/^(.*) (rgba\(.*\))$/, "$2 $1");
+    await expect(page.locator('#shape [data-shadow="--mq-shadow-live"] .specimen-live-dot')).toHaveCSS("box-shadow", css(darkTheme()["--mq-shadow-live"].value));
   });
 
   test("dark: the slide frame draws the panel's edge over the dark medium shadow, so it stands off the canvas", async ({ page }) => {

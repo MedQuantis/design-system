@@ -172,6 +172,25 @@
     line-height: 1.2;
   }
 
+  .specimen-live {
+    display: flex;
+    align-items: center;
+    gap: var(--mq-space-3);
+    height: var(--mq-space-5);
+    margin-top: var(--mq-space-5);
+    font-size: var(--mq-font-size-label);
+    line-height: var(--mq-space-5);
+    color: var(--mq-muted);
+  }
+
+  .specimen-live-dot {
+    flex: none;
+    width: var(--mq-space-3);
+    height: var(--mq-space-3);
+    background: var(--mq-success);
+    box-shadow: var(--mq-shadow-live);
+  }
+
   .specimen-radius {
     display: flex;
     align-items: center;

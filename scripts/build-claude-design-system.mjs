@@ -126,7 +126,7 @@ const guidelineText = (name, level) => {
   return [guideline.intro && unlinkRelative(guideline.intro), ...sections.map(([heading, body]) => `${level} ${heading}\n\n${unlinkRelative(body)}`)].filter(Boolean).join("\n\n");
 };
 const README_GUIDELINES = ["principles.md", "colour.md", "typography.md", "writing.md", "charts.md", "data-patterns.md"];
-const SECTION_GUIDELINES = ["brand.md", "voice.md", "layout.md", "accessibility.md", "specialising.md"];
+const SECTION_GUIDELINES = ["brand.md", "voice.md", "layout.md", "accessibility.md", "app-patterns.md", "specialising.md"];
 write(
   "README.md",
   [

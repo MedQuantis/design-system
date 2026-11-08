@@ -14,7 +14,7 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `dist/themes/dark.css`, `dist/themes/dark.json` | The dark theme: the semantic roles re-valued under `.dark`, for apps, documents and slides (see Dark theme) |
 | `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app. Carries the latin fonts as embedded data, since the renderers inline this one file |
 | `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media (see Shared CSS) |
-| `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
+| `fonts/fonts.css`, `fonts/` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole. The woff2 files are exported too, for preloading (see Preloading the fonts) |
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules, and the app patterns of dense internal tools |
@@ -127,6 +127,18 @@ echo "sha384-$(openssl dgst -sha384 -binary dist/tokens.css | openssl base64 -A)
 ```
 
 Every other shipped file (`css/*.css`, `fonts/fonts.css`, `dist/kit-contract.css`) works the same way, each with its own hash. Fonts referenced by `fonts.css` load relative to it, so serve the stylesheet and its fonts from the same release URL.
+
+### Preloading the fonts
+
+`fonts.css` declares every face with `font-display: swap`, so a browser draws the page in a fallback font and redraws it once the woff2 file arrives; on a slow connection the redraw moves the text and counts as layout shift. A page that wants to avoid it preloads the latin files it uses above the fold, at most these three (about 32 KB Outfit, 58 KB Newsreader and 23 KB Geist Mono); the latin-ext and italic files stay lazy. A bundler resolves them through the `./fonts/*` export:
+
+```ts
+import outfit from "@medquantis/design-system/fonts/outfit/outfit-latin-wght-normal.woff2?url";
+import newsreader from "@medquantis/design-system/fonts/newsreader/newsreader-latin-wght-normal.woff2?url";
+import geistMono from "@medquantis/design-system/fonts/geist-mono/geist-mono-latin-wght-normal.woff2?url";
+```
+
+Each one becomes `<link rel="preload" as="font" type="font/woff2" href="..." crossorigin>` in the page head. The `crossorigin` attribute is required even on the same origin, since fonts are always fetched in CORS mode and a preload without it is downloaded twice. Preload only the faces the first screen shows: an unused preload costs bandwidth and a console warning.
 
 ## Using it from the delivery-comms kit
 

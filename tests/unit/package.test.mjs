@@ -22,6 +22,7 @@ const EXPORTS = [
   "./DESIGN.md",
   "./css/*",
   "./fonts.css",
+  "./fonts/*",
   "./brand/*",
   "./stylelint",
   "./package.json",
@@ -126,6 +127,23 @@ test("README documents CDN use with an exact version and an SRI hash, never a ra
   assert.match(readme, /openssl dgst -sha384 -binary dist\/tokens\.css \| openssl base64 -A/);
   assert.doesNotMatch(readme, /cdn\.jsdelivr\.net\/gh\//);
   assert.doesNotMatch(readme, /—/, "README carries an em dash");
+});
+
+// A page that preloads its fonts imports the woff2 files themselves, so they are an export too.
+const PRELOAD_FONTS = ["outfit/outfit-latin-wght-normal.woff2", "newsreader/newsreader-latin-wght-normal.woff2", "geist-mono/geist-mono-latin-wght-normal.woff2"];
+
+test("README names the font files worth preloading, each one exported and referenced by fonts.css", () => {
+  const section = readmeSection(read("README.md"), "### Preloading the fonts");
+  assert.ok(section, "README has no section Preloading the fonts");
+  const fontsCss = read("fonts/fonts.css");
+  const files = tarball();
+  for (const font of PRELOAD_FONTS) {
+    assert.match(section, new RegExp(`@medquantis/design-system/fonts/${font.replace(/\./g, "\\.")}`), `the section does not name ${font}`);
+    assert.ok(files.includes(`fonts/${font}`), `fonts/${font} does not ship`);
+    assert.ok(fontsCss.includes(font.split("/")[1]), `fonts.css does not use ${font}`);
+  }
+  assert.match(section, /crossorigin/);
+  assert.doesNotMatch(section, /[–—]/, "the preload section carries an em or en dash");
 });
 
 // Increment 05 of Plan-0002: a consumer repo learns from the README how to render with the

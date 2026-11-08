@@ -42,6 +42,7 @@
     "./DESIGN.md": "./dist/DESIGN.md",
     "./css/*": "./css/*",
     "./fonts.css": "./fonts/fonts.css",
+    "./fonts/*": "./fonts/*",
     "./brand/*": "./brand/*",
     "./stylelint": "./stylelint.config.mjs",
     "./package.json": "./package.json"

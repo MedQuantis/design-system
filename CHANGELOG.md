@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/MedQuantis/design-system/compare/v1.4.0...v1.5.0) (2026-11-09)
+
+
+### Features
+
+* **kit:** give dark slides the deep navy brand ground ([#52](https://github.com/MedQuantis/design-system/issues/52)) ([efbf0f3](https://github.com/MedQuantis/design-system/commit/efbf0f3d780729d1f06c6261bd84bd7ca0fb5713))
+
 ## [1.4.0](https://github.com/MedQuantis/design-system/compare/v1.3.0...v1.4.0) (2026-11-08)
 
 

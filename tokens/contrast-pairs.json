@@ -2,6 +2,10 @@
   "$description": "Every foreground and background pairing the design system uses, checked with the WCAG 2.x formula by tests/unit/tokens.test.mjs. use: text 4.5:1, large 3:1 (WCAG large text), non-text 3:1 (WCAG 1.4.11), decorative no minimum (marks that carry no information). bg lists layers top first; the last one is opaque.",
   "pairs": [
     { "fg": "--mq-ink", "bg": "--mq-canvas", "use": "text" },
+    { "fg": "--mq-ink", "bg": "--mq-brand-ground-start", "use": "text", "themes": ["dark"], "note": "Owner ruling 22: text on a brand slide, which is always dark" },
+    { "fg": "--mq-muted", "bg": "--mq-brand-ground-start", "use": "text", "themes": ["dark"], "note": "Owner ruling 22: secondary text on a brand slide, which is always dark" },
+    { "fg": "--mq-tertiary", "bg": "--mq-brand-ground-start", "use": "text", "themes": ["dark"], "note": "Owner ruling 22: footer, legal line and slide number on a brand slide, which is always dark" },
+    { "fg": "--mq-accent-highlight", "bg": "--mq-brand-ground-start", "use": "text", "themes": ["dark"], "note": "Owner ruling 22: highlighted words on a brand slide, which is always dark" },
     { "fg": "--mq-ink", "bg": "--mq-surface", "use": "text" },
     { "fg": "--mq-ink", "bg": "--mq-surface-alt", "use": "text" },
     { "fg": "--mq-ink", "bg": "--mq-accent-pale", "use": "text" },

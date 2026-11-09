@@ -251,6 +251,8 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-border-strong` | `#5d6f91` | Outline of outlined and dashed state marks in documents (badges, legend swatches), 3:1 or more on canvas and surface for WCAG 1.4.11 (increment 07 component need, ADR-0004: states by mark style). |
 | `--mq-panel-start` | `#0f2a5e` | Light end of the navy panel gradient; the worst case for text on navy. |
 | `--mq-panel-end` | `#0a2047` | Dark end of the navy panel gradient. |
+| `--mq-brand-ground-start` | `#0f2a5e` | Owner ruling 22, 2026-11-09: light end of the brand ground, the deep navy of a dark deck's cover, closing slide and section dividers, the same in both themes. |
+| `--mq-brand-ground-end` | `#0a2047` | Owner ruling 22, 2026-11-09: dark end of the brand ground, the same in both themes. |
 | `--mq-on-navy-title` | `#ffffff` | Owner ruling 2, 2026-10-09: titles, figures and icons on navy. |
 | `--mq-on-navy-secondary` | `rgba(255, 255, 255, 0.68)` | Owner ruling 2, 2026-10-09: secondary text and labels on navy. |
 | `--mq-on-navy-second-level` | `#c3cbdc` | Owner ruling 2, 2026-10-09: second-level text on navy. |

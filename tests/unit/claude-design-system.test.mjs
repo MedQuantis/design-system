@@ -145,8 +145,10 @@ test("every text pair of tokens/contrast-pairs.json reaches 4.5:1 with the value
   assert.ok(pairs.length > 0);
   assert.ok(Object.keys(carriedDark).length > 0, "the system carries no dark value");
   for (const pair of pairs) {
-    const ratio = contrastRatio(carried[pair.fg].value, flatten(pair.bg, carried));
-    assert.ok(ratio >= 4.5, `${pair.fg} on ${pair.bg.join(" over ")}: ${ratio.toFixed(2)}:1`);
+    if (pair.themes.includes("light")) {
+      const ratio = contrastRatio(carried[pair.fg].value, flatten(pair.bg, carried));
+      assert.ok(ratio >= 4.5, `${pair.fg} on ${pair.bg.join(" over ")}: ${ratio.toFixed(2)}:1`);
+    }
     if (!pair.themes.includes("dark")) continue;
     const dark = evaluatePair(pair, carried, carriedDark).ratio;
     assert.ok(dark >= 4.5, `dark: ${pair.fg} on ${pair.bg.join(" over ")}: ${dark.toFixed(2)}:1`);

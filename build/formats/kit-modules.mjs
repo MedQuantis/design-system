@@ -14,7 +14,7 @@ import { embeddedFontFaces } from "./kit-contract.mjs";
 
 // The kit contract version this build targets: kit-manifest.json declares it and every module
 // header names it; the tests compare it with the vendored modules.json.
-export const CONTRACT_VERSION = "2.1.0";
+export const CONTRACT_VERSION = "2.2.0";
 
 export const KIT_TOKEN_MODULES = ["core", "dataviz", "type", "space-shape", "brand"];
 export const KIT_CLASS_MODULES = ["document", "slide-frame", "dark", "print"];

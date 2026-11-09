@@ -41,7 +41,7 @@ const READS = {
 };
 // The classes the kit's own dark layer draws from the dark roles (com-slide-deck build.py
 // make_dark_css): a design that styled them would compete with it, so css/kit/dark.css adds no rule.
-const KIT_DRAWN = { dark: ["dark", "dark-key", "dark-accent"] };
+const KIT_DRAWN = { dark: ["dark", "dark-key", "dark-accent", "brand"] };
 const AA = 4.5;
 
 // Custom properties declared outside @font-face, last declaration wins (as the kit reads them).
@@ -96,10 +96,10 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.1.0 from homemade-claude-kit 43c4763", () => {
-  assert.equal(contract().contractVersion, "2.1.0");
+test("the vendored kit contract is 2.2.0 from homemade-claude-kit 91b1178", () => {
+  assert.equal(contract().contractVersion, "2.2.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "43c4763", "plugins/delivery-comms/contract/", "2.1.0"]) {
+  for (const fact of ["homemade-claude-kit", "91b1178", "plugins/delivery-comms/contract/", "2.2.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });
@@ -236,9 +236,10 @@ test("every text pair of the contract reaches WCAG AA, a list pair when any of i
   const light = contract().pairs;
   const dark = contract().modules.dark.pairs;
   assert.equal(light.length, 14); // 13, plus --tertiary on --canvas-bg (kit #148)
-  // Contract 2.1.0: every light pair mirrored onto the dark roles, plus --dark-ink on --dark-key-base and
-  // --dark-accent-text on the dark canvas and surface.
-  assert.equal(dark.length, light.length + 3);
+  // Contract 2.2.0: every light pair mirrored onto the dark roles, plus --dark-ink on --dark-key-base,
+  // --dark-accent-text on the dark canvas and surface, and the ink, muted, tertiary and accent-text roles on
+  // --dark-brand-base (the brand ground).
+  assert.equal(dark.length, light.length + 7);
   for (const pair of [...light, ...dark]) {
     const bg = values.get(pair.bg);
     assert.match(bg ?? "", /^#[0-9a-f]{6}$/i, `${pair.bg} is not a hex colour`);
@@ -387,6 +388,9 @@ test("the class module roles alias semantic tokens by name, each citing its guid
     "--dark-key-base": "{semantic.color.panel-start}",
     "--dark-key-edge": "{semantic.shadow.panel}",
     "--dark-accent-text": "{semantic.color.accent-highlight}",
+    // contract 2.2.0: the brand ground of a cover or closing slide (owner ruling 22)
+    "--dark-brand-bg": "linear-gradient(160deg, {semantic.color.brand-ground-start} 0%, {semantic.color.brand-ground-end} 100%)",
+    "--dark-brand-base": "{semantic.color.brand-ground-start}",
   };
   assert.deepEqual([...byRole.keys()].sort(), Object.keys(expected).sort());
   for (const [role, value] of Object.entries(expected)) {
@@ -426,6 +430,8 @@ test("dist/kit/dark.css: every mirrored role is the dark value of its light role
   assert.equal(values.get("--dark-key-edge"), readJson("dist/themes/dark.json")["--mq-shadow-panel"].value, "the dark --mq-shadow-panel");
   assert.match(values.get("--dark-key-edge"), /^0px 0px 0px 1px rgba\(/, "a 1 px outline, no glow (owner ruling 13)");
   assert.equal(values.get("--dark-accent-text"), "#9fb3e8", "the accent highlight on dark");
+  assert.equal(values.get("--dark-brand-bg"), "linear-gradient(160deg, #0f2a5e 0%, #0a2047 100%)", "owner ruling 22: the deep navy of the MedQuantis decks' covers");
+  assert.equal(values.get("--dark-brand-base"), "#0f2a5e", "the brand ground's lightest point");
 });
 
 test("every dist/kit/*.css header names the contract version of the vendored modules.json", () => {
@@ -490,7 +496,7 @@ test("kit-manifest.json at the package root validates against the vendored schem
   const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
   const data = manifest();
   assert.ok(validate(data), JSON.stringify(validate.errors));
-  assert.equal(data.contractVersion, "2.1.0");
+  assert.equal(data.contractVersion, "2.2.0");
   assert.equal(data.contractVersion, contract().contractVersion);
   assert.equal(data.provides.dark, "./kit/dark.css");
   assert.deepEqual(Object.keys(data.provides).sort(), [...PROVIDED].sort());

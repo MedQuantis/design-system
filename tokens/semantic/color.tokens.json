@@ -78,6 +78,14 @@
         "$value": "{core.color.navy-3}",
         "$description": "Dark end of the navy panel gradient."
       },
+      "brand-ground-start": {
+        "$value": "{core.color.navy-2}",
+        "$description": "Owner ruling 22, 2026-11-09: light end of the brand ground, the deep navy of a dark deck's cover, closing slide and section dividers, the same in both themes."
+      },
+      "brand-ground-end": {
+        "$value": "{core.color.navy-3}",
+        "$description": "Owner ruling 22, 2026-11-09: dark end of the brand ground, the same in both themes."
+      },
       "on-navy": {
         "title": {
           "$value": "{core.color.white}",

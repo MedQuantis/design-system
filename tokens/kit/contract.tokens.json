@@ -380,6 +380,10 @@
         "dark-accent-text": {
           "$value": "{semantic.color.accent-highlight}",
           "$description": "Kit contract 2.1.0: highlighted text on dark, the accent highlight, 8.71:1 on the canvas (owner ruling 18; guidelines/colour.md, Dark theme)."
+        },
+        "dark-brand-base": {
+          "$value": "{semantic.color.brand-ground-start}",
+          "$description": "Kit contract 2.2.0: the background of a brand slide's text pairs, the brand ground's lightest point (owner ruling 22; guidelines/colour.md, Dark theme)."
         }
       },
       "elevation": {
@@ -398,6 +402,11 @@
           "$type": "other",
           "$value": "linear-gradient(160deg, {semantic.color.panel-start} 0%, {semantic.color.panel-end} 100%)",
           "$description": "Kit contract 2.1.0: the fill of a dark slide's key element, the navy panel gradient in the dark theme (owner ruling 14; guidelines/colour.md, Dark theme). A gradient string over the two panel stops, as --print-margin is over two spacing steps."
+        },
+        "dark-brand-bg": {
+          "$type": "other",
+          "$value": "linear-gradient(160deg, {semantic.color.brand-ground-start} 0%, {semantic.color.brand-ground-end} 100%)",
+          "$description": "Kit contract 2.2.0: the ground of a brand slide (`dark brand`: a cover, a closing slide, a section divider), the deep navy of the MedQuantis decks at 160 degrees (owner ruling 22; guidelines/colour.md, Dark theme)."
         }
       }
     },

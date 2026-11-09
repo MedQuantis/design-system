@@ -18,7 +18,7 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules, and the app patterns of dense internal tools |
-| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.1.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
+| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.2.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
 | `dist/DESIGN.md` | Tools and agents outside the kit: the tokens as [Google DESIGN.md](https://github.com/google-labs-code/design.md) front matter, then the guidelines as prose |
 | `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |
 | `plugins/medquantis-design-system/` | The Claude skill, as a Claude Code plugin and as a zip for claude.ai (see Claude skill) |
@@ -150,7 +150,7 @@ python3 <skill-dir>/scripts/design_system.py point @medquantis/design-system@1.2
 
 In the kit's words this is `ux-design-system point @medquantis/design-system@1.2.0`. It writes the pin to `docs/ux/package.json`, checks the package's `kit-manifest.json` through the kit resolver and prints the Dependabot entry (`directory: "/docs/ux"`) that turns later releases into pull requests. Change the pin only with `point`, never by hand, and never add a `docs/ux/tokens.css`. Each render writes `<output>.provenance.json`, which names the module each value came from.
 
-The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declares contract 2.1.0 and the `dark` module, and a 2.0 kit refuses the unknown `dark` module. A project on a 2.0 kit updates the kit before it points at 1.2.0, or stays on 1.1.0.
+The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declares contract 2.1.0 and the `dark` module, and a 2.0 kit refuses the unknown `dark` module. A project on a 2.0 kit updates the kit before it points at 1.2.0, or stays on 1.1.0. From the release that adds the brand ground (owner ruling 22), the manifest declares contract 2.2.0 and the kit modules need delivery-comms 2.2.0 or later; a 2.1 kit refuses the newer contract.
 
 `kit-manifest.json`, at the top of the package, declares all ten modules of the contract, so the kit's base theme fills none of them:
 

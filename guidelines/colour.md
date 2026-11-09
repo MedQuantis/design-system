@@ -134,6 +134,8 @@ Every ratio below is the WCAG 2.x contrast with the dark values, on the dark can
 | `--mq-focus-ring-color` | `#9fb3e8`, the light navy | Focus ring on dark backgrounds | 8.71:1 on canvas |
 | `--mq-panel-start` | `#2f4c8f` | Light end of the navy panel gradient | Background, white 8.23:1 on the panel start |
 | `--mq-panel-end` | `#0f2a5e` | Dark end of the navy panel gradient | Background |
+| `--mq-brand-ground-start` | `#0f2a5e`, the same in light | Light end of the brand ground: the cover, closing slide and section dividers of a dark deck (owner ruling 22) | Background |
+| `--mq-brand-ground-end` | `#0a2047`, the same in light | Dark end of the brand ground (owner ruling 22) | Background |
 | `--mq-shadow-panel` | a 1 px outline, light navy at 35 %, no glow (owner ruling 13) | Navy panels, the report header and the navy KPI tile on dark | Edge of a panel |
 | `--mq-shadow-edge` | the same 1 px outline, light navy at 35 %; none in light | The monogram (`mq-monogram`), the navy KPI tile and a navy brand or app tile, which draw no shadow in light (owner ruling 14) | Edge of a navy mark |
 | `--mq-shadow-live` | a 3 px ring of the dark success green `#6fbf73` at 17 %; in light the success green at 17 % | Apps only: the halo of a live dot, the row in force on a timeline ([app patterns](app-patterns.md)) | Decorative |
@@ -143,6 +145,8 @@ Every ratio below is the WCAG 2.x contrast with the dark values, on the dark can
 Accent text on the pale fills reads `--mq-accent-highlight` in both themes (owner ruling 18): in light it is the accent itself, while on dark the lifted navy would be only 3.57:1 on the pale fill and 4.05:1 on the quiet pale fill. The fills are measured laid over the canvas and over the surface, the worse result counting. The callout tab keeps `--mq-accent` on the quiet pale fill as a non-text mark.
 
 The retired `--mq-dim` and `--mq-accent-on-dark` follow the roles they alias on dark too: `#8f98aa` (tertiary) and `#b2c2ed` (the on-navy accent).
+
+**The brand ground.** The cover, the closing slide and the section dividers of a deck sit on the deep navy of the MedQuantis title pages, a 160 degree gradient from `--mq-brand-ground-start` to `--mq-brand-ground-end`, never on the near-black canvas (owner ruling 22). A brand slide is always a dark slide: its text takes the dark roles, checked against the lighter stop (ink 12.62:1, muted 8.52:1, tertiary 4.78:1, the accent highlight 6.67:1). A slide built with the homemade-claude-kit takes it with `dark brand` on its root.
 
 **The navy panel on dark.** Navy itself fails on a dark canvas (`#0a2463` is 1.25:1 on `#11161f`), so on dark the brand shows as the lifted navy, the light navy and the panel gradient, with no new hue ([ADR-0003](../docs/architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md)). Navy panels, the report header and the navy KPI tile keep the 160 degree gradient between `--mq-panel-start` and `--mq-panel-end`, with the dark values above, and draw `--mq-shadow-panel`: a 1 px light-navy outline, never a glow (owner ruling 13). A navy tile on dark takes the panel gradient, never the lifted accent. Contrast on navy is still checked against the panel start, the lighter stop.
 

@@ -96,10 +96,10 @@ const tarball = () => {
   return packed;
 };
 
-test("the vendored kit contract is 2.2.0 from homemade-claude-kit 91b1178", () => {
+test("the vendored kit contract is 2.2.0 from homemade-claude-kit 95da060", () => {
   assert.equal(contract().contractVersion, "2.2.0");
   const readme = read("tests/fixtures/kit-contract/README.md");
-  for (const fact of ["homemade-claude-kit", "91b1178", "plugins/delivery-comms/contract/", "2.2.0"]) {
+  for (const fact of ["homemade-claude-kit", "95da060", "plugins/delivery-comms/contract/", "2.2.0"]) {
     assert.ok(readme.includes(fact), `tests/fixtures/kit-contract/README.md does not name ${fact}`);
   }
 });

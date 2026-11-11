@@ -14,9 +14,9 @@ review_interval: 30d
 
 ## Summary
 
-[#44](https://github.com/MedQuantis/design-system/issues/44) proposes `@medquantis/ui`, an optional Vue component package published from this repository, and the owner agreed to it on 2026-11-06. ADR-0009, "An optional Vue component package for MedQuantis review screens", records the decision; it is in [#45](https://github.com/MedQuantis/design-system/pull/45), not merged when this plan was written. This plan builds the package.
+[#44](https://github.com/MedQuantis/design-system/issues/44) proposes `@medquantis/ui`, an optional Vue component package published from this repository, and the owner agreed to it on 2026-11-06. [ADR-0009](../../../architecture/decisions/adr-0009-optional-vue-component-package.md) records the decision. This plan builds the package.
 
-This plan is a draft and has had no peer review. It starts when #45 is merged.
+This plan is a draft and has had no peer review.
 
 **Decisions this plan takes as given** (ADR-0009 and the owner rulings on #44):
 
@@ -26,7 +26,7 @@ This plan is a draft and has had no peer review. It starts when #45 is merged.
 - Its own release-please component and version, tagged `ui-vX.Y.Z`. The core keeps its tags.
 - A separate CI job, run only when `packages/ui/**` changes.
 - First components: the app shell; the sign-in, access-refused and error pages; the work queue with status and owner filters; a value beside its source; the decision modal. Keyboard shortcuts come later.
-- Ruling of 2026-11-10: components are **extracted from** the first product's layer, not rewritten. Each generic component moves with its tests; wording, API types and fixtures are replaced with neutral, fictitious ones; each passes the confidentiality gate. First to move: the shell, the work queue (table, status segments, status pill), the decision modal (modal, stepper, footer, history, result card, choice cards) and the overview cards. ADR-0009 as written in #45 still says "rewritten, never copied" and needs that sentence updated.
+- Ruling of 2026-11-10: components are **extracted from** the first product's layer, not rewritten. Each generic component moves with its tests; wording, API types and fixtures are replaced with neutral, fictitious ones; each passes the confidentiality gate. First to move: the shell, the work queue (table, status segments, status pill), the decision modal (modal, stepper, footer, history, result card, choice cards) and the overview cards.
 
 Source: #44 and its rulings; an inventory of 2026-11-11 of the first product's two Nuxt apps (93 components) and of the designed screens of both review apps, kept as a research document in that product's repository. No PRD.
 

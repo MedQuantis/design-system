@@ -53,7 +53,7 @@ ADR-0009 fixes the package and its scope. Building it needs four more rules, pro
 1. **No language in the package.** A component has no user-visible string; every label is a prop or a slot. The first product keeps all its wording in one module, and a guard test there already forbids it elsewhere.
 2. **Runs in both render modes and offline.** Safe under server rendering and under a static single-page build; no remote font, image, icon or script, since one consumer runs under a content security policy that allows none.
 3. **Semver for a component API.** Major: a component, prop, slot or emitted event removed or renamed, or a default that visibly changes consumers. Minor: one added. Patch: a fix with no change to the API or the drawn result. On 0.x a minor version may break; the package stays on 0.x until the first components have each been used by two screens.
-4. **One name prefix.** Components in the first product are named after their screen (`ReviewTable`). A neutral prefix, for example `Mq`, avoids collisions with a consumer's own components. Open: the prefix itself.
+4. **One name prefix: `Mq`** (owner, 2026-11-11). Components in the first product are named after their screen (`ReviewTable`); a neutral prefix avoids collisions with a consumer's own components, and `Mq` is the prefix of the tokens and the CSS (ADR-0006). A component is named by its role in an app (`MqDataTable`, `MqStatusPill`, `MqStatCard`), never by the bare name of a document class of `css/components.css` (`MqTable`, `MqBadge`, `MqCard`), which apps do not load and which is a different thing.
 
 ## Design
 
@@ -68,7 +68,7 @@ packages/
     app/
       app.config.ts     Nuxt UI colours, radius, warning variants
       assets/css/main.css
-      components/
+      components/       Mq*.vue
       utils/            formatters of guidelines/data-patterns.md
     playground/         a Nuxt app that extends the layer and mounts every component
     tests/

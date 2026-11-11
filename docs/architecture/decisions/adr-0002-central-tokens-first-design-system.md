@@ -58,7 +58,7 @@ Consumption:
 - Build-less and Python consumers (website, platform decks, Paracel slides) either reference the CDN URL of a tagged release (possible because the repo is public, ADR-0005) or vendor a release into `vendor/medquantis-ds/` via `make design-sync`, with a `VERSION` file and a CI check that the copy matches the tag; stitched decks inline the CSS either way
 - Dependabot proposes version bumps in each consumer
 
-Framework neutrality (owner, 2026-10-09): the design system ships only framework-neutral outputs (CSS, JSON, Tailwind theme, static assets) and no framework components. Wiring into a component library (Nuxt UI, shadcn/ui, Radix, MUI) belongs to the consumer; when two consumers need the same wiring, it may ship as a separate optional sub-path export generated from the tokens, never as part of the core outputs.
+Framework neutrality (owner, 2026-10-09): the design system ships only framework-neutral outputs (CSS, JSON, Tailwind theme, static assets) and no framework components. Wiring into a component library (Nuxt UI, shadcn/ui, Radix, MUI) belongs to the consumer; when two consumers need the same wiring, it may ship as a separate optional sub-path export generated from the tokens, never as part of the core outputs. [ADR-0009](adr-0009-optional-vue-component-package.md) (2026-11-06) applies this exception to `@medquantis/ui`, an optional Vue component package.
 
 Specialisation rules:
 

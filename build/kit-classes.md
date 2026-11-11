@@ -25,6 +25,7 @@ Where a MedQuantis value has no contract role, the closest role stands in, as no
 | `dark` | `dark` | follows guidelines/colour.md, Dark theme: a dark slide or page; the kit's own layer reads every role from its `--dark-` twin, which the dark module maps to the dark value of the same MedQuantis token (owner ruling 12) |
 | `dark-key` | `dark` | `mq-panel`: the navy panel gradient of the dark theme with its 1 px light-navy outline, no glow, drawn by the kit's own layer from `--dark-key-fill` and `--dark-key-edge` (owner rulings 13 and 14) |
 | `dark-accent` | `dark` | follows guidelines/colour.md, Dark theme: highlighted text in `--mq-accent-highlight`, drawn by the kit's own layer from `--dark-accent-text` (owner ruling 18) |
+| `brand` | `dark` | follows guidelines/colour.md, Dark theme: a cover, closing slide or section divider on the brand ground, the deep navy gradient from `--mq-brand-ground-start` to `--mq-brand-ground-end`, drawn by the kit's own layer from `--dark-brand-bg` (owner ruling 22) |
 | `report` | `print` | `mq-page`: the A4 sheet on the canvas colour in ink, with the 48 and 72 px page margins of `--print-margin` |
 | `report-framing` | `print` | `mq-lead`: Newsreader italic in the secondary text colour, 11.5 pt |
 | `report-kicker` | `print` | `mq-eyebrow`: Geist Mono 500 capitals in navy, 7.5 pt |

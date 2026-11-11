@@ -14,11 +14,11 @@ The single source of the MedQuantis visual identity: design tokens, shared CSS, 
 | `dist/themes/dark.css`, `dist/themes/dark.json` | The dark theme: the semantic roles re-valued under `.dark`, for apps, documents and slides (see Dark theme) |
 | `dist/kit-contract.css` | homemade-claude-kit renderers only, deployed as `docs/ux/tokens.css`; never loaded in an app. Carries the latin fonts as embedded data, since the renderers inline this one file |
 | `css/` | Shared `mq-` components, slide canvas and A4 print styles for build-less media (see Shared CSS) |
-| `fonts/fonts.css` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole |
+| `fonts/fonts.css`, `fonts/` | Self-hosted Outfit, Newsreader and Geist Mono (variable woff2, latin and latin-ext, relative paths); deploy the folder whole. The woff2 files are exported too, for preloading (see Preloading the fonts) |
 | `icons/lucide.min.js` | A pinned Lucide build (version and hash in `icons/manifest.json`) |
 | `brand/` | Monogram, favicon set and wordmark: `wordmark-on-light` and `wordmark-on-navy`, live text for screen and `-print` with outlined text |
 | `guidelines/` | Brand, voice, colour, typography, chart, data and accessibility rules, and the app patterns of dense internal tools |
-| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.1.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
+| `kit-manifest.json`, `dist/kit/` | The homemade-claude-kit delivery-comms renderers (contract 2.2.0): the manifest declares ten modules, each a file in `dist/kit/` (see Using it from the delivery-comms kit) |
 | `dist/DESIGN.md` | Tools and agents outside the kit: the tokens as [Google DESIGN.md](https://github.com/google-labs-code/design.md) front matter, then the guidelines as prose |
 | `dist/llms.txt`, `dist/llms-full.txt` | The guidelines and the token list for language models ([llmstxt.org](https://llmstxt.org/) format), generated from `guidelines/` and the tokens |
 | `plugins/medquantis-design-system/` | The Claude skill, as a Claude Code plugin and as a zip for claude.ai (see Claude skill) |
@@ -128,6 +128,18 @@ echo "sha384-$(openssl dgst -sha384 -binary dist/tokens.css | openssl base64 -A)
 
 Every other shipped file (`css/*.css`, `fonts/fonts.css`, `dist/kit-contract.css`) works the same way, each with its own hash. Fonts referenced by `fonts.css` load relative to it, so serve the stylesheet and its fonts from the same release URL.
 
+### Preloading the fonts
+
+`fonts.css` declares every face with `font-display: swap`, so a browser draws the page in a fallback font and redraws it once the woff2 file arrives; on a slow connection the redraw moves the text and counts as layout shift. A page that wants to avoid it preloads the latin files it uses above the fold, at most these three (about 32 KB Outfit, 58 KB Newsreader and 23 KB Geist Mono); the latin-ext and italic files stay lazy. A bundler resolves them through the `./fonts/*` export:
+
+```ts
+import outfit from "@medquantis/design-system/fonts/outfit/outfit-latin-wght-normal.woff2?url";
+import newsreader from "@medquantis/design-system/fonts/newsreader/newsreader-latin-wght-normal.woff2?url";
+import geistMono from "@medquantis/design-system/fonts/geist-mono/geist-mono-latin-wght-normal.woff2?url";
+```
+
+Each one becomes `<link rel="preload" as="font" type="font/woff2" href="..." crossorigin>` in the page head. The `crossorigin` attribute is required even on the same origin, since fonts are always fetched in CORS mode and a preload without it is downloaded twice. Preload only the faces the first screen shows: an unused preload costs bandwidth and a console warning.
+
 ## Using it from the delivery-comms kit
 
 The homemade-claude-kit renders decks (`com-slide-deck`), artefact views (`com-artefact-viz`) and release notes (`com-release-note`) with the design system a project pins. A project pins this package once, with the kit's `ux-design-system` skill, at an exact version (1.1.0 is the first release with the kit modules; 1.2.0 adds the `dark` module and the classification cell):
@@ -138,7 +150,7 @@ python3 <skill-dir>/scripts/design_system.py point @medquantis/design-system@1.2
 
 In the kit's words this is `ux-design-system point @medquantis/design-system@1.2.0`. It writes the pin to `docs/ux/package.json`, checks the package's `kit-manifest.json` through the kit resolver and prints the Dependabot entry (`directory: "/docs/ux"`) that turns later releases into pull requests. Change the pin only with `point`, never by hand, and never add a `docs/ux/tokens.css`. Each render writes `<output>.provenance.json`, which names the module each value came from.
 
-The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declares contract 2.1.0 and the `dark` module, and a 2.0 kit refuses the unknown `dark` module. A project on a 2.0 kit updates the kit before it points at 1.2.0, or stays on 1.1.0.
+The kit modules of 1.2.0 need delivery-comms 2.1.0 or later: the manifest declares contract 2.1.0 and the `dark` module, and a 2.0 kit refuses the unknown `dark` module. A project on a 2.0 kit updates the kit before it points at 1.2.0, or stays on 1.1.0. From the release that adds the brand ground (owner ruling 22), the manifest declares contract 2.2.0 and the kit modules need delivery-comms 2.2.0 or later; a 2.1 kit refuses the newer contract.
 
 `kit-manifest.json`, at the top of the package, declares all ten modules of the contract, so the kit's base theme fills none of them:
 

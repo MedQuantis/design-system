@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/MedQuantis/design-system/compare/v1.4.0...v1.5.0) (2026-11-09)
+
+
+### Features
+
+* **kit:** give dark slides the deep navy brand ground ([#52](https://github.com/MedQuantis/design-system/issues/52)) ([efbf0f3](https://github.com/MedQuantis/design-system/commit/efbf0f3d780729d1f06c6261bd84bd7ca0fb5713))
+
+## [1.4.0](https://github.com/MedQuantis/design-system/compare/v1.3.0...v1.4.0) (2026-11-08)
+
+
+### Features
+
+* **fonts:** export the woff2 files so a page can preload them ([#50](https://github.com/MedQuantis/design-system/issues/50)) ([93f6f78](https://github.com/MedQuantis/design-system/commit/93f6f785fb101c75038558b3ac122e205981a244))
+
 ## [1.3.0](https://github.com/MedQuantis/design-system/compare/v1.2.0...v1.3.0) (2026-11-03)
 
 

@@ -90,6 +90,10 @@ test("swatches show every semantic colour token and the contrast table every dec
   for (const pair of pairs) {
     const key = `${pair.fg} on ${pair.bg.join(" ")}`;
     const row = page.locator(`[data-pair="${key}"]`);
+    if (!pair.themes.includes("light")) {
+      await expect(row, `${key} is a dark-only pair, shown on dark.html only`).toHaveCount(0);
+      continue;
+    }
     await expect(row, `${key} is not in the contrast table`).toHaveCount(1);
     const { ratio } = evaluatePair(pair, built);
     await expect(row).toContainText(`${ratio.toFixed(2)}:1`);

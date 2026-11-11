@@ -6,7 +6,7 @@ compatibility: Needs Python 3.11 or later (standard library only) to run the scr
 allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/*)
 metadata:
   # x-release-please-start-version
-  version: "1.3.0"
+  version: "1.5.0"
   # x-release-please-end
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: Architecture Decision Record
 title: An optional Vue component package for MedQuantis review screens
-description: The repository publishes @medquantis/ui, an optional Nuxt layer of presentation components on Nuxt UI 4, with its own version and CI job, beside core outputs that stay framework-neutral; components are rewritten for it, never copied from a product.
+description: The repository publishes @medquantis/ui, an optional Nuxt layer of presentation components on Nuxt UI 4, with its own version and CI job, beside core outputs that stay framework-neutral; components are extracted from the first product's layer with their tests, with its wording, API types and fixtures replaced by neutral ones.
 tags: [design-system, components, vue, nuxt, packaging]
 timestamp: 2026-11-06T19:00:00+01:00
 status: draft
@@ -38,7 +38,7 @@ Chosen option: "An optional package in this repository", decided by the owner on
 - **Package:** `@medquantis/ui` in `packages/ui/`, a Nuxt layer on Nuxt UI 4 built from `dist/tokens.css` and the Tailwind theme. It pins `@medquantis/design-system` by exact version; consumers pin `@medquantis/ui` by exact version, bumped by Dependabot.
 - **Scope:** presentation components only. No API calls, no domain vocabulary (no indication, limitation or case component), no app routes. A component enters only if both review screens need it, the promotion tests of ADR-0002 applied to two apps.
 - **Core unchanged:** the core outputs stay framework-neutral, and no core output imports from `packages/ui/`.
-- **Clean origin:** components are rewritten from Paracel's layer with fictitious data, never copied, and pass `make confidentiality-check` like every other file (ADR-0005).
+- **Clean origin:** components are extracted from Paracel's layer, not rewritten (owner, 2026-11-10, [#44](https://github.com/MedQuantis/design-system/issues/44)). Each generic component moves with its tests; Paracel's wording, API types and fixtures are replaced with neutral, fictitious ones, and each component passes `make confidentiality-check` like every other file (ADR-0005), so no Paracel data or domain vocabulary reaches this repository. The Maintainer then imports them from `@medquantis/ui`, so one copy exists.
 - **Releases:** its own release-please component and version, tagged with its component name (for example `ui-v0.1.0`); the core package keeps its tags and versioning.
 - **CI:** a separate job, run only when `packages/ui/**` changes, for the build, type check and tests.
 - **First components:** the app shell, the sign-in, access-refused and error pages, the work queue with status and owner filters, a value beside its source, and the decision modal. Keyboard shortcuts come later.
@@ -48,7 +48,7 @@ Chosen option: "An optional package in this repository", decided by the owner on
 - Good: one library for both review screens; a component fixed here reaches both apps by a version bump.
 - Good: no consumer of the core outputs sees a change; the core's semver rules in [GOVERNANCE.md](../../../GOVERNANCE.md) apply to `@medquantis/ui` separately.
 - Bad: a Nuxt and Nuxt UI toolchain and its npm dependencies enter this repository, with their own updates to review.
-- Bad: rewriting instead of copying costs effort, and the Maintainer must move from its local components to the package.
+- Bad: each component must be made generic before it moves (wording, API types and fixtures replaced), and the Maintainer must move from its local components to the package.
 - Bad: a breaking change in the package is a coordinated release across two apps.
 
 ## Pros and Cons of the Options

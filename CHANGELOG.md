@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/MedQuantis/design-system/compare/v1.5.0...v1.6.0) (2026-11-15)
+
+
+### Features
+
+* **tokens:** add indigo and rose app categorical hues for rule-row parts ([#60](https://github.com/MedQuantis/design-system/issues/60)) ([3b59a42](https://github.com/MedQuantis/design-system/commit/3b59a42817cd3e2c6cc36e0f49f1ff1bd4f6ae45))
+
 ## [1.5.0](https://github.com/MedQuantis/design-system/compare/v1.4.0...v1.5.0) (2026-11-09)
 
 

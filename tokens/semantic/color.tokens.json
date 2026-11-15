@@ -188,6 +188,14 @@
         "teal": {
           "$value": "{core.color.app-teal}",
           "$description": "App categorical hue for marks and fills on the surface only (4.13:1), never text (ADR-0008)."
+        },
+        "indigo": {
+          "$value": "{core.color.app-indigo}",
+          "$description": "App categorical hue: marks, fills and text, 6.33:1 on the surface; a data category, never the info status (ADR-0010)."
+        },
+        "rose": {
+          "$value": "{core.color.app-rose}",
+          "$description": "App categorical hue: marks, fills and text, 6.31:1 on the surface; a data category, never the danger status (ADR-0010)."
         }
       },
       "change": {

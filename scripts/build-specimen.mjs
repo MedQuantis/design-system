@@ -473,8 +473,8 @@ ${contrastTable(statusPairs, tokens, "App status pairings", themeTokens)}
 <h3 class="mq-subtitle specimen-sub">App categorical palette and change types</h3>
 ${
   dark
-    ? `<p class="mq-prose">The app categorical palette and the change-type tokens are light only until their dark values are ruled (ADR-0008).</p>`
-    : `<p class="mq-prose">For many-category app charts and data categories, never a status and never in documents (ADR-0008). Marks sit on the surface; text in a hue meets 4.5:1, so orange text reads <code>--mq-app-cat-orange-text</code>. A change type always carries its sign or its word.</p>
+    ? `<p class="mq-prose">The app categorical palette and the change-type tokens are light only until their dark values are ruled (ADR-0008, ADR-0010).</p>`
+    : `<p class="mq-prose">For many-category app charts and data categories, never a status and never in documents (ADR-0008, ADR-0010). Marks sit on the surface; text in a hue meets 4.5:1, so orange text reads <code>--mq-app-cat-orange-text</code>. A change type always carries its sign or its word.</p>
 ${swatches(tokens, "app-palette", themeTokens)}
 ${contrastTable(palettePairs, tokens, "App palette pairings", themeTokens)}`
 }

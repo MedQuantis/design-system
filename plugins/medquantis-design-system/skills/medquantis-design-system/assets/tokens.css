@@ -43,6 +43,8 @@
   --mq-core-app-blue: #3a8ff5; /** App categorical blue, marks and fills only, 3.27:1 on white (ADR-0008). */
   --mq-core-app-violet: #5a2fbe; /** App categorical violet (ADR-0008). */
   --mq-core-app-teal: #178a91; /** App categorical teal, marks and fills only, 4.13:1 on white (ADR-0008). */
+  --mq-core-app-indigo: #4a5aa8; /** App categorical indigo, a data category in interactive apps only, never the info status; marks, fills and text, 6.33:1 on white (ADR-0010). */
+  --mq-core-app-rose: #b71c5a; /** App categorical rose, a data category in interactive apps only, never the danger status; marks, fills and text, 6.31:1 on white (ADR-0010). */
   --mq-core-font-family-outfit: Outfit, system-ui, -apple-system, 'Segoe UI', sans-serif; /** Outfit, the sans for headings, labels and app UI (Owner ruling 10, 2026-10-09). */
   --mq-core-font-family-newsreader: Newsreader, Georgia, 'Times New Roman', serif; /** Newsreader, the only serif; Georgia and Times New Roman are fallbacks only (Owner ruling 10, 2026-10-09). */
   --mq-core-font-family-geist-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; /** Geist Mono for figures and codes (Owner ruling 10, 2026-10-09). */
@@ -147,6 +149,8 @@
   --mq-app-cat-blue: #3a8ff5; /** App categorical hue for marks and fills on the surface only (3.27:1), never text (ADR-0008). */
   --mq-app-cat-violet: #5a2fbe; /** App categorical hue: marks, fills and text (ADR-0008). */
   --mq-app-cat-teal: #178a91; /** App categorical hue for marks and fills on the surface only (4.13:1), never text (ADR-0008). */
+  --mq-app-cat-indigo: #4a5aa8; /** App categorical hue: marks, fills and text, 6.33:1 on the surface; a data category, never the info status (ADR-0010). */
+  --mq-app-cat-rose: #b71c5a; /** App categorical hue: marks, fills and text, 6.31:1 on the surface; a data category, never the danger status (ADR-0010). */
   --mq-change-added: #1c7e3f; /** Change type added, in apps only, always with its sign or its word: marks, fills and text (ADR-0008). */
   --mq-change-modified: #d78000; /** Change type modified, in apps only, always with its word: marks and fills; its text reads change-modified-text (ADR-0008). */
   --mq-change-modified-text: #a35f00; /** Text of the change type modified (counts, labels), in apps only (ADR-0008). */

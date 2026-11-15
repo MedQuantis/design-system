@@ -136,13 +136,13 @@ Every status colour comes with an icon or a word (WCAG 1.4.1):
 - a flag is a coloured word, and only on the rows that need attention, so normal rows stay quiet;
 - light badge backgrounds come from the 50 and 100 steps of the status scales in `dist/tailwind.css`, never a hand-picked tint.
 
-The red of the old Paracel theme survives only as `--mq-danger` (ADR-0003). The app categorical palette and the change types (`--mq-app-cat-*`, `--mq-change-*`) are data categories, never statuses; their values and rules are in charts (ADR-0008). Other app-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them (specialising).
+The red of the old Paracel theme survives only as `--mq-danger` (ADR-0003). The app categorical palette and the change types (`--mq-app-cat-*`, `--mq-change-*`) are data categories, never statuses; their values and rules are in charts (ADR-0008, ADR-0010). Other app-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them (specialising).
 
 ## App categorical palette (apps only)
 
 Source: guidelines/charts.md
 
-Six hues for interactive apps whose charts or lists show more categories than the four ordered series can carry, and three change types built on them (owner rulings 20 and 21, ADR-0008). They are light only until their dark values are ruled, and they never appear in documents, which keep the ordered palette.
+Eight hues for interactive apps whose charts or lists show more categories than the four ordered series can carry, and three change types built on them (owner rulings 20 and 21, ADR-0008). The indigo and the rose were added for the parts of a rule row (owner ruling of 2026-11-15, ADR-0010). They are light only until their dark values are ruled, and they never appear in documents, which keep the ordered palette.
 
 | Token | Value | Contrast on surface | Allowed for |
 | :-- | :-- | :-- | :-- |
@@ -153,6 +153,8 @@ Six hues for interactive apps whose charts or lists show more categories than th
 | `--mq-app-cat-blue` | `#3a8ff5` | 3.27:1 | Marks and fills only |
 | `--mq-app-cat-violet` | `#5a2fbe` | 8.12:1 | Marks, fills and text |
 | `--mq-app-cat-teal` | `#178a91` | 4.13:1 | Marks and fills only |
+| `--mq-app-cat-indigo` | `#4a5aa8` | 6.33:1 | Marks, fills and text |
+| `--mq-app-cat-rose` | `#b71c5a` | 6.31:1 | Marks, fills and text |
 
 | Change type | Token | Reads |
 | :-- | :-- | :-- |
@@ -160,15 +162,24 @@ Six hues for interactive apps whose charts or lists show more categories than th
 | Modified | `--mq-change-modified`; its text `--mq-change-modified-text` | The orange; the orange text |
 | Removed | `--mq-change-removed` | The vermillion |
 
-Between the six hues and navy series 1, the smallest CIEDE2000 distance is 17.4 under normal vision, 11.9 under protanopia, 12.9 under deuteranopia and 8.4 under tritanopia (green and teal); the token test holds those floors.
+Between the six hues of ADR-0008 and navy series 1, the smallest CIEDE2000 distance is 17.4 under normal vision, 11.9 under protanopia, 12.9 under deuteranopia and 8.4 under tritanopia (green and teal); the token test holds those floors. The indigo and the rose stay out of that set: the indigo sits 13.7 from the violet, so they are not added to a many-category chart beside it.
+
+| Rule row part | Token |
+| :-- | :-- |
+| The condition (when the rule applies) | `--mq-app-cat-indigo` |
+| What is paid | `--mq-app-cat-orange-text` |
+| How much | `--mq-app-cat-rose` |
+| The rule's own quoted text | `--mq-tertiary` |
+
+The three part hues and the tertiary grey stay apart by CIEDE2000 24.0 under normal vision, 15.1 under protanopia, 9.8 under deuteranopia (rose and grey) and 8.9 under tritanopia (orange text and rose); the token test holds 15, 10, 9 and 8. The indigo and the rose share their lightness, so each part also carries its label.
 
 Rules:
 
 - A one-series chart stays navy (`--mq-chart-series-1`). Up to four series, the ordered palette applies in apps too; the categorical hues are for charts of five or more categories and for data categories.
 - Fix each hue to its category across every view of the app; never let a charting library rotate through the palette.
-- No series uses a status token. The vermillion is a data category ("removed from the list"), not an error: `--mq-danger` stays for errors. The green, the orange, the orange text and the vermillion sit CIEDE2000 3.3, 2.2, 2.8 and 7.9 from `--mq-success`, `--mq-warning-fill`, `--mq-warning` and `--mq-danger`, so code tells them apart by token name and the screen by the word or sign each carries, never by hue.
+- No series uses a status token. The vermillion is a data category ("removed from the list"), not an error: `--mq-danger` stays for errors. The green, the orange, the orange text and the vermillion sit CIEDE2000 3.3, 2.2, 2.8 and 7.9 from `--mq-success`, `--mq-warning-fill`, `--mq-warning` and `--mq-danger`, so code tells them apart by token name and the screen by the word or sign each carries, never by hue. The indigo sits 8.5 from `--mq-info` and the rose 17.4 from `--mq-danger`, under the same rule.
 - Marks sit on the surface (`--mq-surface`), where every hue meets 3:1 and needs no outline. On the canvas the orange falls to 2.88:1, and on the recessed surface the orange and the blue fall below 3:1, so a chart in these hues sits in a white card.
-- Text in a hue meets 4.5:1: the green, the vermillion and the violet may be text, orange text reads `--mq-app-cat-orange-text`, and the blue and the teal are never text.
+- Text in a hue meets 4.5:1: the green, the vermillion, the violet, the indigo and the rose may be text, orange text reads `--mq-app-cat-orange-text`, and the blue and the teal are never text.
 - Never colour alone: the green and the vermillion have almost the same lightness, so in greyscale they cannot be told apart. Every mark carries a direct label or a legend entry, and a change type its sign (+, −) or its word; label the green and the teal directly where they touch.
 - A change type keeps its hue wherever a change is listed (badge, dot, filter, count) and keeps its mark style on top: an added value with +, a removed value struck through.
 
@@ -941,6 +952,8 @@ Generated from dist/tokens.json. Sizes, spacing, radii and fonts: run `python3 s
 | `--mq-app-cat-blue` | `#3a8ff5` | App categorical hue for marks and fills on the surface only (3.27:1), never text (ADR-0008). |
 | `--mq-app-cat-violet` | `#5a2fbe` | App categorical hue: marks, fills and text (ADR-0008). |
 | `--mq-app-cat-teal` | `#178a91` | App categorical hue for marks and fills on the surface only (4.13:1), never text (ADR-0008). |
+| `--mq-app-cat-indigo` | `#4a5aa8` | App categorical hue: marks, fills and text, 6.33:1 on the surface; a data category, never the info status (ADR-0010). |
+| `--mq-app-cat-rose` | `#b71c5a` | App categorical hue: marks, fills and text, 6.31:1 on the surface; a data category, never the danger status (ADR-0010). |
 | `--mq-change-added` | `#1c7e3f` | Change type added, in apps only, always with its sign or its word: marks, fills and text (ADR-0008). |
 | `--mq-change-modified` | `#d78000` | Change type modified, in apps only, always with its word: marks and fills; its text reads change-modified-text (ADR-0008). |
 | `--mq-change-modified-text` | `#a35f00` | Text of the change type modified (counts, labels), in apps only (ADR-0008). |

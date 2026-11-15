@@ -96,7 +96,7 @@ Every status colour comes with an icon or a word (WCAG 1.4.1):
 - a flag is a coloured word, and only on the rows that need attention, so normal rows stay quiet;
 - light badge backgrounds come from the 50 and 100 steps of the status scales in `dist/tailwind.css`, never a hand-picked tint.
 
-The red of the old Paracel theme survives only as `--mq-danger` ([ADR-0003](../docs/architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md)). The app categorical palette and the change types (`--mq-app-cat-*`, `--mq-change-*`) are data categories, never statuses; their values and rules are in [charts](charts.md) ([ADR-0008](../docs/architecture/decisions/adr-0008-apps-have-a-categorical-palette.md)). Other app-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them ([specialising](specialising.md)).
+The red of the old Paracel theme survives only as `--mq-danger` ([ADR-0003](../docs/architecture/decisions/adr-0003-navy-is-the-single-brand-accent.md)). The app categorical palette and the change types (`--mq-app-cat-*`, `--mq-change-*`) are data categories, never statuses; their values and rules are in [charts](charts.md) ([ADR-0008](../docs/architecture/decisions/adr-0008-apps-have-a-categorical-palette.md), [ADR-0010](../docs/architecture/decisions/adr-0010-apps-gain-indigo-and-rose-categorical-hues.md)). Other app-specific hues, such as the annotation colours of regulatory text, stay local in the app under its own prefix until a second consumer needs them ([specialising](specialising.md)).
 
 ## Chart colours
 

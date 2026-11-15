@@ -440,7 +440,8 @@ test("the generated tokens.css, tokens.json, tailwind.css and kit-contract.css n
 });
 
 // The app categorical palette and the change-type tokens (#35, ADR-0008): vivid hues for
-// many-category app charts and data categories, light only, never in documents.
+// many-category app charts and data categories, light only, never in documents. Indigo and rose
+// colour the parts of a rule row (ADR-0010).
 const APP_CAT = {
   "--mq-app-cat-green": "#1c7e3f",
   "--mq-app-cat-orange": "#d78000",
@@ -449,6 +450,8 @@ const APP_CAT = {
   "--mq-app-cat-blue": "#3a8ff5",
   "--mq-app-cat-violet": "#5a2fbe",
   "--mq-app-cat-teal": "#178a91",
+  "--mq-app-cat-indigo": "#4a5aa8",
+  "--mq-app-cat-rose": "#b71c5a",
 };
 const CHANGE = {
   "--mq-change-added": "--mq-app-cat-green",
@@ -457,7 +460,7 @@ const CHANGE = {
   "--mq-change-removed": "--mq-app-cat-vermillion",
 };
 
-test("the app categorical palette carries the values of ADR-0008, and each change type reads its hue", () => {
+test("the app categorical palette carries the values of ADR-0008 and ADR-0010, and each change type reads its hue", () => {
   for (const [name, hex] of Object.entries(APP_CAT)) assert.equal(value(name), hex, name);
   const built = builtTokens();
   for (const [name, hue] of Object.entries(CHANGE)) {
@@ -467,8 +470,33 @@ test("the app categorical palette carries the values of ADR-0008, and each chang
   assert.deepEqual(
     Object.keys(built).filter((name) => /^--mq-(app-cat|change)-/.test(name)).sort(),
     [...Object.keys(APP_CAT), ...Object.keys(CHANGE)].sort(),
-    "no app palette or change-type token beyond ADR-0008",
+    "no app palette or change-type token beyond ADR-0008 and ADR-0010",
   );
+  for (const hue of ["indigo", "rose"]) assert.match(built[`--mq-app-cat-${hue}`].description, /ADR-0010/, `--mq-app-cat-${hue} must cite ADR-0010`);
+});
+
+test("the rule-part hues, indigo, orange text and rose, stay apart with the tertiary grey of the rule's quotes (ADR-0010)", async () => {
+  const { minPairwiseDistance } = await loadColorMath();
+  const parts = ["--mq-app-cat-indigo", "--mq-app-cat-orange-text", "--mq-app-cat-rose", "--mq-tertiary"].map(value);
+  // Floors sit below the measured minimums: 24.0 normal (indigo and grey), 15.1 protanopia,
+  // 9.8 deuteranopia and 8.9 tritanopia. Deuteranopia holds 9, under the palette's 10, because
+  // the rose loses its red and nears the grey (9.8); the word of each part carries the rest.
+  // Achromatopsia is not tested: indigo and rose share their lightness (0.1), so the parts
+  // never carry meaning by colour alone.
+  const floors = { normal: 15, protanopia: 10, deuteranopia: 9, tritanopia: 8 };
+  for (const [kind, floor] of Object.entries(floors)) {
+    const { distance, pair } = minPairwiseDistance(parts, kind);
+    assert.ok(distance >= floor, `${kind}: ${pair.join(" and ")} are only ${distance.toFixed(2)} apart (CIEDE2000, minimum ${floor})`);
+  }
+});
+
+test("indigo and rose are data categories, never a status: no status colour shares their value (ADR-0010)", () => {
+  const built = builtTokens();
+  const status = Object.keys(built).filter((name) => /^--mq-(success|warning|danger|info)(-|$)/.test(name) && built[name].type === "color");
+  assert.ok(status.length >= 4, "the status colours are missing");
+  for (const hue of ["--mq-app-cat-indigo", "--mq-app-cat-rose"]) {
+    for (const name of status) assert.notEqual(value(hue).toLowerCase(), value(name).toLowerCase(), `${hue} equals ${name}`);
+  }
 });
 
 test("the six categorical hues stay apart, with navy series 1 beside them, under normal vision and colour-vision deficiency", async () => {
@@ -494,14 +522,14 @@ test("the app palette is light only: declared pairs on the surface, kept out of 
   const pairs = readPairs(pairsFile);
   const find = (fg, bg, use) => pairs.find((pair) => pair.fg === fg && pair.bg.length === 1 && pair.bg[0] === bg && pair.use === use);
   // A text pair covers the hue's marks too, since each pairing is declared once at its strictest use.
-  for (const hue of ["green", "orange", "vermillion", "blue", "violet", "teal"]) {
+  for (const hue of ["green", "orange", "vermillion", "blue", "violet", "teal", "indigo", "rose"]) {
     const name = `--mq-app-cat-${hue}`;
     const pair = find(name, "--mq-surface", "text") ?? find(name, "--mq-surface", "non-text");
     assert.ok(pair, `${name} on --mq-surface is not declared`);
     assert.deepEqual(pair.themes, ["light"]);
   }
   for (const hue of ["orange", "blue", "teal"]) assert.ok(find(`--mq-app-cat-${hue}`, "--mq-surface", "non-text"), `--mq-app-cat-${hue} is a mark on the surface, never text`);
-  for (const fg of ["--mq-app-cat-green", "--mq-app-cat-orange-text", "--mq-app-cat-vermillion", "--mq-app-cat-violet"]) {
+  for (const fg of ["--mq-app-cat-green", "--mq-app-cat-orange-text", "--mq-app-cat-vermillion", "--mq-app-cat-violet", "--mq-app-cat-indigo", "--mq-app-cat-rose"]) {
     for (const bg of ["--mq-surface", "--mq-canvas"]) assert.ok(find(fg, bg, "text"), `${fg} on ${bg} is not declared as text`);
   }
   const dark = JSON.parse(readDist(join(root, "dist/themes/dark.json")));

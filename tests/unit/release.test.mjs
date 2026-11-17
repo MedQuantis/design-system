@@ -138,8 +138,14 @@ test("release-please tracks @medquantis/ui as its own component tagged ui-vX.Y.Z
   assert.equal(ui["include-component-in-tag"], true, "tags must read ui-v0.1.0");
   assert.equal(ui["changelog-path"], "CHANGELOG.md", "its own changelog, relative to packages/ui");
   assert.deepEqual(rootPackage()["exclude-paths"], [UI]);
-  assert.equal(readJson(".release-please-manifest.json")[UI], "0.0.0", "the first feat(ui) commit must propose 0.1.0");
-  assert.equal(readJson(`${UI}/package.json`).version, "0.0.0");
+  // With no ui-v* tag yet, release-please starts from initial-version (1.0.0 by default), never
+  // from the manifest's 0.0.0; the package stays on 0.x (ADR-0009 §Package rules), where a
+  // breaking change bumps the minor.
+  assert.equal(ui["initial-version"], "0.1.0", "the first release must be 0.1.0, not 1.0.0");
+  assert.equal(ui["bump-minor-pre-major"], true, "on 0.x a breaking change bumps the minor");
+  const version = readJson(".release-please-manifest.json")[UI];
+  assert.equal(readJson(`${UI}/package.json`).version, version, "package.json follows the manifest");
+  assert.match(version, /^0\./, "the package stays on 0.x");
   for (const entry of Object.values(config().packages)) assert.equal(entry["release-as"], undefined, "no release-as pins");
   assert.equal(Object.keys(config().packages).length, 2);
 });

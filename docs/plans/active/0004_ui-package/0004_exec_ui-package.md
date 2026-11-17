@@ -95,14 +95,14 @@ packages/
 
 ## Increment Plan
 
-**Overall Status:** pending
-**Current Increment:** 01
+**Overall Status:** in-progress
+**Current Increment:** 02
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
 ### Increment 01: the workspace
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

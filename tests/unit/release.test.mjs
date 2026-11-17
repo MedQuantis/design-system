@@ -117,3 +117,11 @@ test("publish uses npm trusted publishing (OIDC) with provenance, no token, and 
     assert.match(checkout[1], /persist-credentials: false/);
   }
 });
+
+test("the root release-please entry keeps its tag format and gains no component while the UI package is private", () => {
+  const pkg = rootPackage();
+  assert.equal(pkg["include-component-in-tag"], false, "core tags stay vX.Y.Z");
+  assert.equal(pkg.component, undefined, "the root entry has no component");
+  assert.equal(pkg["package-name"], "@medquantis/design-system");
+  assert.equal(pkg["changelog-path"], "CHANGELOG.md");
+});

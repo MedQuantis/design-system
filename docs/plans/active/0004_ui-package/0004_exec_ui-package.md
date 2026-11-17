@@ -4,9 +4,9 @@ title: "Plan-0004: the optional Vue component package (@medquantis/ui 0.x)"
 description: Builds @medquantis/ui, the optional Nuxt layer of presentation components that ADR-0009 allows, as a second package of this repository with its own release track and CI job; the Nuxt UI theme wiring first, then the components extracted from the first product's layer in the order the owner ruled on issue 44.
 tags: [design-system, apps, components, vue, nuxt, packaging, release]
 timestamp: 2026-11-11T00:00:00+01:00
-status: draft
+status: accepted
 owner: Victor Hueni
-last_reviewed: 2026-11-11
+last_reviewed: 2026-11-17
 review_interval: 30d
 ---
 
@@ -16,7 +16,7 @@ review_interval: 30d
 
 [#44](https://github.com/MedQuantis/design-system/issues/44) proposes `@medquantis/ui`, an optional Vue component package published from this repository, and the owner agreed to it on 2026-11-06. [ADR-0009](../../../architecture/decisions/adr-0009-optional-vue-component-package.md) records the decision. This plan builds the package.
 
-This plan is a draft and has had no peer review.
+The owner accepted this plan and ADR-0009 on 2026-11-17, with the four package rules below moved into the ADR, and declined a peer review before Increment 01. Increments 01 to 03 run autonomously, one pull request each; Increment 04 waits for the owner's go, because it publishes to npm and changes a consumer.
 
 **Decisions this plan takes as given** (ADR-0009 and the owner rulings on #44):
 
@@ -46,14 +46,9 @@ Measured on 2026-11-11 in the first product:
 - Nine more screens of that app are designed. Ranked by how many of them draw each block: navigation with groups and counts (9), data table (8), filter select with counts (7), segmented status control (7), status pill (7), code tile (6), search field (6), page header with breadcrumb (5), key-value list (5).
 - The second review app's approval prototype shares about half of its building blocks with those screens: shell, table, filters, status pill, decision window, stepper, tabs, timeline.
 
-## Proposed additions to ADR-0009
+## Package rules
 
-ADR-0009 fixes the package and its scope. Building it needs four more rules, proposed here for the owners to add to the ADR or to `GOVERNANCE.md`:
-
-1. **No language in the package.** A component has no user-visible string; every label is a prop or a slot. The first product keeps all its wording in one module, and a guard test there already forbids it elsewhere.
-2. **Runs in both render modes and offline.** Safe under server rendering and under a static single-page build; no remote font, image, icon or script, since one consumer runs under a content security policy that allows none.
-3. **Semver for a component API.** Major: a component, prop, slot or emitted event removed or renamed, or a default that visibly changes consumers. Minor: one added. Patch: a fix with no change to the API or the drawn result. On 0.x a minor version may break; the package stays on 0.x until the first components have each been used by two screens.
-4. **One name prefix: `Mq`** (owner, 2026-11-11). Components in the first product are named after their screen (`ReviewTable`); a neutral prefix avoids collisions with a consumer's own components, and `Mq` is the prefix of the tokens and the CSS (ADR-0006). A component is named by its role in an app (`MqDataTable`, `MqStatusPill`, `MqStatCard`), never by the bare name of a document class of `css/components.css` (`MqTable`, `MqBadge`, `MqCard`), which apps do not load and which is a different thing.
+ADR-0009 §Package rules holds the four rules this plan proposed and the owner accepted on 2026-11-17: no language in the package, both render modes and offline, semver for a component API, the `Mq` prefix. The guards of Increment 03 enforce the first two; Increment 10 adds the third to `GOVERNANCE.md`.
 
 ## Design
 
@@ -98,22 +93,171 @@ packages/
 - `extends: ['@medquantis/ui']`, with exact pins on `@medquantis/ui` and `@medquantis/design-system`.
 - The consumer keeps its wording, domain types, routes, data fetching, permissions and domain components.
 
-## Increments
+## Increment Plan
 
-| # | Change set | Gate |
-| :-- | :-- | :-- |
-| 01 | Workspace: root `workspaces`, empty `packages/ui` with its `package.json`; `release.test.mjs`, `package.test.mjs` and `workflows.test.mjs` extended to assert both packages | `make check` green; the core tarball is byte-identical to the one before |
-| 02 | Release track and CI: second release-please entry, `release.yml` for two packages, the `packages/ui/**` CI job, Dependabot entry | unit tests on the release and workflow shape; a dry-run pack of both packages |
-| 03 | The layer with the theme only: `app.config.ts`, `main.css`, `ui` and `icon` settings, playground with one page, the guards | playground builds in both modes; the guards pass |
-| 04 | Release 0.1.0 and consume it in both review apps | in a consumer's built output: the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy. This is the riskiest unknown and it is tested before any component moves |
-| 05 | Shell: app shell, navigation with groups and counts, user menu, environment banner | mounted tests moved with the components; axe on the playground |
-| 06 | Sign-in, access-refused and error pages; empty state | mounted tests; axe |
-| 07 | Work queue: data table (columns, cell slots, sort, keyboard rows, loading rows, load more, empty), status segments, status and owner filters, status pill | mounted tests; axe |
-| 08 | Decision modal: window frame with queue navigator, panes, tabs and foldable sections; stepper; footer action bar; history timeline; result card; choice cards | mounted tests; axe |
-| 09 | A value beside its source; overview cards (stat card, segmented bar) | mounted tests; axe |
-| 10 | `guidelines/app-patterns.md` and `guidelines/specialising.md` point each pattern to its component; `GOVERNANCE.md` gains the component semver rule; README section on the package | `guidelines.test.mjs` and `package.test.mjs` |
+**Overall Status:** pending
+**Current Increment:** 01
+
+Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
+
+### Increment 01: the workspace
+
+**Status:** pending
+
+Scope:
+
+1. **Write first, expect red:**
+   - extend `tests/unit/package.test.mjs`: the root `package.json` declares `"workspaces": ["packages/*"]`; `packages/ui/package.json` exists with `name` `@medquantis/ui`, `version` `0.0.0`, `"private": true` (dropped in Increment 02, when the release track exists), `type` `module` and `engines.node` equal to the root's; the core tarball's file list (`npm pack --dry-run --json --ignore-scripts` at the root) holds nothing under `packages/`.
+   - extend `tests/unit/release.test.mjs`: the root release-please entry and its tag format (`vX.Y.Z`, no component) are unchanged.
+2. Root `package.json` gains `workspaces`; `packages/ui/package.json` as tested; `package-lock.json` regenerated with `npm install --package-lock-only --ignore-scripts`, gaining only the workspace entry.
+3. The table row named `workflows.test.mjs` here; nothing in the workflows changes until Increment 02, so its test moves there.
+
+Primary files:
+
+1. `package.json`, `package-lock.json`, `packages/ui/package.json`
+2. `tests/unit/package.test.mjs`, `tests/unit/release.test.mjs`
+
+Test gate:
+
+1. `MQ_DENYLIST=<the real deny-list> make check`
+2. The core tarball against the one packed from `main` before the increment (`npm pack --ignore-scripts` on both, then unpack and diff): the same files, each byte-identical, except `package/package.json`, whose only difference is the `workspaces` key.
+
+Exit criteria:
+
+1. npm sees two packages in one workspace, and the core package ships what it shipped before.
+
+Prediction:
+
+1. New: `packages/ui/package.json`.
+2. Changed: `package.json` (the `workspaces` key only), `package-lock.json` (the workspace entry only), the two test files.
+3. Byte-identical: everything under `dist/`, `kit-manifest.json`, the skill.
+
+### Increment 02: the release track
+
+**Status:** pending
+
+Scope:
+
+1. **Write first, expect red:**
+   - extend `tests/unit/release.test.mjs`: `release-please-config.json` has a `packages/ui` entry (`release-type` `node`, `package-name` `@medquantis/ui`, `component` `ui`, `include-component-in-tag` `true`, its own `CHANGELOG.md`); the root entry gains `exclude-paths: ["packages/ui"]`, so a commit under `packages/ui/` never releases the core; `.release-please-manifest.json` holds `"packages/ui": "0.0.0"`, so the first `feat(ui)` commit proposes 0.1.0; no `release-as` anywhere.
+   - extend `tests/unit/workflows.test.mjs`: `release.yml` reads the root outputs and the `packages/ui--` outputs separately; a core release packs and publishes the root tarball as today; a `ui` release runs the same gate on the tagged commit, packs `npm pack --workspace packages/ui --ignore-scripts`, uploads it under its own artifact name and publishes it with provenance from a job of its own, with only `id-token: write` and `contents: read`.
+   - extend `tests/unit/package.test.mjs`: `packages/ui/package.json` is no longer private and has `publishConfig.access` `public`, `repository.directory` `packages/ui` and a `files` allow-list.
+2. `release-please-config.json`, `.release-please-manifest.json`, `release.yml` as tested; `packages/ui/package.json` as tested, with an empty `files` allow-list that Increment 03 fills.
+3. `.github/dependabot.yml`: the npm entry gains a `nuxt` group (`nuxt`, `@nuxt/*`, `vue`, `reka-ui`, `tailwindcss`, `@tailwindcss/*`), so the Nuxt toolchain moves in one pull request.
+4. The `packages/ui/**` CI job and its Makefile target move to Increment 03: until the layer exists there is nothing for them to run.
+5. Check the output names of `googleapis/release-please-action` v5 for a path other than `.` against its documentation before writing `release.yml`, and record what was checked in `progress.txt`.
+
+Primary files:
+
+1. `release-please-config.json`, `.release-please-manifest.json`, `.github/workflows/release.yml`, `.github/dependabot.yml`, `packages/ui/package.json`
+2. `tests/unit/release.test.mjs`, `tests/unit/workflows.test.mjs`, `tests/unit/package.test.mjs`
+
+Test gate:
+
+1. `MQ_DENYLIST=<the real deny-list> make check` (actionlint and zizmor included)
+2. `npm pack --dry-run --ignore-scripts` at the root lists the files of Increment 01's gate; `npm pack --dry-run --workspace packages/ui --ignore-scripts` packs only `package.json`.
+
+Exit criteria:
+
+1. A `feat(ui)` commit on `main` would open a release pull request for `ui-v0.1.0` and leave the core version where it is.
+
+Prediction:
+
+1. New: `packages/ui/CHANGELOG.md` only if release-please needs it to exist (record which).
+2. Changed: the five primary files and the three test files.
+3. Byte-identical: everything under `dist/`, `kit-manifest.json`, the skill, `ci.yml`.
+
+### Increment 03: the layer with the theme only
+
+**Status:** pending
+
+Scope:
+
+1. **Write first, expect red:**
+   - new `packages/ui/tests/unit/guards.test.ts` (Vitest, Node environment), the guards over the package source (`nuxt.config.ts`, `app/`): no colour, font or shadow literal and no assignment to a `--mq-*` property (port the first product's `design-tokens.test.ts`, with its wording replaced); no `http:` or `https:` URL and no `@import` or `url()` that leaves the package; no text node in a component template and no string literal passed to a `label`, `title`, `placeholder` or `aria-label` attribute. Each guard is seen failing once on a planted fixture under `tests/fixtures/`, then on nothing.
+   - new `packages/ui/tests/nuxt/theme.test.ts` (Vitest, `nuxt` environment from `@nuxt/test-utils`): a Nuxt app built from the layer resolves `appConfig.ui.colors` to the design system's names (`primary` navy, `error` danger, `neutral` stone) and mounts a `UButton` of colour `warning` with the warning fill classes.
+   - extend `tests/unit/package.test.mjs`: `packages/ui/package.json` pins `@medquantis/design-system` and `@nuxt/ui` at exact versions, declares `nuxt` as a peer dependency, has `main` `./nuxt.config.ts`, and its `files` hold `nuxt.config.ts` and `app/` and nothing under `playground/` or `tests/`.
+2. `packages/ui/nuxt.config.ts`, `app/app.config.ts`, `app/assets/css/main.css`: the theme wiring of the first product's layer (colour aliases, radius steps, warning variants, the `ui` and `icon` settings: no colour mode, every icon bundled, no Iconify API), extracted with every product name, alias, path and comment that names that product removed. The layer names its own files through `import.meta.url`, never `~`.
+3. `packages/ui/playground/`: a Nuxt app that `extends` the layer, with one page showing the themed Nuxt UI components (buttons in every colour and variant, alert, badge, input, modal) with fictitious text.
+4. `packages/ui` gets its scripts (`lint`, `typecheck`, `test`, `build`, `generate`) and its ESLint, TypeScript and Vitest configuration, mirrored on the first product's layer.
+5. `Makefile`: a `ui-check` target that installs with the shared `npm ci --ignore-scripts`, runs `nuxi prepare` for the layer and the playground explicitly, then lint, type check, both Vitest projects, the playground built server-rendered (`nuxi build`) and as a static single-page app (`nuxi generate`). `make check` is unchanged and keeps scanning `packages/ui/` for confidentiality.
+6. `.github/workflows/ci.yml`: a `ui` job running `make ui-check`, only when the pull request or push changes `packages/ui/**`, `package.json` or `package-lock.json` (a changed-files step in the job, not a workflow `paths:` filter, so the workflow always runs); never added to the required checks. `release.yml`'s `ui` check job runs `make ui-check` as well as `make check`.
+7. If `npm ci --ignore-scripts` leaves a native binary of the toolchain uninstalled (esbuild, the Tailwind oxide engine, `@parcel/watcher`), name it in `progress.txt` and fix it with the narrowest step (an explicit `npm rebuild <package>` in `ui-check`), never by dropping `--ignore-scripts`.
+
+Primary files:
+
+1. `packages/ui/` (layer, playground, configuration, tests), `Makefile`, `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `package-lock.json`
+2. `packages/ui/tests/unit/guards.test.ts`, `packages/ui/tests/nuxt/theme.test.ts`, `tests/unit/package.test.mjs`, `tests/unit/workflows.test.mjs`
+
+Test gate:
+
+1. `make ui-check`
+2. `MQ_DENYLIST=<the real deny-list> make check`
+3. The core tarball as in Increment 01's gate, against the one packed after Increment 02: identical.
+
+Exit criteria:
+
+1. The playground builds in both modes from the layer alone, and the guards pass on the package source.
+
+Prediction:
+
+1. New: everything under `packages/ui/` other than `package.json`.
+2. Changed: `packages/ui/package.json`, `package-lock.json`, `Makefile`, `ci.yml`, `release.yml`, `.gitignore` (the playground's `.nuxt/`, `.output/` and `dist/`), the two root test files.
+3. Byte-identical: everything under `dist/`, `kit-manifest.json`, the skill, the core tarball.
+
+### Increment 04: release 0.1.0 and consume it
+
+**Status:** blocked
+
+Waits for the owner's go (2026-11-17), and for these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
+
+### Increment 05: shell
+
+**Status:** pending
+
+App shell, navigation with groups and counts, user menu, environment banner. Gate: mounted tests moved with the components; axe on the playground.
+
+### Increment 06: sign-in, access-refused and error pages
+
+**Status:** pending
+
+The three pages and the empty state. Gate: mounted tests; axe.
+
+### Increment 07: work queue
+
+**Status:** pending
+
+Data table (columns, cell slots, sort, keyboard rows, loading rows, load more, empty), status segments, status and owner filters, status pill. Gate: mounted tests; axe.
+
+### Increment 08: decision modal
+
+**Status:** pending
+
+Window frame with queue navigator, panes, tabs and foldable sections; stepper; footer action bar; history timeline; result card; choice cards. Gate: mounted tests; axe.
+
+### Increment 09: a value beside its source, overview cards
+
+**Status:** pending
+
+The value beside its source; stat card and segmented bar. Gate: mounted tests; axe.
+
+### Increment 10: guidelines, governance and README
+
+**Status:** pending
+
+`guidelines/app-patterns.md` and `guidelines/specialising.md` point each pattern to its component; `GOVERNANCE.md` gains the component semver rule of ADR-0009; a README section on the package. Gate: `guidelines.test.mjs` and `package.test.mjs`.
 
 Later, each when both review screens need it: keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
+
+## Delivery Rules
+
+1. One increment per commit and per pull request, branched from an up-to-date `main` once the previous increment has merged; merged when CI is green (owner, 2026-11-17, for Increments 01 to 03).
+2. **Commit scope:** `ui`. Types: `build` (01), `ci` (02), `feat` (03, the first commit that releases the package). Trailer `Refs: Plan-0004 increment NN`, never the plan number in the scope.
+3. Tests named in Scope are written or extended first and observed failing before the implementation lands; `progress.txt` records the red run and the green run.
+4. The confidentiality check with the real deny-list runs in every gate (`MQ_DENYLIST` set); fixtures and playground text are fictitious only.
+5. A change to an existing output that its `Prediction:` does not name blocks the increment.
+6. Foreground gates only; every iteration ends with a definitive state.
+7. No em dash in prose; never hard-wrap markdown.
 
 ## Risks
 

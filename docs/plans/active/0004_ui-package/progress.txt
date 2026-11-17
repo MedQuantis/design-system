@@ -1,0 +1,9 @@
+# Plan-0004 progress
+
+One entry per increment: red run (failing test names), green run, gates, owner actions.
+
+## Plan accepted (2026-11-17)
+
+- Owner accepted Plan-0004 and ADR-0009 on 2026-11-17; the four proposed package rules moved into ADR-0009 §Package rules. No peer review before Increment 01 (owner).
+- Increments 01 to 03 written out for the Ralph Loop; Increment 04 set to blocked until the owner's go (npm publish, consumer change, the « both review apps » scope, the npm trusted publisher).
+- Deviations from the draft table: `workflows.test.mjs` moves from 01 to 02 (no workflow changes in 01); the `packages/ui/**` CI job and its Makefile target move from 02 to 03 (nothing to run before the layer exists).

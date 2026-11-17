@@ -4,9 +4,9 @@ title: An optional Vue component package for MedQuantis review screens
 description: The repository publishes @medquantis/ui, an optional Nuxt layer of presentation components on Nuxt UI 4, with its own version and CI job, beside core outputs that stay framework-neutral; components are extracted from the first product's layer with their tests, with its wording, API types and fixtures replaced by neutral ones.
 tags: [design-system, components, vue, nuxt, packaging]
 timestamp: 2026-11-06T19:00:00+01:00
-status: draft
+status: accepted
 owner: design-system owner
-last_reviewed: 2026-11-06
+last_reviewed: 2026-11-17
 review_interval: 180d
 ---
 
@@ -42,6 +42,15 @@ Chosen option: "An optional package in this repository", decided by the owner on
 - **Releases:** its own release-please component and version, tagged with its component name (for example `ui-v0.1.0`); the core package keeps its tags and versioning.
 - **CI:** a separate job, run only when `packages/ui/**` changes, for the build, type check and tests.
 - **First components:** the app shell, the sign-in, access-refused and error pages, the work queue with status and owner filters, a value beside its source, and the decision modal. Keyboard shortcuts come later.
+
+### Package rules
+
+Accepted by the owner on 2026-11-17 with [Plan-0004](../../plans/active/0004_ui-package/0004_exec_ui-package.md), which proposed them:
+
+1. **No language in the package.** A component has no user-visible string; every label is a prop or a slot. A guard test in the package enforces it.
+2. **Runs in both render modes and offline.** Every component is safe under server rendering and under a static single-page build, and loads no remote font, image, icon or script, since one consumer runs under a content security policy that allows none.
+3. **Semver for a component API.** Major: a component, prop, slot or emitted event removed or renamed, or a default that visibly changes consumers. Minor: one added. Patch: a fix with no change to the API or the drawn result. On 0.x a minor version may break; the package stays on 0.x until each of the first components is used by two screens.
+4. **One name prefix: `Mq`** (owner, 2026-11-11). A component is named by its role in an app (`MqDataTable`, `MqStatusPill`, `MqStatCard`), never after a consumer's screen, and never by the bare name of a document class of `css/components.css` (`MqTable`, `MqBadge`, `MqCard`), which apps do not load. `Mq` is the prefix of the tokens and the CSS ([ADR-0006](adr-0006-mq-token-prefix.md)).
 
 ### Consequences
 

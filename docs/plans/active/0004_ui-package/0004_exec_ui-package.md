@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** --
+**Current Increment:** 05
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -230,9 +230,39 @@ Exit criteria:
 
 ### Increment 05: shell
 
-**Status:** pending
+**Status:** done
 
-App shell, navigation with groups and counts, user menu, environment banner. Gate: mounted tests moved with the components; axe on the playground.
+Scope narrowed by the orchestrator on 2026-11-17, with the owner's go for Increment 05: the first product's review app has one generic shell component, its navigation, so only `MqAppNavigation` moves now. The app shell, the user menu and the environment banner have no generic component in that app yet; they stay listed for a later increment, written out once the owning app has made them generic (Principle 4).
+
+Scope:
+
+1. **Write first, expect red:**
+   - new `packages/ui/tests/nuxt/MqAppNavigation.test.ts`: the mounted test of the first product's review app, moved as it is with only its import paths changed (it mounts through `tests/nuxt/support/mount.ts`, moved with it, and reads `NAVIGATION_GROUPS` from a new neutral fixture `tests/nuxt/fixtures/neutral.ts`: Home, Inbox, Archive, Work).
+   - new `packages/ui/tests/unit/format.test.ts`: the unit test of the number helpers, moved as it is.
+   - extend `packages/ui/tests/unit/guards.test.ts` with the component rules of the source's generic-component guard: a component under `app/components/` imports only `vue`, `@nuxt/ui`, a sibling `./Mq*.vue` and `../utils/format`, and has no router, navigation or fetch (`navigateTo`, `useFetch`, `$fetch`, `useRoute`, `useRouter`) and no route literal; each seen catching a planted offence in `tests/fixtures/planted/app/components/MqPlanted.vue`, then finding nothing in the layer. The components exist and are prefixed `Mq`; each has a playground page fed by the neutral fixtures only.
+2. `packages/ui/app/components/MqAppNavigation.vue` as it is in the source, with one change forced by its new folder: the helper import reads `../utils/format`. `packages/ui/app/utils/format.ts` moves whole (pure helpers, no wording).
+3. `packages/ui/playground/app/pages/mq-app-navigation.vue` and the `PlaygroundState` component it uses, moved as they are.
+
+Primary files:
+
+1. `packages/ui/app/components/MqAppNavigation.vue`, `packages/ui/app/utils/format.ts`, `packages/ui/playground/app/pages/mq-app-navigation.vue`, `packages/ui/playground/app/components/PlaygroundState.vue`
+2. `packages/ui/tests/nuxt/MqAppNavigation.test.ts`, `packages/ui/tests/nuxt/support/mount.ts`, `packages/ui/tests/nuxt/fixtures/neutral.ts`, `packages/ui/tests/unit/format.test.ts`, `packages/ui/tests/unit/guards.test.ts`, `packages/ui/tests/fixtures/planted/app/components/MqPlanted.vue`
+
+Test gate:
+
+1. `make ui-check`
+2. `MQ_DENYLIST=<the real deny-list> make check`
+3. axe (the WCAG tags of the specimen suite) on the playground page, generated as a static single-page app, at desktop and phone widths: no violation.
+
+Exit criteria:
+
+1. `MqAppNavigation` mounts from the layer with its moved tests green, its page builds in both render modes, and the guards pass on it.
+
+Prediction:
+
+1. New: the four primary files of item 1 and the four new test and support files of item 2.
+2. Changed: `guards.test.ts`, `MqPlanted.vue`.
+3. Byte-identical: everything outside `packages/ui/`, the core tarball, `package-lock.json`.
 
 ### Increment 06: sign-in, access-refused and error pages
 
@@ -264,7 +294,7 @@ The value beside its source; stat card and segmented bar. Gate: mounted tests; a
 
 `guidelines/app-patterns.md` and `guidelines/specialising.md` point each pattern to its component; `GOVERNANCE.md` gains the component semver rule of ADR-0009; a README section on the package. Gate: `guidelines.test.mjs` and `package.test.mjs`.
 
-Later, each when both review screens need it: keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
+Later, each when both review screens need it: the app shell, the user menu and the environment banner (moved out of Increment 05), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
 
 ## Delivery Rules
 

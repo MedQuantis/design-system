@@ -21,3 +21,17 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Learnings: `npm install --package-lock-only` adds both a `packages/ui` entry and a `node_modules/@medquantis/ui` link entry.
 - Commit: see git log (commit subject `build(ui): add the @medquantis/ui workspace`)
 - Timestamp: 2026-11-17
+
+## Iteration 2
+- Increment: 02 — the release track
+- Status: done
+- Files changed: release-please-config.json, .release-please-manifest.json, .github/workflows/release.yml, .github/dependabot.yml, packages/ui/package.json, tests/unit/release.test.mjs, tests/unit/package.test.mjs, plan status
+- Red: release.test.mjs "release-please tracks @medquantis/ui as its own component...", "release workflow: the core and the ui outputs are read separately...", "dependabot moves the Nuxt toolchain in one npm pull request"; package.test.mjs "the repository is an npm workspace holding the core and @medquantis/ui..." (private still true, no publishConfig, repository.directory or files).
+- Green: both files pass (20 tests).
+- Test gate: passed. `mise exec -- make check` exit 0 (actionlint and zizmor included), confidentiality scan 354 files, 0 findings, MQ_DENYLIST set. `npm pack --dry-run --workspace packages/ui --ignore-scripts` lists package.json only (1 file). Root package.json and its files allow-list are untouched, so the core tarball is unchanged.
+- release-please-action v5 outputs checked (README at the pinned SHA 45996ed): for a path other than `.` the outputs are `<path>--release_created`, `<path>--tag_name`, read with bracket syntax `steps.release.outputs['packages/ui--release_created']`; the root keeps the unprefixed names. release.yml uses exactly these.
+- Deviations: the release.yml tests went into release.test.mjs, not workflows.test.mjs, because the `jobs()` and `jobPermissions()` helpers live there and its existing release-workflow tests are the closest. The new `ui-check` job runs `make check` only; Increment 03 adds `make ui-check` to it. The ui jobs mirror the core jobs with their own artifact (`npm-package-ui`) and directory.
+- Prediction: matched. No `packages/ui/CHANGELOG.md` created (release-please creates it on the first release). `package-lock.json` unchanged. dist/, kit-manifest.json, the skill and ci.yml are untouched.
+- Learnings: the `jobs()` splitter in release.test.mjs attaches a comment placed between two jobs to the job above it, so a comment before `ui-check` must not contain words the core `publish` job forbids (`make`).
+- Commit: see git log (commit subject `ci(ui): add the release track for @medquantis/ui`)
+- Timestamp: 2026-11-17

@@ -205,13 +205,15 @@ test("README explains the dark theme: the exported file, the .dark class, the Ta
   assert.doesNotMatch(section, /[–—]/, "the dark theme section carries an em or en dash");
 });
 
-test("the repository is an npm workspace holding the core and the private @medquantis/ui, and the core tarball ignores packages/", () => {
+test("the repository is an npm workspace holding the core and @medquantis/ui, and the core tarball ignores packages/", () => {
   assert.deepEqual(pkg().workspaces, ["packages/*"]);
   const ui = JSON.parse(read("packages/ui/package.json"));
   assert.equal(ui.name, "@medquantis/ui");
   assert.equal(ui.version, "0.0.0");
-  // Dropped in Increment 02, when the release track exists.
-  assert.equal(ui.private, true);
+  assert.notEqual(ui.private, true, "private: true blocks npm publish");
+  assert.equal(ui.publishConfig?.access, "public");
+  assert.equal(ui.repository?.directory, "packages/ui");
+  assert.ok(Array.isArray(ui.files), "files allow-list");
   assert.equal(ui.type, "module");
   assert.equal(ui.engines?.node, pkg().engines.node);
   const inside = tarball().filter((path) => path.startsWith("packages/"));

@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { LAYER_ROOT, type SourceTree, offendingLines, read, sourceTree } from './support';
 
@@ -66,21 +66,23 @@ function template(source: string): string {
   return source.slice(open, close).replace(/<!--[\s\S]*?-->/g, '');
 }
 
+/** An opening or closing tag, read past a `>` inside a quoted attribute such as `v-if="n > 0"`. */
+const TAG = /<\/?[A-Za-z][^>"']*(?:(?:"[^"]*"|'[^']*')[^>"']*)*>/g;
+
+/** The text nodes of a template that hold a word or a quoted literal in a mustache. */
+function textNodes(body: string): string[] {
+  return body.split(TAG).filter((node) => {
+    const outside = node.replace(/\{\{[\s\S]*?\}\}/g, '').trim();
+    const literal = [...node.matchAll(/\{\{([\s\S]*?)\}\}/g)].some((m) => /['"`]/.test(m[1]!));
+    return outside !== '' || literal;
+  });
+}
+
 /** A text node or a quoted literal in a mustache: words the consumer should have passed in. */
 const templateText: Guard = (tree) =>
   tree.files
     .filter((path) => path.endsWith('.vue'))
-    .flatMap((path) => {
-      const body = template(read(tree, path)).replace(/^<template[^>]*>/, '');
-      const text = [...body.matchAll(/>([^<]+)</g)]
-        .map((m) => m[1]!)
-        .filter((node) => {
-          const outside = node.replace(/\{\{[\s\S]*?\}\}/g, '').trim();
-          const literal = [...node.matchAll(/\{\{([\s\S]*?)\}\}/g)].some((m) => /['"`]/.test(m[1]!));
-          return outside !== '' || literal;
-        });
-      return text.map((node) => `${path}: ${node.trim()}`);
-    });
+    .flatMap((path) => textNodes(template(read(tree, path))).map((node) => `${path}: ${node.trim()}`));
 
 /** A label, title, placeholder or aria-label given a string literal, static or bound. */
 const VISIBLE_ATTRIBUTE =
@@ -95,6 +97,42 @@ const visibleAttributes: Guard = (tree) =>
         .map((line) => `${path}: ${line.trim()}`),
     );
 
+// The components of app/components/ are presentation only: they read their props and the
+// package's own helpers, never a consumer's module, a route, the router or a fetch. A word of a
+// product's domain is the confidentiality scan's to find (make check, with the deny-list).
+const COMPONENTS = 'app/components/';
+const ALLOWED_IMPORT = /^(vue|@nuxt\/ui|\.\/Mq\w+\.vue|\.\.\/utils\/format)$/;
+const APP_WIRING = /\bnavigateTo\b|\buseFetch\b|\$fetch\b|\buseRoute\b|\buseRouter\b/;
+const ROUTE_LITERAL = /['"`]\/[A-Za-z]/;
+
+const blank = (comment: string): string => comment.replace(/[^\n]/g, ' ');
+function withoutComments(text: string): string {
+  return text
+    .replace(/<!--[\s\S]*?-->/g, blank)
+    .replace(/\/\*[\s\S]*?\*\//g, blank)
+    .replace(/(^|[^:'"`])\/\/.*$/gm, (match, before: string) => before + blank(match.slice(1)));
+}
+
+const components = (tree: SourceTree): string[] =>
+  tree.files.filter((path) => path.startsWith(COMPONENTS) && path.endsWith('.vue'));
+
+const componentImports: Guard = (tree) =>
+  components(tree).flatMap((path) =>
+    [...withoutComments(read(tree, path)).matchAll(/\bimport\b[^'"]*['"]([^'"]+)['"]/g)]
+      .map((m) => m[1]!)
+      .filter((from) => !ALLOWED_IMPORT.test(from))
+      .map((from) => `${path}: import from ${from}`),
+  );
+
+const componentLines =
+  (pattern: RegExp): Guard =>
+  (tree) =>
+    components(tree).flatMap((path) =>
+      withoutComments(read(tree, path))
+        .split('\n')
+        .flatMap((text, i) => (pattern.test(text) ? [`${path}:${i + 1}: ${text.trim()}`] : [])),
+    );
+
 const GUARDS: [string, Guard][] = [
   ['no colour literal or keyword', lines(COLOUR_LITERAL, COLOUR_KEYWORD)],
   ['no font family', lines(FONT_LITERAL)],
@@ -105,6 +143,9 @@ const GUARDS: [string, Guard][] = [
   ['no @import or url() that leaves the package', leavingImports],
   ['no text node in a component template', templateText],
   ['no string literal given to label, title, placeholder or aria-label', visibleAttributes],
+  ['no component import from outside vue, @nuxt/ui, the components and the helpers', componentImports],
+  ['no router, navigation or fetch in a component', componentLines(APP_WIRING)],
+  ['no route literal in a component', componentLines(ROUTE_LITERAL)],
 ];
 
 describe('the guards scan the layer', () => {
@@ -122,6 +163,66 @@ describe.each(GUARDS)('%s', (_, guard) => {
 
   it('finds nothing in the layer', () => {
     expect(guard(LAYER)).toEqual([]);
+  });
+});
+
+describe('a component imports only vue, @nuxt/ui, its siblings and the helpers', () => {
+  it.each(['vue', '@nuxt/ui', './MqSibling.vue', '../utils/format'])('%s is allowed', (from) => {
+    expect(ALLOWED_IMPORT.test(from)).toBe(true);
+  });
+
+  it.each(['#app-types', '../utils/wording', '~/composables/useItems', 'reka-ui'])(
+    '%s is not',
+    (from) => {
+      expect(ALLOWED_IMPORT.test(from)).toBe(false);
+    },
+  );
+
+  it('reads a commented-out route or import as nothing', () => {
+    expect(withoutComments("// navigateTo('/inbox')\n<!-- '/inbox' -->").trim()).toBe('');
+  });
+});
+
+// Each component has a page in the playground, fed by the fictitious fixtures its mounted tests
+// use, so it can be looked at before a screen uses it.
+const COMPONENT_FILES = components(LAYER).map((path) => basename(path));
+const PLAYGROUND_PAGES = join('playground', 'app', 'pages');
+const kebab = (name: string): string =>
+  name
+    .replace(/\.vue$/, '')
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .toLowerCase();
+
+describe('the components', () => {
+  it('exist in app/components/, each prefixed Mq', () => {
+    expect(COMPONENT_FILES.length).toBeGreaterThan(0);
+    for (const name of COMPONENT_FILES) expect(name).toMatch(/^Mq[A-Z]\w+\.vue$/);
+  });
+});
+
+describe('the playground', () => {
+  it.each(COMPONENT_FILES)('has a page for %s', (name) => {
+    expect(existsSync(join(LAYER_ROOT, PLAYGROUND_PAGES, `${kebab(name)}.vue`))).toBe(true);
+  });
+
+  it.each(COMPONENT_FILES)('feeds the page of %s with the neutral fixtures only', (name) => {
+    const page = join(LAYER_ROOT, PLAYGROUND_PAGES, `${kebab(name)}.vue`);
+    const source = existsSync(page) ? readFileSync(page, 'utf8') : '';
+    expect(source).toMatch(/from '\.\.\/\.\.\/\.\.\/tests\/nuxt\/fixtures\/neutral'/);
+    expect(source).not.toMatch(/from '[^']*fixtures\/(?!neutral')/);
+  });
+});
+
+describe('the template text guard', () => {
+  it('reads a > inside a quoted attribute as part of the tag', () => {
+    expect(textNodes('<template><b v-if="(n ?? 0) > 0" :label="String(n)" />{{ n }}</template>')).toEqual([]);
+  });
+
+  it('finds a word and a quoted literal, not an interpolation', () => {
+    expect(textNodes('<template><b>{{ n }}</b><i>Total</i><s>{{ \'Two\' }}</s></template>')).toEqual([
+      'Total',
+      "{{ 'Two' }}",
+    ]);
   });
 });
 

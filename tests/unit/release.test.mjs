@@ -118,10 +118,73 @@ test("publish uses npm trusted publishing (OIDC) with provenance, no token, and 
   }
 });
 
-test("the root release-please entry keeps its tag format and gains no component while the UI package is private", () => {
+test("the root release-please entry keeps its tag format and gains no component", () => {
   const pkg = rootPackage();
   assert.equal(pkg["include-component-in-tag"], false, "core tags stay vX.Y.Z");
   assert.equal(pkg.component, undefined, "the root entry has no component");
   assert.equal(pkg["package-name"], "@medquantis/design-system");
   assert.equal(pkg["changelog-path"], "CHANGELOG.md");
+});
+
+const UI = "packages/ui";
+const uiEntry = () => config().packages?.[UI];
+
+test("release-please tracks @medquantis/ui as its own component tagged ui-vX.Y.Z, and a ui commit never releases the core", () => {
+  const ui = uiEntry();
+  assert.ok(ui, "no packages/ui entry");
+  assert.equal(ui["release-type"], "node");
+  assert.equal(ui["package-name"], "@medquantis/ui");
+  assert.equal(ui.component, "ui");
+  assert.equal(ui["include-component-in-tag"], true, "tags must read ui-v0.1.0");
+  assert.equal(ui["changelog-path"], "CHANGELOG.md", "its own changelog, relative to packages/ui");
+  assert.deepEqual(rootPackage()["exclude-paths"], [UI]);
+  assert.equal(readJson(".release-please-manifest.json")[UI], "0.0.0", "the first feat(ui) commit must propose 0.1.0");
+  assert.equal(readJson(`${UI}/package.json`).version, "0.0.0");
+  for (const entry of Object.values(config().packages)) assert.equal(entry["release-as"], undefined, "no release-as pins");
+  assert.equal(Object.keys(config().packages).length, 2);
+});
+
+test("release workflow: the core and the ui outputs are read separately, each package is checked, packed and published from its own jobs", () => {
+  const text = read(RELEASE_YML);
+  const all = jobs(text);
+  const { "release-please": release, check, publish } = all;
+  const { "ui-check": uiCheck, "ui-publish": uiPublish } = all;
+  assert.ok(uiCheck && uiPublish, "jobs ui-check and ui-publish are required");
+
+  assert.match(release, /release_created: \$\{\{ steps\.\w+\.outputs\.release_created \}\}/);
+  assert.match(release, /ui_release_created: \$\{\{ steps\.\w+\.outputs\['packages\/ui--release_created'\] \}\}/);
+  assert.match(release, /ui_tag_name: \$\{\{ steps\.\w+\.outputs\['packages\/ui--tag_name'\] \}\}/);
+
+  // The core jobs still pack the root tarball and ignore the ui release.
+  assert.match(check, /npm pack --ignore-scripts/);
+  assert.doesNotMatch(check + publish, /packages\/ui|ui_release_created|ui_tag_name/);
+
+  assert.match(uiCheck, /needs\.release-please\.outputs\.ui_release_created == 'true'/);
+  assert.match(uiCheck, /ref: \$\{\{ needs\.release-please\.outputs\.ui_tag_name \}\}/);
+  assert.equal(jobPermissions(uiCheck).trim(), "contents: read");
+  assert.match(uiCheck, /\$\{\{\s*secrets\.MQ_DENYLIST_TOKEN\s*\}\}/);
+  const make = uiCheck.search(/^\s+(?:-\s+)?run:\s*make check\s*$/m);
+  const pack = uiCheck.search(/npm pack --workspace packages\/ui --ignore-scripts/);
+  assert.ok(make !== -1 && pack > make, "make check must run, then the workspace pack");
+  assert.match(uiCheck, /name: npm-package-ui\b/, "its own artifact name");
+  assert.match(uiCheck, /uses:\s*actions\/upload-artifact@/);
+
+  assert.match(uiPublish, /needs: \[release-please, ui-check\]/);
+  assert.match(uiPublish, /needs\.release-please\.outputs\.ui_release_created == 'true'/);
+  assert.match(uiPublish, /name: npm-package-ui\b/);
+  const permissions = jobPermissions(uiPublish).trim().split("\n").map((line) => line.trim()).sort();
+  assert.deepEqual(permissions, ["contents: read", "id-token: write"]);
+  assert.match(uiPublish, /npm publish .*--provenance/);
+  assert.match(uiPublish, /--ignore-scripts/);
+  assert.doesNotMatch(uiPublish, /\bmake\b|npm ci|npm install/);
+  assert.match(uiPublish, /11\.5\.1/);
+});
+
+test("dependabot moves the Nuxt toolchain in one npm pull request", () => {
+  const text = read(".github/dependabot.yml");
+  const npm = text.split(/^ {2}- package-ecosystem: /m).find((block) => block.startsWith("npm"));
+  const group = npm?.match(/^ {4}groups:\n {6}nuxt:\n {8}patterns:\n((?: {10}- .*\n?)*)/m);
+  assert.ok(group, "the npm entry has no nuxt group");
+  const patterns = group[1].split("\n").filter(Boolean).map((line) => line.replace(/^ +- /, "").replace(/^["']|["']$/g, ""));
+  assert.deepEqual(patterns.sort(), ["@nuxt/*", "@tailwindcss/*", "nuxt", "reka-ui", "tailwindcss", "vue"]);
 });

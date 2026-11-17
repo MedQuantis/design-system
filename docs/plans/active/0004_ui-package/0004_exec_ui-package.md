@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 02
+**Current Increment:** 03
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -134,7 +134,7 @@ Prediction:
 
 ### Increment 02: the release track
 
-**Status:** pending
+**Status:** done
 
 Scope:
 
@@ -209,7 +209,7 @@ Prediction:
 
 **Status:** pending
 
-**Do not start without the owner's go** (2026-11-17); the Ralph Loop runs one iteration at a time until then, because `ralph.sh` halts on any blocked increment. Needs these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
+**Do not start without the owner's go** (2026-11-17). Its first commit is the `feat(ui)` commit that makes release-please propose `ui-v0.1.0`, and it touches only `packages/ui/` (Delivery Rule 2); the release pull request must list `@medquantis/ui` alone before it is merged. The Ralph Loop runs one iteration at a time until then, because `ralph.sh` halts on any blocked increment. Needs these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
 
 ### Increment 05: shell
 
@@ -252,7 +252,7 @@ Later, each when both review screens need it: keyboard shortcuts help, code tile
 ## Delivery Rules
 
 1. One increment per commit and per pull request, branched from an up-to-date `main` once the previous increment has merged; merged when CI is green (owner, 2026-11-17, for Increments 01 to 03).
-2. **Commit scope:** `ui`. Types: `build` (01), `ci` (02), `feat` (03, the first commit that releases the package). Trailer `Refs: Plan-0004 increment NN`, never the plan number in the scope.
+2. **Commit scope:** `ui`. Types: `build` (01), `ci` (02), `build` (03), `feat` (04). release-please gives a commit to the core as soon as it touches one file outside `packages/ui/` (`exclude-paths` removes only that folder), so a `feat` or `fix` commit that also changes `package-lock.json`, the `Makefile` or a workflow would release the core too. The commit that releases `@medquantis/ui` touches only `packages/ui/`. Trailer `Refs: Plan-0004 increment NN`, never the plan number in the scope.
 3. Tests named in Scope are written or extended first and observed failing before the implementation lands; `progress.txt` records the red run and the green run.
 4. The confidentiality check with the real deny-list runs in every gate (`MQ_DENYLIST` set); fixtures and playground text are fictitious only.
 5. A change to an existing output that its `Prediction:` does not name blocks the increment.

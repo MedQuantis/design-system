@@ -21,7 +21,17 @@
           "type": "generic",
           "path": "plugins/medquantis-design-system/skills/medquantis-design-system/SKILL.md"
         }
+      ],
+      "exclude-paths": [
+        "packages/ui"
       ]
+    },
+    "packages/ui": {
+      "release-type": "node",
+      "package-name": "@medquantis/ui",
+      "component": "ui",
+      "include-component-in-tag": true,
+      "changelog-path": "CHANGELOG.md"
     }
   }
 }

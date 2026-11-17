@@ -35,3 +35,7 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Learnings: the `jobs()` splitter in release.test.mjs attaches a comment placed between two jobs to the job above it, so a comment before `ui-check` must not contain words the core `publish` job forbids (`make`).
 - Commit: see git log (commit subject `ci(ui): add the release track for @medquantis/ui`)
 - Timestamp: 2026-11-17
+
+## Orchestrator review of Increment 02 (2026-11-17)
+
+- Release mapping: the root entry's `exclude-paths: ["packages/ui"]` gives a commit to the core whenever it touches any other file. The planned `feat(ui)` for Increment 03 also changes `package-lock.json`, the `Makefile` and the workflows, so it would have released the core 1.7.0. Delivery Rule 2 amended: Increment 03 is `build(ui)`, and the releasing `feat(ui)` commit opens Increment 04 and touches only `packages/ui/`.

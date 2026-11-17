@@ -1,7 +1,21 @@
-.PHONY: check test test-unit test-e2e specimen browsers build kit-check lint workflow-lint confidentiality-check assets brand brand-check skill skill-zip skill-evals plugin-validate
+.PHONY: check ui-check test test-unit test-e2e specimen browsers build kit-check lint workflow-lint confidentiality-check assets brand brand-check skill skill-zip skill-evals plugin-validate
 
 # Single local entry point; CI runs the same target.
 check: lint workflow-lint build test confidentiality-check
+
+# @medquantis/ui (packages/ui), not part of make check: CI runs it in its own job when the package,
+# package.json or package-lock.json changes. The install is the shared one, so no install script runs
+# and nuxi prepare is called explicitly for the layer and its playground, which their lint, type
+# check and tests read. The playground is built twice, server-rendered and as a static
+# single-page app, the two render modes a consumer may use.
+ui-check: node_modules/.package-lock.json
+	npm exec --workspace packages/ui -- nuxi prepare
+	npm exec --workspace packages/ui -- nuxi prepare playground
+	npm run --workspace packages/ui lint
+	npm run --workspace packages/ui typecheck
+	npm run --workspace packages/ui test
+	npm run --workspace packages/ui build
+	npm run --workspace packages/ui generate
 
 test: test-unit test-e2e
 

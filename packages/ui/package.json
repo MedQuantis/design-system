@@ -10,11 +10,42 @@
     "url": "git+https://github.com/MedQuantis/design-system.git",
     "directory": "packages/ui"
   },
+  "main": "./nuxt.config.ts",
   "engines": {
     "node": ">=24"
   },
-  "files": [],
+  "files": [
+    "nuxt.config.ts",
+    "app/"
+  ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "nuxi typecheck && nuxi typecheck playground",
+    "test": "vitest run",
+    "build": "nuxi build playground",
+    "generate": "nuxi generate playground --envName spa"
+  },
+  "peerDependencies": {
+    "nuxt": ">=4.6.4 <5"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "1.2.143",
+    "@medquantis/design-system": "1.6.0",
+    "@nuxt/ui": "4.11.3"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "1.17.0",
+    "@nuxt/test-utils": "4.3.3",
+    "@types/node": "26.6.5",
+    "@vue/test-utils": "2.5.1",
+    "eslint": "10.7.0",
+    "happy-dom": "21.0.4",
+    "nuxt": "4.6.4",
+    "typescript": "5.9.3",
+    "vitest": "5.0.4",
+    "vue-tsc": "3.3.13"
   }
 }

@@ -145,3 +145,54 @@ test("CI uploads Playwright's test-results/ only when the job fails, SHA-pinned 
   assert.ok(retention && Number(retention[1]) <= 7, "retention must be set to 7 days or fewer");
   assert.ok(text.indexOf(upload) > text.search(/^\s+(?:-\s+)?run:\s*make check\s*$/m), "the upload must follow make check");
 });
+
+// A job's block under jobs:, from its two-space key to the next one.
+const ciJob = (text, name) => {
+  const block = text.split(/^jobs:\n/m)[1] ?? "";
+  return block.split(/^(?= {2}[\w-]+:\s*$)/m).find((job) => job.startsWith(`  ${name}:`)) ?? null;
+};
+
+test("CI runs make ui-check in a ui job only when packages/ui/**, package.json or package-lock.json changes, decided by a step, not a paths filter", () => {
+  const text = ci();
+  assert.doesNotMatch(topLevelBlock(text, "on"), /paths(-ignore)?:/, "the workflow always runs: no paths filter");
+  const ui = ciJob(text, "ui");
+  assert.ok(ui, "no ui job");
+  assert.doesNotMatch(ui, /^ {4}if:/m, "the job always runs, so a required check can never be left pending; its steps are skipped");
+  assert.match(ui, /persist-credentials: false/);
+  assert.match(ui, /uses:\s*jdx\/mise-action@/);
+  const changes = ui.match(/^ {6}- name: [^\n]*\n {8}id: (\w+)\n((?: {8}.*\n?)*)/m);
+  assert.ok(changes, "no changed-files step with an id");
+  for (const path of ["packages/ui/", "package.json", "package-lock.json"]) assert.ok(changes[2].includes(path), `the changed-files step does not watch ${path}`);
+  assert.doesNotMatch(changes[2], /run: [^\n]*\$\{\{/, "event values reach the script through env, never inlined");
+  const run = ui.match(/^ {6}- (?:name: .*\n {8})?if: (.*)\n {8}run: make ui-check\s*$/m);
+  assert.ok(run, "make ui-check is not run behind a condition");
+  assert.match(run[1], new RegExp(`steps\\.${changes[1]}\\.outputs\\.\\w+ == 'true'`));
+});
+
+test("make ui-check prepares the layer and the playground with nuxi, then lints, type-checks, tests and builds the playground both ways, while make check stays as it was", () => {
+  const makefile = read("Makefile");
+  assert.match(makefile, /^check: lint workflow-lint build test confidentiality-check$/m);
+  const recipe = makefile.match(/^ui-check:.*\n((?:\t.*\n?)*)/m);
+  assert.ok(recipe, "no ui-check target");
+  assert.match(makefile, /^ui-check: node_modules\/\.package-lock\.json$/m, "the shared npm ci --ignore-scripts install");
+  const steps = ["nuxi prepare\\s*$", "nuxi prepare playground", "lint", "typecheck", "test", "build", "generate"].map((step) => {
+    const at = recipe[1].search(new RegExp(step === "lint" || step === "typecheck" || step === "test" || step === "build" || step === "generate" ? `run --workspace packages/ui ${step}\\b` : step, "m"));
+    assert.notEqual(at, -1, `ui-check does not run ${step}`);
+    return at;
+  });
+  assert.deepEqual([...steps].sort((a, b) => a - b), steps, "prepare first, then lint, typecheck, test, build, generate");
+  assert.doesNotMatch(recipe[1], /npm (ci|install)(?! --ignore-scripts)/);
+  const ui = JSON.parse(read("packages/ui/package.json"));
+  assert.match(ui.scripts.build, /^nuxi build playground\b/);
+  assert.match(ui.scripts.generate, /^nuxi generate playground\b/);
+});
+
+test("release.yml's ui-check job runs make ui-check after make check and before it packs @medquantis/ui", () => {
+  const release = read(".github/workflows/release.yml");
+  const uiCheck = ciJob(release, "ui-check");
+  assert.ok(uiCheck, "no ui-check job in release.yml");
+  const check = uiCheck.search(/^\s+(?:-\s+)?run:\s*make check\s*$/m);
+  const ui = uiCheck.search(/^\s+(?:-\s+)?run:\s*make ui-check\s*$/m);
+  const pack = uiCheck.search(/npm pack --workspace packages\/ui --ignore-scripts/);
+  assert.ok(check !== -1 && ui > check && pack > ui, "make check, then make ui-check, then the pack");
+});

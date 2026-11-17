@@ -65,3 +65,44 @@ jobs:
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  # @medquantis/ui (packages/ui): make ui-check, only when the change touches the package or the
+  # workspace's install. A step decides, not a workflow paths: filter, so the workflow and this job
+  # always run and report; without such a change the job passes with its steps skipped. Not a
+  # required check. The confidentiality scan of packages/ui/ stays in make check above.
+  ui:
+    name: Lint, type-check, test and build @medquantis/ui
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # The base is the pull request's base commit, or the commit before the push; a new branch or
+      # a tag has none, so the check runs. Event values reach the script through env only.
+      - name: Find whether @medquantis/ui changed
+        id: changes
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          base="${PR_BASE:-$PUSH_BEFORE}"
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "${base}^{commit}"; then
+            echo "ui=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$base" HEAD -- packages/ui/ package.json package-lock.json | grep -q .; then
+            echo "ui=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ui=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: ${{ steps.changes.outputs.ui == 'true' }}
+        uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c # v5.2.6
+        with:
+          version: 2026.2.16
+          install: true
+          cache: false
+
+      - if: ${{ steps.changes.outputs.ui == 'true' }}
+        run: make ui-check

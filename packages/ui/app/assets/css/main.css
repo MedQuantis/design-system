@@ -1,0 +1,49 @@
+/*
+ * The theme of the layer: Tailwind, Nuxt UI, then the pinned @medquantis/design-system release,
+ * whose tailwind.css loads tokens.css and maps the navy and status scales, the radius steps, the
+ * font families and the semantic colours onto var(--mq-*). Nuxt UI's colours and radii are set in
+ * app/app.config.ts.
+ *
+ * No value is written here: every colour, font and shadow is a var(--mq-*) or a name tailwind.css
+ * defines on one (tests/unit/guards.test.ts). Never import kit-contract.css or css/components.css:
+ * their unprefixed names collide with Tailwind and Nuxt UI variables.
+ */
+@import 'tailwindcss';
+@import '@nuxt/ui';
+@import '@medquantis/design-system/tailwind.css';
+@import '@medquantis/design-system/fonts.css';
+
+/* Names neither library defines, as aliases of the release. */
+@theme inline {
+  --color-bg: var(--mq-canvas);
+  --color-text: var(--mq-ink);
+  --color-text-secondary: var(--mq-muted);
+  --color-text-tertiary: var(--mq-tertiary);
+  --color-accent-light: var(--mq-accent-pale);
+
+  --font-display: var(--mq-font-family-heading);
+  --font-body: var(--mq-font-family-body);
+
+  --shadow-sm: var(--mq-shadow-small);
+  --shadow-md: var(--mq-shadow-medium);
+}
+
+:root {
+  /* Light only: the release's dark theme is not imported (nuxt.config.ts). */
+  color-scheme: light;
+}
+
+@layer base {
+  body {
+    background-color: var(--mq-canvas);
+    color: var(--mq-ink);
+    font-family: var(--mq-font-family-ui);
+  }
+
+  /* The design system's focus ring; Nuxt UI's base layer sets a:focus-visible. */
+  :focus-visible,
+  a:focus-visible {
+    outline: var(--mq-focus-ring-width) solid var(--mq-focus-ring-color);
+    outline-offset: var(--mq-focus-ring-offset);
+  }
+}

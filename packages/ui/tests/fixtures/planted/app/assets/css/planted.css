@@ -1,0 +1,15 @@
+/*
+ * A planted offence for every guard of tests/unit/guards.test.ts on a stylesheet. Never imported:
+ * the guards must find each line below, so a guard that stops matching fails its test.
+ */
+@import 'https://fonts.example.com/planted.css';
+@import '../../../../../outside.css';
+
+.planted {
+  --mq-ink: #1f2a44;
+  color: white;
+  background: rgb(0 0 0);
+  font-family: 'Planted Sans', sans-serif;
+  box-shadow: 0 1px 2px var(--mq-ink);
+  background-image: url('https://cdn.example.com/planted.png');
+}

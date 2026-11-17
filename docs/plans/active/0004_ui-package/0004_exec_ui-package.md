@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 04
+**Current Increment:** --
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -207,7 +207,7 @@ Prediction:
 
 ### Increment 04: release 0.1.0 and consume it
 
-**Status:** in-progress
+**Status:** done
 
 Owner rulings of 2026-11-17: go for Increment 04; the second review app is the agents' product, whose repository has no front end yet, so 0.1.0 is consumed by the first product's review app alone and the agents' screens adopt the package when they exist. The npm trusted publisher for `@medquantis/ui` and `release.yml` exists since 2026-11-17 08:58 UTC: npm sets one only on an existing package, so the owner first published a placeholder `0.0.0` by hand (a README and `package.json`, no code). A new trusted publisher expires unless it publishes within two days, so the release pull request is merged before 2026-11-19 08:58 UTC.
 

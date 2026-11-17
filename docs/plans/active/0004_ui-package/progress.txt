@@ -59,3 +59,9 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Learnings: `@medquantis/design-system` 1.6.0 installs from the registry into node_modules although the root package has the same name; the layer reads the published release, as a consumer would. @nuxt/test-utils writes `.nuxtrc` (`setups.@nuxt/test-utils`) on its first run; committed as in the source.
 - Commit: see git log (commit subject `build(ui): add the layer with the theme only`)
 - Timestamp: 2026-11-17
+
+## Increment 04 opened (2026-11-17)
+
+- Owner go for Increment 04. Second review app: the agents' product; its repository has no front end yet, so the first product's review app consumes 0.1.0 alone.
+- npm trusted publisher: `npm trust github` returns 404 for a package that does not exist. The owner published a placeholder `@medquantis/ui@0.0.0` by hand (README and package.json only), then created the trust (GitHub, `release.yml`, `MedQuantis/design-system`, permissions publish and stage publish) on 2026-11-17 08:58 UTC. Deadline for the first trusted publish: 2026-11-19 08:58 UTC.
+- WSL: `npm login` and the 2FA step of `npm trust` need `BROWSER=echo` (no browser to open). `npm trust ... --allow-publish` needs npm 11.10 or later; run it from a folder whose `mise.toml` pins Node 24.

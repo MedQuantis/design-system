@@ -207,9 +207,26 @@ Prediction:
 
 ### Increment 04: release 0.1.0 and consume it
 
-**Status:** pending
+**Status:** in-progress
 
-**Do not start without the owner's go** (2026-11-17). Its first commit is the `feat(ui)` commit that makes release-please propose `ui-v0.1.0`, and it touches only `packages/ui/` (Delivery Rule 2); the release pull request must list `@medquantis/ui` alone before it is merged. The Ralph Loop runs one iteration at a time until then, because `ralph.sh` halts on any blocked increment. Needs these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
+Owner rulings of 2026-11-17: go for Increment 04; the second review app is the agents' product, whose repository has no front end yet, so 0.1.0 is consumed by the first product's review app alone and the agents' screens adopt the package when they exist. The npm trusted publisher for `@medquantis/ui` and `release.yml` exists since 2026-11-17 08:58 UTC: npm sets one only on an existing package, so the owner first published a placeholder `0.0.0` by hand (a README and `package.json`, no code). A new trusted publisher expires unless it publishes within two days, so the release pull request is merged before 2026-11-19 08:58 UTC.
+
+Scope:
+
+1. **Write first, expect red:** extend `packages/ui/tests/unit/guards.test.ts` (or the closest test under `packages/ui/tests/`): the package ships a `README.md` that states the consumer contract (`extends: ['@medquantis/ui']`, exact pins on `@medquantis/ui` and `@medquantis/design-system`, `nuxt` as a peer, no wording in the package, every icon bundled, nothing remote). The test lives under `packages/ui/` so the commit touches nothing else (Delivery Rule 2).
+2. `packages/ui/README.md` as tested. Commit `feat(ui): ...`, touching only `packages/ui/`.
+3. After merge: release-please's release pull request lists `@medquantis/ui` `0.1.0` alone and the core unchanged; the owner merges it; `ui-check` and `ui-publish` in `release.yml` run and publish `0.1.0` with provenance; `npm view @medquantis/ui@0.1.0` answers. Then the placeholder is deprecated: `npm deprecate @medquantis/ui@0.0.0 "placeholder, use 0.1.0 or later"`.
+4. The consumer side is the first product's own plan, in its repository: its layer extends `@medquantis/ui` `0.1.0` and drops its copy of the theme wiring.
+
+Test gate:
+
+1. `make ui-check`; `MQ_DENYLIST=<the real deny-list> make check`.
+2. `npm view @medquantis/ui@0.1.0 dist.attestations` shows a provenance attestation.
+3. In the consumer's built output: the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy. This is the riskiest unknown and it is tested before any component moves.
+
+Exit criteria:
+
+1. `@medquantis/ui` `0.1.0` is on npm with provenance, and one consumer builds on it under its content security policy.
 
 ### Increment 05: shell
 

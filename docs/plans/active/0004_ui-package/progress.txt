@@ -7,3 +7,5 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Owner accepted Plan-0004 and ADR-0009 on 2026-11-17; the four proposed package rules moved into ADR-0009 §Package rules. No peer review before Increment 01 (owner).
 - Increments 01 to 03 written out for the Ralph Loop; Increment 04 set to blocked until the owner's go (npm publish, consumer change, the « both review apps » scope, the npm trusted publisher).
 - Deviations from the draft table: `workflows.test.mjs` moves from 01 to 02 (no workflow changes in 01); the `packages/ui/**` CI job and its Makefile target move from 02 to 03 (nothing to run before the layer exists).
+- Increment 04 set back to pending with a "do not start without the owner's go" line: `ralph.sh` halts on any blocked increment, even a later one. The orchestrator runs one iteration per pull request.
+- Environment for every iteration: run the gates through `mise exec -- make ...` (the shell's default Node is not the pinned 24.18.0, and `npm ci` refuses it through `devEngines`). `MQ_DENYLIST` is already set in the environment to the real deny-list; never write its path into the repository.

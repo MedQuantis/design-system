@@ -207,9 +207,9 @@ Prediction:
 
 ### Increment 04: release 0.1.0 and consume it
 
-**Status:** blocked
+**Status:** pending
 
-Waits for the owner's go (2026-11-17), and for these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
+**Do not start without the owner's go** (2026-11-17); the Ralph Loop runs one iteration at a time until then, because `ralph.sh` halts on any blocked increment. Needs these answers first: whether « both review apps » means the first product's review app alone for now, and that the npm trusted publisher for `@medquantis/ui` exists (npm may need the package to exist before one can be set; check). Gate: in a consumer's built output the layer's Tailwind classes are present, every icon is bundled, and the static build passes that app's content security policy.
 
 ### Increment 05: shell
 

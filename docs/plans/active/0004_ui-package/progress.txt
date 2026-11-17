@@ -7,3 +7,17 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Owner accepted Plan-0004 and ADR-0009 on 2026-11-17; the four proposed package rules moved into ADR-0009 §Package rules. No peer review before Increment 01 (owner).
 - Increments 01 to 03 written out for the Ralph Loop; Increment 04 set to blocked until the owner's go (npm publish, consumer change, the « both review apps » scope, the npm trusted publisher).
 - Deviations from the draft table: `workflows.test.mjs` moves from 01 to 02 (no workflow changes in 01); the `packages/ui/**` CI job and its Makefile target move from 02 to 03 (nothing to run before the layer exists).
+- Increment 04 set back to pending with a "do not start without the owner's go" line: `ralph.sh` halts on any blocked increment, even a later one. The orchestrator runs one iteration per pull request.
+- Environment for every iteration: run the gates through `mise exec -- make ...` (the shell's default Node is not the pinned 24.18.0, and `npm ci` refuses it through `devEngines`). `MQ_DENYLIST` is already set in the environment to the real deny-list; never write its path into the repository.
+
+## Iteration 1
+- Increment: 01 — the workspace
+- Status: done
+- Files changed: package.json, package-lock.json, packages/ui/package.json, tests/unit/package.test.mjs, tests/unit/release.test.mjs, plan status
+- Red: package.test.mjs "the repository is an npm workspace holding the core and the private @medquantis/ui, and the core tarball ignores packages/" failed (no workspaces, no packages/ui/package.json). The release.test.mjs addition passed from the start: it guards an invariant already true (root tag format and no component), so it is a regression guard, not a red test.
+- Green: both files pass (17 tests).
+- Test gate: passed. `mise exec -- make check` exit 0, confidentiality scan 354 files, 0 findings, MQ_DENYLIST set. Core tarball packed before and after (`npm pack --ignore-scripts`), unpacked and diffed: the only difference is the `workspaces` key in package/package.json.
+- Prediction: matched. New: packages/ui/package.json. Changed: package.json (workspaces only), package-lock.json (workspace and link entries only), two test files. dist/, kit-manifest.json and the skill are untouched.
+- Learnings: `npm install --package-lock-only` adds both a `packages/ui` entry and a `node_modules/@medquantis/ui` link entry.
+- Commit: see git log (commit subject `build(ui): add the @medquantis/ui workspace`)
+- Timestamp: 2026-11-17

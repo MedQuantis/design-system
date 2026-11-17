@@ -39,3 +39,8 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 ## Orchestrator review of Increment 02 (2026-11-17)
 
 - Release mapping: the root entry's `exclude-paths: ["packages/ui"]` gives a commit to the core whenever it touches any other file. The planned `feat(ui)` for Increment 03 also changes `package-lock.json`, the `Makefile` and the workflows, so it would have released the core 1.7.0. Delivery Rule 2 amended: Increment 03 is `build(ui)`, and the releasing `feat(ui)` commit opens Increment 04 and touches only `packages/ui/`.
+
+## Before Increment 03 (2026-11-17)
+
+- The first product's layer is a local checkout named in `var/plan-0004/sources.md` (gitignored). Read that file first. Never write its path or the product's name into the repository.
+- Commit type for Increment 03 is `build(ui)` (Delivery Rule 2), not `feat`.

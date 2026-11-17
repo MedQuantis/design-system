@@ -176,6 +176,8 @@ jobs:
 
       - run: make check
 
+      - run: make ui-check
+
       # make check ends on a fresh build; the files allow-list in package.json keeps the
       # specimen and every other local output out of the tarball.
       - name: Pack the release tarball

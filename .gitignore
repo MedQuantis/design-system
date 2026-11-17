@@ -13,3 +13,9 @@ plugins/**/evals/results/
 __pycache__/
 # Session-local working state (handoffs, review records); committing one is a per-file opt-in.
 var/
+# Nuxt output of @medquantis/ui and its playground (prepare, build, generate, tests).
+packages/ui/**/.nuxt/
+packages/ui/**/.output/
+packages/ui/**/.data/
+# nuxi generate links dist to .output/public; a symlink is a file to git, so dist/ above misses it.
+packages/ui/playground/dist

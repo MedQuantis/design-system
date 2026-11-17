@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 03
+**Current Increment:** 04
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -169,7 +169,7 @@ Prediction:
 
 ### Increment 03: the layer with the theme only
 
-**Status:** pending
+**Status:** done
 
 Scope:
 

@@ -219,3 +219,20 @@ test("the repository is an npm workspace holding the core and @medquantis/ui, an
   const inside = tarball().filter((path) => path.startsWith("packages/"));
   assert.deepEqual(inside, [], `the core tarball must not ship packages/: ${inside.join(", ")}`);
 });
+
+test("@medquantis/ui is a Nuxt layer that pins the core and Nuxt UI exactly and ships only its layer files", () => {
+  const ui = JSON.parse(read("packages/ui/package.json"));
+  const exact = /^\d+\.\d+\.\d+$/;
+  assert.match(ui.dependencies?.["@medquantis/design-system"] ?? "", exact, "the core is pinned exactly");
+  assert.match(ui.dependencies?.["@nuxt/ui"] ?? "", exact, "Nuxt UI is pinned exactly");
+  assert.ok(ui.peerDependencies?.nuxt, "nuxt is a peer dependency");
+  assert.equal(ui.dependencies?.nuxt, undefined, "nuxt comes from the consumer");
+  assert.equal(ui.main, "./nuxt.config.ts");
+  assert.ok(ui.files.includes("nuxt.config.ts") && ui.files.includes("app/"), `files: ${ui.files.join(", ")}`);
+  const result = spawnSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts", "--workspace", "packages/ui"], { cwd: root, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const files = JSON.parse(result.stdout)[0].files.map((file) => file.path);
+  assert.ok(files.includes("nuxt.config.ts") && files.includes("app/app.config.ts") && files.includes("app/assets/css/main.css"), `packed: ${files.join(", ")}`);
+  const outside = files.filter((path) => /^(playground|tests)\//.test(path));
+  assert.deepEqual(outside, [], "the playground and the tests stay out of the tarball");
+});

@@ -41,6 +41,7 @@ export default defineNuxtConfig({
 | `MqTimelineDot` | A timeline's dot, whose shape says who wrote the entry | History timeline |
 | `MqLiveDot` | The live dot: what is in force today | History timeline |
 | `MqLegend` | The caption under a timeline or a table: each mark with its meaning | History timeline |
+| `MqErrorState` | An error card inside the shell: not found, unavailable with a retry and a polite live line, or unexpected with the request id framed beside a copy button | Sign-in, access refused and error pages |
 
 Every label is a prop or a slot. The playground of this package (`playground/`, in the repository, not in the tarball) has one page per component, fed by fictitious data.
 

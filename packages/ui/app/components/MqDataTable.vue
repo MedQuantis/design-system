@@ -87,10 +87,10 @@ defineSlots<
 const picked = defineModel<string[]>('selected', { default: () => [] });
 
 // The keyboard's row, apart from the rows picked by their boxes.
-const selected = ref(0);
+const cursor = ref(0);
 watch(
   () => props.rows.length,
-  (length) => (selected.value = Math.min(selected.value, Math.max(0, length - 1))),
+  (length) => (cursor.value = Math.min(cursor.value, Math.max(0, length - 1))),
 );
 
 const canPick = (row: T): boolean => props.isSelectable?.(row) ?? true;
@@ -125,14 +125,14 @@ function toggleSort(key: string): void {
 function onKeydown(event: KeyboardEvent): void {
   if (props.rows.length === 0) return;
   if (event.key === 'j' || event.key === 'ArrowDown') {
-    selected.value = Math.min(selected.value + 1, props.rows.length - 1);
+    cursor.value = Math.min(cursor.value + 1, props.rows.length - 1);
   } else if (event.key === 'k' || event.key === 'ArrowUp') {
-    selected.value = Math.max(selected.value - 1, 0);
+    cursor.value = Math.max(cursor.value - 1, 0);
   } else if (event.key === 'Enter') {
-    const row = props.rows[selected.value];
+    const row = props.rows[cursor.value];
     if (row) emit('open', row.key);
   } else if (event.key === ' ' && props.selectable) {
-    const row = props.rows[selected.value];
+    const row = props.rows[cursor.value];
     if (row) togglePick(row);
   } else return;
   event.preventDefault();
@@ -278,15 +278,15 @@ const SORT_ICON: Record<AriaSort, string> = {
             :key="row.key"
             :data-key="row.key"
             :data-mine="emphasised(row) ? 'true' : 'false'"
-            :aria-selected="index === selected ? 'true' : 'false'"
+            :aria-selected="index === cursor ? 'true' : 'false'"
             class="cursor-pointer border-t border-(--mq-border-light) first:border-t-0 hover:bg-(--mq-surface-alt) max-md:relative max-md:block max-md:rounded-md max-md:border max-md:p-3 max-md:shadow-(--mq-shadow-small) max-md:first:border-t"
             :class="[
               selectable ? 'max-md:pe-10' : '',
               emphasised(row) ? 'bg-(--mq-accent-pale-2)' : 'max-md:bg-(--mq-surface)',
-              index === selected ? 'outline outline-(--mq-accent) -outline-offset-1' : '',
+              index === cursor ? 'outline outline-(--mq-accent) -outline-offset-1' : '',
             ]"
             @click="
-              selected = index;
+              cursor = index;
               emit('open', row.key);
             "
           >

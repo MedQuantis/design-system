@@ -17,7 +17,7 @@ withDefaults(
 
 const TONE: Record<MqPillTone, string> = {
   neutral: 'text-text-secondary border-(--mq-border-strong) bg-(--mq-surface)',
-  warning: 'text-(--mq-warning) border-(--mq-warning-fill) bg-(--mq-warning-tint)',
+  warning: 'text-(--mq-ink) border-(--mq-warning-fill) bg-(--mq-warning-tint)',
   primary: 'text-(--mq-accent) border-(--mq-accent) bg-(--mq-accent-pale)',
 };
 </script>

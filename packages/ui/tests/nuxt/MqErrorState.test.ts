@@ -118,4 +118,17 @@ describe('MqErrorState', () => {
       expect(wrapper.findComponent({ name: 'UButton' }).props('variant'), state.kind).toBe(variant);
     }
   });
+
+  it('labels each card by its own title, so two cards on a page keep distinct ids', async () => {
+    const wrapper = await mountInApp({
+      components: { MqErrorState },
+      setup: () => ({ notFound, unexpected, action: ERROR_ACTION }),
+      template:
+        '<div><MqErrorState v-bind="notFound" :action="action" /><MqErrorState v-bind="unexpected" :action="action" /></div>',
+    });
+    const cards = wrapper.findAll('[data-testid="error-card"]');
+    const ids = cards.map((card) => card.find('h2').attributes('id'));
+    expect(new Set(ids).size).toBe(2);
+    cards.forEach((card, index) => expect(card.attributes('aria-labelledby')).toBe(ids[index]));
+  });
 });

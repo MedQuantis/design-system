@@ -9,7 +9,7 @@ const pill = (wrapper: Awaited<ReturnType<typeof mountInApp>>) =>
 describe('MqStatusPill', () => {
   it.each([
     ['neutral', ['text-text-secondary', 'border-(--mq-border-strong)', 'bg-(--mq-surface)']],
-    ['warning', ['text-(--mq-warning)', 'border-(--mq-warning-fill)', 'bg-(--mq-warning-tint)']],
+    ['warning', ['text-(--mq-ink)', 'border-(--mq-warning-fill)', 'bg-(--mq-warning-tint)']],
     ['primary', ['text-(--mq-accent)', 'border-(--mq-accent)', 'bg-(--mq-accent-pale)']],
   ] as const)('draws its label as an outlined tag in the %s tone', async (tone, classes) => {
     const wrapper = await mountInApp(MqStatusPill, { props: { label: 'Open', tone } });

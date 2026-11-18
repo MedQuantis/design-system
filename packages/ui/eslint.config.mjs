@@ -11,12 +11,6 @@ export default createConfigForNuxt({
 }).append(
   // The planted offences are there for the guards to find, not to be linted; the rest is output.
   { ignores: ['tests/fixtures/**', '**/.nuxt/**', '**/.output/**', '**/dist/**'] },
-  // The table's `selected` model (the picked rows) and its keyboard row share a name; a component
-  // moves here as it is, so the rename waits for the app that owns it.
-  {
-    files: ['app/components/MqDataTable.vue'],
-    rules: { 'vue/no-dupe-keys': 'off' },
-  },
   {
     rules: {
       'vue/html-self-closing': [

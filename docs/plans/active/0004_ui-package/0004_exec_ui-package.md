@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 08
+**Current Increment:** 10
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -355,9 +355,39 @@ The value beside its source; stat card and segmented bar. Gate: mounted tests; a
 
 ### Increment 10: guidelines, governance and README
 
-**Status:** pending
+**Status:** done
 
-`guidelines/app-patterns.md` and `guidelines/specialising.md` point each pattern to its component; `GOVERNANCE.md` gains the component semver rule of ADR-0009; a README section on the package. Gate: `guidelines.test.mjs` and `package.test.mjs`.
+Scope set by the orchestrator on 2026-11-18, with the owner's go for Increment 10 run by a subagent, and taken before Increments 06 and 09: the first product's review app has no generic component for them yet, so both stay pending, and the docs describe the thirteen components 0.4.0 ships. Docs only: no commit releases either package (`docs` and `test` types, Delivery Rule 2). Patterns that no component draws keep their guidance alone; no component is invented.
+
+Scope:
+
+1. **Write first, expect red:**
+   - extend `packages/ui/tests/unit/readme.test.ts`: the README lists every component of `app/components/Mq*.vue` in a table row and names every helper exported by `app/utils/format.ts`, both read from the layer so a component that ships undocumented fails; it no longer says "theme only"; it states the import paths `@medquantis/ui/app/components/` and `@medquantis/ui/app/utils/format`, the auto-import, the `ui-v` tag and the exact pin the consumer bumps.
+   - extend `tests/unit/guidelines.test.mjs`: a map of each app pattern to the components that draw it covers every shipped component; each pattern's section names exactly its components, in a `**Component.**` line, and the three patterns no component draws name none; the introduction names `@medquantis/ui`. `specialising.md` §Framework neutrality names `@medquantis/ui` and ADR-0009 as the optional exception.
+   - extend `tests/unit/package.test.mjs`: `GOVERNANCE.md` has a subsection on `@medquantis/ui` stating the Major, Minor and Patch lines of ADR-0009 rule 3, the 0.x clause and the `ui-vX.Y.Z` tags; the root README has a section `## Vue components: @medquantis/ui` (optional, a Nuxt layer, the `extends` line, exact versions, a link to the package README, ADR-0009, the tags).
+2. `packages/ui/README.md`: the components table (component, what it draws, app pattern), the helpers, how to import a component and its types (auto-import in Nuxt, or by path, since the package has no exports map), the change rule (a component changes here first, is released under `ui-vX.Y.Z`, the consumer bumps its exact pin), the install line at 0.4.0.
+3. `guidelines/app-patterns.md`: the introduction and a `**Component.**` line in App shell, Review table, Decision modal and History timeline, saying which parts the app still draws. `guidelines/specialising.md`: the package as the one exception to framework neutrality. `GOVERNANCE.md`: the subsection. `README.md`: the section, the framework-neutral line pointing to it, and `make ui-check` in Development.
+4. `make skill`: the skill's app reference is generated from the guidelines.
+
+Primary files:
+
+1. `packages/ui/README.md`, `packages/ui/tests/unit/readme.test.ts`
+2. `guidelines/app-patterns.md`, `guidelines/specialising.md`, `GOVERNANCE.md`, `README.md`, `tests/unit/guidelines.test.mjs`, `tests/unit/package.test.mjs`, `plugins/medquantis-design-system/skills/medquantis-design-system/references/app.md` (generated)
+
+Test gate:
+
+1. `make ui-check`
+2. `MQ_DENYLIST=<the real deny-list> make check`
+
+Exit criteria:
+
+1. Every shipped component is listed in the package README and named under the app pattern it draws; the tests fail when a component ships without either.
+2. `GOVERNANCE.md` states the component semver rule of ADR-0009; the root README has its section on the package.
+
+Prediction:
+
+1. Changed: the primary files above; nothing else.
+2. Byte-identical: every file under `packages/ui/` other than the README and its test, `package-lock.json`, `tokens/`, `css/`. The generated, uncommitted outputs that read the guidelines (`dist/DESIGN.md`, `dist/llms*.txt`) follow them; no token or CSS output changes.
 
 Later, each when both review screens need it: the app shell, the user menu and the environment banner (moved out of Increment 05), the result card and the choice cards (domain components of the first product's review app, out of Increment 08), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
 

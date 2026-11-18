@@ -103,3 +103,11 @@ One entry per increment: red run (failing test names), green run, gates, owner a
 - Prediction: matched as written out. Nothing outside packages/ui/ in the feature commit; package-lock.json unchanged; MqPlanted.vue unchanged.
 - Commits: `feat(ui): add the work-queue table, segments, filter select and status pill` (packages/ui/ only), then `docs(ui): write out and close the work-queue increment` (this folder only).
 - Timestamp: 2026-11-18
+
+## Iteration 7b (orchestrator)
+- Increment: 07 — work queue, unblocked
+- Status: done
+- The owning app fixed the warning pill (label in ink on the warning tint) and renamed the table's keyboard-row ref from `selected` to `cursor`, its behaviour unchanged. `MqStatusPill.vue` and `MqDataTable.vue` copied again as they are; the pill's moved test expects `text-(--mq-ink)`, seen red, then green. The per-file `vue/no-dupe-keys` exemption is removed from `eslint.config.mjs`, which no longer differs from main.
+- Test gate: `mise exec -- make ui-check` exit 0. `make check` with MQ_DENYLIST set (run by the orchestrator, on the subagent's commits): exit 0, confidentiality scan 393 files, 0 findings, gitleaks no leaks. axe on `#/mq-data-table`, `#/mq-segmented-filter`, `#/mq-filter-select`, `#/mq-status-pill`, at 1440 and 390 px, same tags as before: 0 violations on all eight runs.
+- Deviation ruled: the narrowed template text guard (a quoted literal counts only when it holds a character) is kept; it is a false positive of the same kind as Increment 05's quoted `>` fix.
+- Timestamp: 2026-11-18

@@ -6,7 +6,7 @@ tags: [design-system, apps, components, vue, nuxt, packaging, release]
 timestamp: 2026-11-11T00:00:00+01:00
 status: accepted
 owner: Victor Hueni
-last_reviewed: 2026-11-17
+last_reviewed: 2026-11-18
 review_interval: 30d
 ---
 
@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 10
+**Current Increment:** 06
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -266,9 +266,42 @@ Prediction:
 
 ### Increment 06: sign-in, access-refused and error pages
 
-**Status:** pending
+**Status:** done
 
-The three pages and the empty state. Gate: mounted tests; axe.
+Scope set by the orchestrator on 2026-11-18, with the owner's go for Increment 06 run by a subagent. One component moves from the first product's review app: `MqErrorState`, the error card of its three kinds (not found, unavailable, unexpected: eyebrow, title, description, the asked path, a request-id frame with a copy button, a retry with a polite live line, an action back), which the owning app made generic on 2026-11-18 (every string a prop). The sign-in page, the access-refused page and the empty state have no generic component in that app: sign-in is done by an auth proxy, and the access-refused page is an app page with its own data calls. They stay listed under Later, and the app pattern says the app draws them.
+
+Scope:
+
+1. **Write first, expect red:**
+   - new `packages/ui/tests/nuxt/MqErrorState.test.ts`: the mounted test of the first product's review app, moved as it is with only its import paths changed; it mounts through `tests/nuxt/support/mount.ts` and reads `ERROR_ACTION`, `ERROR_STATES` and `ERROR_STILL_DOWN`, added to `tests/nuxt/fixtures/neutral.ts` as they are in the source.
+   - the guards' playground checks of `packages/ui/tests/unit/guards.test.ts` (a page per component, fed by the neutral fixtures only) and `packages/ui/tests/unit/readme.test.ts` (every component in a table row) read the components from the layer, so they fail on the new component until its page and its README row exist; no test change.
+   - extend `tests/unit/guidelines.test.mjs`: the pattern "Sign-in, access refused and error pages" maps to `MqErrorState`, so its section names it in a `**Component.**` line.
+2. `packages/ui/app/components/MqErrorState.vue` as it is in the source; it imports nothing, so no path changes.
+3. `packages/ui/playground/app/pages/mq-error-state.vue`, moved as it is. The package's playground has no page list, so the source's nav entry in `app.vue` does not move.
+4. `packages/ui/README.md`: a row for `MqErrorState` (pattern: sign-in and error pages). `guidelines/app-patterns.md`: the **Component.** line of the pattern, naming `MqErrorState` for the error card and saying the sign-in and access refused pages are drawn by the app. `make skill` regenerates the skill's app reference.
+
+Primary files:
+
+1. `packages/ui/app/components/MqErrorState.vue`, `packages/ui/playground/app/pages/mq-error-state.vue`, `packages/ui/README.md`
+2. `packages/ui/tests/nuxt/MqErrorState.test.ts`, `packages/ui/tests/nuxt/fixtures/neutral.ts`
+3. `guidelines/app-patterns.md`, `tests/unit/guidelines.test.mjs`, `plugins/medquantis-design-system/skills/medquantis-design-system/references/app.md` (generated)
+
+Test gate:
+
+1. `make ui-check`
+2. `MQ_DENYLIST=<the real deny-list> make check`
+3. axe (the WCAG tags of the specimen suite) on the playground page, generated as a static single-page app, at desktop and phone widths: no violation.
+
+Exit criteria:
+
+1. `MqErrorState` mounts from the layer with its moved test green, its page builds in both render modes, and the guards pass on it.
+2. The package README lists it and the app pattern names it; the sign-in and access refused pages are named as the app's.
+
+Prediction:
+
+1. New: the component, its playground page and its mounted test.
+2. Changed: `neutral.ts` (three fixtures added), `packages/ui/README.md` (one row), `guidelines/app-patterns.md` (one line), `tests/unit/guidelines.test.mjs` (one map entry), the generated skill reference.
+3. Byte-identical: everything else, `package-lock.json`, `guards.test.ts`, `readme.test.ts`, `MqPlanted.vue`, the core tarball.
 
 ### Increment 07: work queue
 
@@ -389,7 +422,7 @@ Prediction:
 1. Changed: the primary files above; nothing else.
 2. Byte-identical: every file under `packages/ui/` other than the README and its test, `package-lock.json`, `tokens/`, `css/`. The generated, uncommitted outputs that read the guidelines (`dist/DESIGN.md`, `dist/llms*.txt`) follow them; no token or CSS output changes.
 
-Later, each when both review screens need it: the app shell, the user menu and the environment banner (moved out of Increment 05), the result card and the choice cards (domain components of the first product's review app, out of Increment 08), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
+Later, each when both review screens need it: the sign-in page, the access refused page and the empty state (no generic component in the first product's review app, out of Increment 06), the app shell, the user menu and the environment banner (moved out of Increment 05), the result card and the choice cards (domain components of the first product's review app, out of Increment 08), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
 
 ## Delivery Rules
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/MedQuantis/design-system/compare/ui-v0.2.0...ui-v0.3.0) (2026-11-18)
+
+
+### Features
+
+* **ui:** add the work-queue table, segments, filter select and status pill ([8e5eb26](https://github.com/MedQuantis/design-system/commit/8e5eb263f6a02d68b9cabba57eac3ce8c8e4cce2))
+
 ## [0.2.0](https://github.com/MedQuantis/design-system/compare/ui-v0.1.0...ui-v0.2.0) (2026-11-17)
 
 

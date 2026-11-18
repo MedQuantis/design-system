@@ -11,7 +11,7 @@ describe('MqAppNavigation', () => {
     const links = wrapper.findAll('a').map((a) => [a.text(), a.attributes('href')]);
     expect(links).toEqual([
       ['Home', '/home'],
-      ['Inbox4', '/inbox'],
+      ['Inbox 4', '/inbox'],
       ['Archive', '/archive'],
     ]);
     expect(wrapper.find('a[href="/home"]').attributes('aria-label')).toBe('Home');
@@ -32,6 +32,12 @@ describe('MqAppNavigation', () => {
     expect(counts.map((count) => count.text())).toEqual(['4']);
     expect(counts[0]!.attributes('aria-label')).toBe('Waiting');
     expect(wrapper.find('a[href="/archive"] [data-testid="nav-count"]').exists()).toBe(false);
+  });
+
+  it('names a badged link with its label, its figure and its count label, in the drawn order', async () => {
+    // WCAG 2.5.3: the name starts with the visible text, so a voice command naming it works.
+    const wrapper = await mountInApp(MqAppNavigation, { props: { groups: NAVIGATION_GROUPS } });
+    expect(wrapper.find('a[href="/inbox"]').attributes('aria-label')).toBe('Inbox 4, Waiting');
   });
 
   it('folded to a rail, hides the group headings and names each link by its tooltip', async () => {
@@ -99,7 +105,8 @@ describe('MqAppNavigation', () => {
       expect(zero.find('a[href="/inbox"]').attributes('aria-label')).toBe('Inbox');
       const unfolded = await mountRail(false);
       expect(unfolded.find('[data-testid="nav-open-count"]').exists()).toBe(false);
-      expect(unfolded.find('a[href="/inbox"]').attributes('aria-label')).toBe('Inbox');
+      // Unfolded, the name is the badged link's own (label, figure, count label).
+      expect(unfolded.find('a[href="/inbox"]').attributes('aria-label')).toBe('Inbox 4, Waiting');
     });
   });
 });

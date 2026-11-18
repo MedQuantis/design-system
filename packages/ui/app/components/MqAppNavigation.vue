@@ -35,6 +35,17 @@ const RAIL_CAP = 99;
 const railFigure = (count: number): string =>
   count > RAIL_CAP ? `${RAIL_CAP}+` : formatCount(count);
 
+// On the rail the drawn figure is hidden from assistive technology, so the name says it.
+// Unfolded, the name starts with the visible label and badge figure (WCAG 2.5.3), then says
+// what the figure counts.
+function linkName(item: MqNavigationItem, openCount: number | null): string {
+  if (openCount !== null && item.openCountLabel) return `${item.label}, ${item.openCountLabel}`;
+  const count = item.count ?? 0;
+  if (props.collapsed || count <= 0) return item.label;
+  const figure = `${item.label} ${String(count)}`;
+  return item.countLabel ? `${figure}, ${item.countLabel}` : figure;
+}
+
 // One array per group, which the menu separates; a heading is a label item.
 const items = computed<NavigationMenuItem[][]>(() =>
   props.groups.map((group) => [
@@ -45,11 +56,7 @@ const items = computed<NavigationMenuItem[][]>(() =>
         label: item.label,
         icon: item.icon,
         to: item.to,
-        // The drawn figure is hidden from assistive technology, so the name says it.
-        'aria-label':
-          openCount !== null && item.openCountLabel
-            ? `${item.label}, ${item.openCountLabel}`
-            : item.label,
+        'aria-label': linkName(item, openCount),
         count: item.count ?? 0,
         countLabel: item.countLabel,
         openCount,
@@ -77,6 +84,9 @@ const items = computed<NavigationMenuItem[][]>(() =>
       >
     </template>
     <template #item-trailing="{ item }">
+      <!-- A space between the label and the figure, so the link's text reads « Inbox 4 », as its
+      name does; a flex row draws no space for it. -->
+      <template v-if="(item.count ?? 0) > 0">{{ ' ' }}</template>
       <UBadge
         v-if="(item.count ?? 0) > 0"
         :label="String(item.count)"

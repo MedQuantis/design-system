@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/MedQuantis/design-system/compare/ui-v0.3.0...ui-v0.4.0) (2026-11-18)
+
+
+### Features
+
+* **ui:** add the review window, stepper, action bar and history timeline ([f110759](https://github.com/MedQuantis/design-system/commit/f110759b35215ca409842d821a9815905971bdee))
+
 ## [0.3.0](https://github.com/MedQuantis/design-system/compare/ui-v0.2.0...ui-v0.3.0) (2026-11-18)
 
 

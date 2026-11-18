@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/MedQuantis/design-system/compare/ui-v0.5.0...ui-v0.5.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **ui:** give each error card its own title id ([b713637](https://github.com/MedQuantis/design-system/commit/b7136376861737691d7530ad0dc24c69f34a40c0))
+* **ui:** name a badged navigation link with its visible figure ([f0a43d7](https://github.com/MedQuantis/design-system/commit/f0a43d798638bdb71837d48886ed722503991fbd))
+
 ## [0.5.0](https://github.com/MedQuantis/design-system/compare/ui-v0.4.0...ui-v0.5.0) (2026-11-18)
 
 

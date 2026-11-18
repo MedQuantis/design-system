@@ -34,7 +34,8 @@
   "dependencies": {
     "@iconify-json/lucide": "1.2.143",
     "@medquantis/design-system": "1.6.0",
-    "@nuxt/ui": "4.11.3"
+    "@nuxt/ui": "4.11.3",
+    "reka-ui": "2.10.5"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "1.17.0",

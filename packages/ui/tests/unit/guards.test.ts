@@ -69,11 +69,14 @@ function template(source: string): string {
 /** An opening or closing tag, read past a `>` inside a quoted attribute such as `v-if="n > 0"`. */
 const TAG = /<\/?[A-Za-z][^>"']*(?:(?:"[^"]*"|'[^']*')[^>"']*)*>/g;
 
+/** A quoted literal holding a character; `' '` between two values writes no word. */
+const WORD_LITERAL = /'[^']*\S[^']*'|"[^"]*\S[^"]*"|`[^`]*\S[^`]*`/;
+
 /** The text nodes of a template that hold a word or a quoted literal in a mustache. */
 function textNodes(body: string): string[] {
   return body.split(TAG).filter((node) => {
     const outside = node.replace(/\{\{[\s\S]*?\}\}/g, '').trim();
-    const literal = [...node.matchAll(/\{\{([\s\S]*?)\}\}/g)].some((m) => /['"`]/.test(m[1]!));
+    const literal = [...node.matchAll(/\{\{([\s\S]*?)\}\}/g)].some((m) => WORD_LITERAL.test(m[1]!));
     return outside !== '' || literal;
   });
 }
@@ -222,6 +225,18 @@ describe('the template text guard', () => {
     expect(textNodes('<template><b>{{ n }}</b><i>Total</i><s>{{ \'Two\' }}</s></template>')).toEqual([
       'Total',
       "{{ 'Two' }}",
+    ]);
+  });
+});
+
+describe('the template text guard, between two values', () => {
+  it('reads a literal space as no word', () => {
+    expect(textNodes("<template><b>{{ a }}</b>{{ ' '\n}}<i>{{ b }}</i></template>")).toEqual([]);
+  });
+
+  it('still finds a literal that holds a character', () => {
+    expect(textNodes("<template><b>{{ a }}</b>{{ ' / ' }}<i>{{ b }}</i></template>")).toEqual([
+      "{{ ' / ' }}",
     ]);
   });
 });

@@ -8,8 +8,8 @@ import {
 
 // The table's legend: each status pill with what it means, then a tinted row.
 const TABLE_LEGEND = [
-  ...PILLS.map((pill, index) => ({ key: `pill-${index}`, label: pill.detail, pill })),
-  { key: 'tint', label: 'A tinted row concerns you.', pill: null },
+  ...PILLS.map((pill, index) => ({ key: `pill-${index}`, label: pill.detail })),
+  { key: 'tint', label: 'A tinted row concerns you.' },
 ];
 
 type Row = (typeof TABLE_ROWS)[number];
@@ -61,19 +61,12 @@ const common = {
         <template #cell-opened="{ row }">
           <span class="font-mono">{{ row.opened }}</span>
         </template>
-        <!-- The package has no legend component yet: a plain list stands in for the slot. -->
         <template #legend>
-          <ul class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs" aria-label="Key">
-            <li v-for="item in TABLE_LEGEND" :key="item.key" class="flex items-center gap-2">
-              <MqStatusPill
-                v-if="item.pill"
-                :label="item.pill.label"
-                :tone="item.pill.tone"
-                fill
-              />
-              <span class="text-text-secondary">{{ item.label }}</span>
-            </li>
-          </ul>
+          <MqLegend :items="TABLE_LEGEND" label="Key">
+            <template v-for="(pill, index) in PILLS" :key="index" #[`mark-pill-${index}`]>
+              <MqStatusPill :label="pill.label" :tone="pill.tone" fill />
+            </template>
+          </MqLegend>
         </template>
       </MqDataTable>
       <p class="text-text-tertiary mt-2 font-mono text-xs">opened: {{ opened ?? 'none' }}</p>

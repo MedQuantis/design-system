@@ -357,3 +357,41 @@ test("app-patterns.md holds the seven Maintainer patterns, reads the #38 tokens 
   assert.match(text, /never a pill/);
   for (const section of headings) assert.match(text.split(`## ${section}`)[1], /Stays in the app:/, `${section} does not say what stays in the app`);
 });
+
+// Plan-0004 increment 10: each app pattern a shipped @medquantis/ui component draws names it, under that
+// pattern, and a pattern no component draws keeps its CSS guidance alone. A component that ships with no
+// entry here fails, so it cannot ship undocumented.
+const PATTERN_COMPONENTS = {
+  "App shell": ["MqAppNavigation"],
+  "Sign-in, access refused and error pages": [],
+  "Overview: queue boxes and coverage cards": [],
+  "Review table: filters, condition tile, status pill, code chips": ["MqDataTable", "MqSegmentedFilter", "MqFilterSelect", "MqStatusPill"],
+  "Decision modal": ["MqReviewWindow", "MqStepper", "MqActionBar"],
+  "Limitation-text marks": [],
+  "History timeline": ["MqTimeline", "MqEventTag", "MqTimelineDot", "MqLiveDot", "MqLegend"],
+};
+
+test("app-patterns.md names, under each pattern, the @medquantis/ui components that draw it, and every shipped component has its pattern", () => {
+  const shipped = readdirSync(join(root, "packages/ui/app/components"))
+    .filter((name) => /^Mq\w+\.vue$/.test(name))
+    .map((name) => name.replace(/\.vue$/, ""))
+    .sort();
+  assert.deepEqual(Object.values(PATTERN_COMPONENTS).flat().sort(), shipped, "every shipped component maps to one app pattern");
+  const text = read("guidelines/app-patterns.md");
+  assert.match(text.split("\n## ")[0], /`@medquantis\/ui`/, "the introduction names the package");
+  for (const [heading, components] of Object.entries(PATTERN_COMPONENTS)) {
+    const body = section(text, new RegExp(`^## ${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`));
+    assert.ok(body, `no section ${heading}`);
+    const named = new Set([...body.join("\n").matchAll(/`(Mq[A-Z]\w+)`/g)].map((match) => match[1]));
+    assert.deepEqual([...named].sort(), [...components].sort(), `${heading} names the components that draw it, and no other`);
+    if (components.length > 0) assert.match(body.join("\n"), /^\*\*Component\.\*\*/m, `${heading} opens its component line with **Component.**`);
+  }
+});
+
+test("specialising.md says the core stays framework-neutral and names the optional @medquantis/ui package of ADR-0009", () => {
+  const text = section(read("guidelines/specialising.md"), /^## Framework neutrality$/).join("\n");
+  assert.match(text, /`@medquantis\/ui`/);
+  assert.match(text, /ADR-0009/);
+  assert.match(text, /optional/);
+  assert.doesNotMatch(text, /It ships no framework component\./, "the core's no-component sentence names the package as the one exception");
+});

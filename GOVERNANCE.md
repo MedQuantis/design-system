@@ -28,6 +28,16 @@ Semantic versioning, changelog by release-please:
 
 A deprecated token is removed only in the next major.
 
+### The component package, `@medquantis/ui`
+
+The optional Vue component package of [ADR-0009](docs/architecture/decisions/adr-0009-optional-vue-component-package.md) has its own version and release track (tags `ui-vX.Y.Z`); the rules above apply to the core package only. Its components follow the semver rule for a component API of ADR-0009 §Package rules:
+
+- **Major:** a component, prop, slot or emitted event removed or renamed, or a default that visibly changes consumers.
+- **Minor:** a component, prop, slot or emitted event added.
+- **Patch:** a fix with no change to the API or the drawn result.
+
+On 0.x a minor version may break; the package stays on 0.x until each of the first components is used by two screens. A component enters the package only when two MedQuantis review screens need it, and changes there first: consumers take a change by bumping their exact pin.
+
 ## Promotion of local components
 
 A component invented locally in two consumers is promoted here only if it passes four tests:

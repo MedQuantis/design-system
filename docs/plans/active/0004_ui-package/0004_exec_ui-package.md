@@ -272,9 +272,9 @@ The three pages and the empty state. Gate: mounted tests; axe.
 
 ### Increment 07: work queue
 
-**Status:** blocked
+**Status:** done
 
-Blocked on the axe gate (test gate 3): the warning tone of `MqStatusPill` writes `--mq-warning` text on `--mq-warning-tint`, 4.41:1 against the 4.5:1 that WCAG 1.4.3 asks for small text, a pair `tokens/contrast-pairs.json` declares non-text only (text on the tint stays ink, owner ruling 5). The component moved as it is; the fix changes its drawn result and a moved test, so it belongs to the app that owns it first (Principle 4), then moves here. Everything else of this increment is done and committed.
+The axe gate first found the warning tone of `MqStatusPill` writing `--mq-warning` text on `--mq-warning-tint`, 4.41:1 against the 4.5:1 that WCAG 1.4.3 asks for small text, a pair `tokens/contrast-pairs.json` declares non-text only (text on the tint stays ink, owner ruling 5). Under Principle 4 the owning app fixed it first (ink text on the tint), and renamed the table's keyboard-row ref so it no longer shares the `selected` model's name; both files then moved here again as they are.
 
 Scope set by the orchestrator on 2026-11-18, with the owner's go for Increment 07 run by a subagent, and taken before Increment 06 (owner's order of work; 06 stays pending). Four components move: `MqDataTable`, `MqSegmentedFilter`, `MqFilterSelect`, `MqStatusPill`. The "status and owner filters" of the one-line scope are not components of their own in the first product's review app: they are instances of `MqFilterSelect` and `MqSegmentedFilter`. `app/utils/selection.ts` does not move: none of the four imports it (its users, the annotated text and the quote, are listed under Later).
 
@@ -289,7 +289,7 @@ Scope:
 Primary files:
 
 1. `packages/ui/app/components/MqDataTable.vue`, `MqSegmentedFilter.vue`, `MqFilterSelect.vue`, `MqStatusPill.vue`; their four playground pages under `packages/ui/playground/app/pages/`
-2. `packages/ui/tests/nuxt/MqDataTable.test.ts`, `MqSegmentedFilter.test.ts`, `MqFilterSelect.test.ts`, `MqStatusPill.test.ts`, `packages/ui/tests/nuxt/fixtures/neutral.ts`, `packages/ui/tests/unit/guards.test.ts`, `packages/ui/eslint.config.mjs`
+2. `packages/ui/tests/nuxt/MqDataTable.test.ts`, `MqSegmentedFilter.test.ts`, `MqFilterSelect.test.ts`, `MqStatusPill.test.ts`, `packages/ui/tests/nuxt/fixtures/neutral.ts`, `packages/ui/tests/unit/guards.test.ts`
 
 Test gate:
 
@@ -304,7 +304,7 @@ Exit criteria:
 Prediction:
 
 1. New: the four components, their four playground pages and their four mounted tests.
-2. Changed: `neutral.ts` (seven fixtures added), `guards.test.ts`, `eslint.config.mjs`.
+2. Changed: `neutral.ts` (seven fixtures added), `guards.test.ts`.
 3. Byte-identical: everything outside `packages/ui/`, the core tarball, `package-lock.json`, `MqPlanted.vue`.
 
 ### Increment 08: decision modal

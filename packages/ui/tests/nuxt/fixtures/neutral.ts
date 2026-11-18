@@ -208,3 +208,34 @@ export const WINDOW_LABELS = {
   notListedLabel: 'not in the list',
   sectionsLabel: 'Steps of the decision',
 };
+
+// The words of a fictitious error page, one set per state, and the way back it offers.
+export const ERROR_ACTION = { label: 'Back to the list', to: '/items' };
+export const ERROR_STATES = {
+  notFound: {
+    kind: 'notFound',
+    eyebrow: 'Not found',
+    title: 'No page here',
+    description: 'Nothing answers this address. The link may be cut short.',
+    path: '/items/unknown-key',
+  },
+  unavailable: {
+    kind: 'unavailable',
+    eyebrow: 'Unavailable',
+    title: 'The service is down for a moment',
+    description: 'It does not answer for now. Try again in a few moments.',
+    retryLabel: 'Try again',
+  },
+  unexpected: {
+    kind: 'unexpected',
+    eyebrow: 'Error',
+    title: 'Something went wrong',
+    description: 'The request failed. Give this identifier to the team if it happens again.',
+    requestId: 'req-0042',
+    requestIdLabel: 'Request header',
+    copyLabel: 'Copy',
+    copiedLabel: 'Copied',
+    copyAriaLabel: 'Copy the request identifier',
+  },
+} as const;
+export const ERROR_STILL_DOWN = 'Still down at the last try, at 09:30.';

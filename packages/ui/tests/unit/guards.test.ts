@@ -104,7 +104,7 @@ const visibleAttributes: Guard = (tree) =>
 // package's own helpers, never a consumer's module, a route, the router or a fetch. A word of a
 // product's domain is the confidentiality scan's to find (make check, with the deny-list).
 const COMPONENTS = 'app/components/';
-const ALLOWED_IMPORT = /^(vue|@nuxt\/ui|\.\/Mq\w+\.vue|\.\.\/utils\/format)$/;
+const ALLOWED_IMPORT = /^(vue|@nuxt\/ui|reka-ui|\.\/Mq\w+\.vue|\.\.\/utils\/format)$/;
 const APP_WIRING = /\bnavigateTo\b|\buseFetch\b|\$fetch\b|\buseRoute\b|\buseRouter\b/;
 const ROUTE_LITERAL = /['"`]\/[A-Za-z]/;
 
@@ -169,12 +169,19 @@ describe.each(GUARDS)('%s', (_, guard) => {
   });
 });
 
-describe('a component imports only vue, @nuxt/ui, its siblings and the helpers', () => {
+describe('a component imports only vue, @nuxt/ui, reka-ui, its siblings and the helpers', () => {
   it.each(['vue', '@nuxt/ui', './MqSibling.vue', '../utils/format'])('%s is allowed', (from) => {
     expect(ALLOWED_IMPORT.test(from)).toBe(true);
   });
 
-  it.each(['#app-types', '../utils/wording', '~/composables/useItems', 'reka-ui'])(
+  // reka-ui is the primitive library Nuxt UI is built on, pinned as a dependency of the package at
+  // the version Nuxt UI requires: a dialog's title comes from it.
+  it('reka-ui is allowed, and none of its subpaths', () => {
+    expect(ALLOWED_IMPORT.test('reka-ui')).toBe(true);
+    expect(ALLOWED_IMPORT.test('reka-ui/internal')).toBe(false);
+  });
+
+  it.each(['#app-types', '../utils/wording', '~/composables/useItems', 'reka-ui-extra'])(
     '%s is not',
     (from) => {
       expect(ALLOWED_IMPORT.test(from)).toBe(false);

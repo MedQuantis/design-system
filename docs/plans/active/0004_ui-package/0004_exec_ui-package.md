@@ -96,7 +96,7 @@ packages/
 ## Increment Plan
 
 **Overall Status:** in-progress
-**Current Increment:** 07
+**Current Increment:** 08
 
 Increments 01 to 03 are written out in full. Increments 04 to 10 keep their one-line change set and gate; each is written out, from what the previous increments shipped, before it starts.
 
@@ -309,9 +309,43 @@ Prediction:
 
 ### Increment 08: decision modal
 
-**Status:** pending
+**Status:** done
 
-Window frame with queue navigator, panes, tabs and foldable sections; stepper; footer action bar; history timeline; result card; choice cards. Gate: mounted tests; axe.
+The reka-ui pin changes the root `package-lock.json` (the workspace's entry only), and under Delivery Rule 2 a `feat(ui)` commit touching a file outside `packages/ui/` releases the core too, so the pin lands first in its own `build(ui)` commit (`packages/ui/package.json` and `package-lock.json`), which releases neither package; the `feat(ui)` commit then touches only `packages/ui/`.
+
+Scope set by the orchestrator on 2026-11-18, with the owner's go for Increment 08 run by a subagent, and taken before Increment 06 (owner's order of work; 06 stays pending). Eight components move from the first product's review app: `MqReviewWindow`, `MqStepper`, `MqActionBar`, `MqTimeline`, `MqEventTag`, `MqTimelineDot`, `MqLiveDot`, `MqLegend`. "Window frame with queue navigator, panes, tabs and foldable sections" is `MqReviewWindow`; "footer action bar" is `MqActionBar`; "history timeline" is `MqTimeline` with its marks (`MqEventTag`, `MqTimelineDot`, `MqLiveDot`) and `MqLegend`. The result card and the choice cards of the one-line scope are domain components in that app, not generic `Mq*` ones: they stay listed under Later.
+
+Scope:
+
+1. **Write first, expect red:**
+   - new `packages/ui/tests/nuxt/MqReviewWindow.test.ts`, `MqStepper.test.ts`, `MqActionBar.test.ts`, `MqTimeline.test.ts`, `MqEventTag.test.ts`, `MqTimelineDot.test.ts`, `MqLiveDot.test.ts`, `MqLegend.test.ts`: the mounted tests of the first product's review app, moved as they are with their import paths changed (`MqLegend.test.ts` takes `MqStatusPill` from `../../app/components/MqStatusPill.vue`) and four slot or prop strings made neutral; they mount through `tests/nuxt/support/mount.ts` and read `STEP_SHAPES`, `ACTS`, `TIMELINE_FILTERS`, `TIMELINE_CATEGORIES`, `TIMELINE_ENTRIES`, `LEGEND_ITEMS`, `WINDOW_TABS`, `WINDOW_SECTIONS` and `WINDOW_LABELS`, added to `tests/nuxt/fixtures/neutral.ts` as they are in the source.
+   - extend `packages/ui/tests/unit/guards.test.ts`: a component may import `reka-ui` (the primitive library Nuxt UI is built on; `MqReviewWindow` takes its `DialogTitle`), and none of its subpaths, with a direct case. The other guards apply to the eight components unchanged.
+2. `packages/ui/app/components/MqReviewWindow.vue`, `MqStepper.vue`, `MqActionBar.vue`, `MqTimeline.vue`, `MqEventTag.vue`, `MqTimelineDot.vue`, `MqLiveDot.vue`, `MqLegend.vue` as they are in the source, with one change forced by the new folder: the helper import of the window and the timeline reads `../utils/format`.
+3. `reka-ui` at exactly `2.10.5` (the version `@nuxt/ui` 4.11.3 requires, already installed) in the package's dependencies, through `npm install --save-exact reka-ui@2.10.5 -w packages/ui`; no other dependency.
+4. `packages/ui/playground/app/pages/mq-review-window.vue`, `mq-stepper.vue`, `mq-action-bar.vue`, `mq-timeline.vue`, `mq-event-tag.vue`, `mq-timeline-dot.vue`, `mq-live-dot.vue`, `mq-legend.vue`, moved as they are, except where they draw a component the package does not have yet (the code tile in the window's title, the code chip in the legend's table caption) or a fictitious text that is not neutral enough here. The table page's legend, a plain list since Increment 07, is the source's `MqLegend` again.
+
+Primary files:
+
+1. The eight components under `packages/ui/app/components/`; their eight playground pages and `mq-data-table.vue` under `packages/ui/playground/app/pages/`
+2. The eight mounted tests under `packages/ui/tests/nuxt/`, `packages/ui/tests/nuxt/fixtures/neutral.ts`, `packages/ui/tests/unit/guards.test.ts`
+3. `packages/ui/package.json`, `package-lock.json`
+
+Test gate:
+
+1. `make ui-check`
+2. `MQ_DENYLIST=<the real deny-list> make check`
+3. axe (the WCAG tags of the specimen suite) on the eight playground pages and the table page, generated as a static single-page app, at desktop and phone widths, the review window open: no violation.
+
+Exit criteria:
+
+1. The eight components mount from the layer with their moved tests green, their pages build in both render modes, and the guards pass on them.
+2. `package-lock.json` changes in the `packages/ui` workspace entry only: no package added, removed or moved to another version.
+
+Prediction:
+
+1. New: the eight components, their eight playground pages and their eight mounted tests.
+2. Changed: `neutral.ts` (nine fixtures added), `guards.test.ts`, `mq-data-table.vue` (its legend), `packages/ui/package.json` (`reka-ui`), `package-lock.json` (the `packages/ui` entry: `reka-ui` added, its stale `version` resynced).
+3. Byte-identical: everything else outside `packages/ui/`, the core tarball, `MqPlanted.vue`.
 
 ### Increment 09: a value beside its source, overview cards
 
@@ -325,7 +359,7 @@ The value beside its source; stat card and segmented bar. Gate: mounted tests; a
 
 `guidelines/app-patterns.md` and `guidelines/specialising.md` point each pattern to its component; `GOVERNANCE.md` gains the component semver rule of ADR-0009; a README section on the package. Gate: `guidelines.test.mjs` and `package.test.mjs`.
 
-Later, each when both review screens need it: the app shell, the user menu and the environment banner (moved out of Increment 05), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
+Later, each when both review screens need it: the app shell, the user menu and the environment banner (moved out of Increment 05), the result card and the choice cards (domain components of the first product's review app, out of Increment 08), keyboard shortcuts help, code tile and chip, search field, global search, page header with breadcrumb, key-value list, reading drawer, confirm modal, facets, detail sheet, annotated text.
 
 ## Delivery Rules
 

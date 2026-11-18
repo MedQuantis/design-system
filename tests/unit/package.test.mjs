@@ -235,3 +235,32 @@ test("@medquantis/ui is a Nuxt layer that pins the core and Nuxt UI exactly and 
   const outside = files.filter((path) => /^(playground|tests)\//.test(path));
   assert.deepEqual(outside, [], "the playground and the tests stay out of the tarball");
 });
+
+// Plan-0004 increment 10: the component semver rule of ADR-0009 in GOVERNANCE.md, and the package in the root README.
+test("GOVERNANCE.md states the component semver rule of ADR-0009 for @medquantis/ui, apart from the core's", () => {
+  const governance = read("GOVERNANCE.md");
+  const start = governance.split("\n").findIndex((line) => /^### .*@medquantis\/ui/.test(line));
+  assert.ok(start >= 0, "GOVERNANCE.md has no subsection on @medquantis/ui");
+  const body = governance.split("\n").slice(start).join("\n").split(/\n#{2,3} /)[0];
+  assert.match(body, /ADR-0009/);
+  assert.match(body, /\*\*Major:\*\* a component, prop, slot or emitted event removed or renamed, or a default that visibly changes consumers/);
+  assert.match(body, /\*\*Minor:\*\* a component, prop, slot or emitted event added/);
+  assert.match(body, /\*\*Patch:\*\* a fix with no change to the API or the drawn result/);
+  assert.match(body, /On 0\.x a minor version may break/);
+  assert.match(body, /`ui-vX\.Y\.Z`/);
+  assert.doesNotMatch(body, /[–—]/);
+});
+
+test("the root README has a section on @medquantis/ui: optional, a Nuxt layer, pinned exactly, its README for the components", () => {
+  const section = readmeSection(read("README.md"), "## Vue components: @medquantis/ui");
+  assert.ok(section, "README has no section Vue components: @medquantis/ui");
+  assert.match(section, /optional/);
+  assert.match(section, /Nuxt layer/);
+  assert.match(section, /extends: \['@medquantis\/ui'\]/);
+  assert.match(section, /exact version/);
+  assert.match(section, /\]\(packages\/ui\/README\.md\)/);
+  assert.match(section, /ADR-0009/);
+  assert.match(section, /`ui-vX\.Y\.Z`/);
+  assert.doesNotMatch(section, /[–—]/);
+  assert.doesNotMatch(read("README.md"), /Wiring the tokens into a component library \(Nuxt UI, shadcn\/ui\) belongs to the consumer\.$/m, "the framework-neutral line names the optional package");
+});

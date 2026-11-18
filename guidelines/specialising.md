@@ -4,9 +4,10 @@ The design system is the single source of the MedQuantis visual identity ([ADR-0
 
 ## Framework neutrality
 
-The design system ships framework-neutral outputs only: CSS custom properties (`dist/tokens.css`), resolved values (`dist/tokens.json`), a Tailwind theme (`dist/tailwind.css`), the kit contract for kit renderers (`dist/kit-contract.css`), the shared `mq-` CSS, fonts, icons and brand files. It ships no framework component.
+The design system ships framework-neutral outputs only: CSS custom properties (`dist/tokens.css`), resolved values (`dist/tokens.json`), a Tailwind theme (`dist/tailwind.css`), the kit contract for kit renderers (`dist/kit-contract.css`), the shared `mq-` CSS, fonts, icons and brand files. Its core outputs hold no framework component.
 
-- Wiring the tokens into a component library (Nuxt UI, shadcn/ui, Radix, MUI) belongs to the consumer. For example, a component library that names its error colour `error` maps it to `--mq-danger` in the app, not here.
+- The one exception is the optional `@medquantis/ui` package of [ADR-0009](../docs/architecture/decisions/adr-0009-optional-vue-component-package.md), a second package of this repository for Nuxt apps: the Nuxt UI theme wired to the tokens and the presentation components that review screens share. Each draws an [app pattern](app-patterns.md), which names it; an app takes the component rather than drawing its own, and a pattern that names none is drawn by the app. The core never imports from it.
+- Wiring the tokens into any other component library (shadcn/ui, Radix, MUI) belongs to the consumer. For example, a component library that names its error colour `error` maps it to `--mq-danger` in the app, not here.
 - When two consumers need the same wiring, it may ship here as a separate optional export generated from the tokens, never as part of the core outputs.
 - Apps with a component library take the tokens and the Tailwind theme only. They do not load the `mq-` component CSS and never load `kit-contract.css`, whose unprefixed names collide with framework variables.
 

@@ -385,13 +385,15 @@ Source: guidelines/layout.md
 
 Source: guidelines/app-patterns.md
 
-Patterns for dense interactive apps (internal review and operations tools) built on the tokens. They describe anatomy, states and the tokens each part reads; the framework components that draw them belong to the app (specialising). Every pattern here is for the app medium only.
+Patterns for dense interactive apps (internal review and operations tools) built on the tokens. They describe anatomy, states and the tokens each part reads. Where a component of the optional `@medquantis/ui` package draws a pattern, for Nuxt apps, the pattern names it in a **Component.** line, and an app takes that component rather than drawing its own; a pattern or a part that names no component is drawn by the app from this guidance (specialising). Every pattern here is for the app medium only.
 
 ## App shell
 
 Source: guidelines/app-patterns.md
 
 One frame for every screen of the app: a left sidebar, then a main panel that stacks an optional environment banner, a navbar, a toolbar and the content. The content scrolls inside the panel; the sidebar, banner, navbar and toolbar stay in place.
+
+**Component.** `MqAppNavigation` draws the sidebar's navigation: its groups, links and counts, expanded or folded to the rail. The frame, the brand block, the signed-in person, the environment banner, the navbar and the toolbar are drawn by the app.
 
 **Sidebar.** On the surface (`--mq-surface`) with a `--mq-border-light` hairline on its right edge, `--mq-sidebar-width` wide.
 
@@ -507,6 +509,8 @@ Source: guidelines/app-patterns.md
 
 The list behind every review screen: a filter toolbar, then a table whose rows carry a condition tile, a status pill and code chips. It extends the app table of layout, Tables.
 
+**Component.** `MqDataTable` draws the table, `MqFilterSelect` the select with its label inside, `MqSegmentedFilter` the segmented control, and `MqStatusPill` the status pill. The clear-filters button, the condition tile and the code chips are drawn by the app.
+
 **Filters**, in the shell's toolbar (app shell, above):
 
 - **Select with its label inside**: 32 px high, the surface, a `--mq-border` border, the small radius; the label in muted text, the value in ink Outfit 500. Each option ends with its count, and an option whose count is zero is muted but still listed.
@@ -554,6 +558,8 @@ Stays in the app: the conditions and their codes, the wording of each state, the
 Source: guidelines/app-patterns.md
 
 A large dialog where one decision is taken: context on the left, process on the right, actions at the foot. Its proportions and pane heights stay fixed from item to item, so nothing jumps while a person works through a list.
+
+**Component.** `MqReviewWindow` draws the frame, the header, the two panes with their tabs and steps, and the footer's place; `MqStepper` draws the progress line, and `MqActionBar` the footer's actions with the reason a disabled one gives. The condition tile, the source tags, the choice cards, the result card, the held decision card and the alerts are drawn by the app.
 
 **Frame.** On the surface with the overlay radius (`--mq-radius-overlay`) and `--mq-shadow-medium`, inset `--mq-space-5` from the viewport plus the safe-area insets, at most 1320 px wide. Escape closes it, focus stays inside while it is open and returns to the row it came from. Below 768 px it fills the screen with no radius, and its panes stack and scroll as one.
 
@@ -649,6 +655,8 @@ Stays in the app: the passages and where they fall in the text, which codes need
 Source: guidelines/app-patterns.md
 
 The decisions on one item, newest first: who did what, with which values, and which row is in force now. It is read on every item and later as an audit view.
+
+**Component.** `MqTimeline` draws the filters, the rows and the details they open; its marks are `MqTimelineDot` (the dot), `MqEventTag` (the event chip) and `MqLiveDot` (the row in force), and `MqLegend` draws the key.
 
 **Filters** above it: a row of toggle buttons, "All" then one per source, each with its count in Geist Mono, tertiary; a `--mq-border` border with the small radius, never a pill. A filter that is on is navy (`--mq-on-accent` on `--mq-accent`), its count in `--mq-accent-pale`, and carries `aria-pressed`.
 
@@ -872,9 +880,10 @@ Source: guidelines/accessibility.md
 
 Source: guidelines/specialising.md
 
-The design system ships framework-neutral outputs only: CSS custom properties (`dist/tokens.css`), resolved values (`dist/tokens.json`), a Tailwind theme (`dist/tailwind.css`), the kit contract for kit renderers (`dist/kit-contract.css`), the shared `mq-` CSS, fonts, icons and brand files. It ships no framework component.
+The design system ships framework-neutral outputs only: CSS custom properties (`dist/tokens.css`), resolved values (`dist/tokens.json`), a Tailwind theme (`dist/tailwind.css`), the kit contract for kit renderers (`dist/kit-contract.css`), the shared `mq-` CSS, fonts, icons and brand files. Its core outputs hold no framework component.
 
-- Wiring the tokens into a component library (Nuxt UI, shadcn/ui, Radix, MUI) belongs to the consumer. For example, a component library that names its error colour `error` maps it to `--mq-danger` in the app, not here.
+- The one exception is the optional `@medquantis/ui` package of ADR-0009, a second package of this repository for Nuxt apps: the Nuxt UI theme wired to the tokens and the presentation components that review screens share. Each draws an app pattern, which names it; an app takes the component rather than drawing its own, and a pattern that names none is drawn by the app. The core never imports from it.
+- Wiring the tokens into any other component library (shadcn/ui, Radix, MUI) belongs to the consumer. For example, a component library that names its error colour `error` maps it to `--mq-danger` in the app, not here.
 - When two consumers need the same wiring, it may ship here as a separate optional export generated from the tokens, never as part of the core outputs.
 - Apps with a component library take the tokens and the Tailwind theme only. They do not load the `mq-` component CSS and never load `kit-contract.css`, whose unprefixed names collide with framework variables.
 

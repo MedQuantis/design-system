@@ -69,6 +69,9 @@ const STATES = {
 } as const;
 const look = computed(() => STATES[props.kind]);
 
+// One id per card, so two cards on a page each keep their own title as their name.
+const titleId = useId();
+
 // The live line is drawn empty and filled once mounted: a region that arrives holding its text
 // is not announced, and an error page can come back as a new node after each failed retry.
 const announcing = ref(false);
@@ -93,7 +96,7 @@ async function copyRequestId(): Promise<void> {
     :data-state="look.state"
     :data-tone="look.tone"
     data-testid="error-card"
-    aria-labelledby="error-state-title"
+    :aria-labelledby="titleId"
   >
     <div class="grid size-10 place-items-center rounded-md" :class="look.tile" aria-hidden="true">
       <UIcon :name="look.icon" class="size-5.5" />
@@ -105,7 +108,7 @@ async function copyRequestId(): Promise<void> {
       >{{ eyebrow }}</span
     >
     <h2
-      id="error-state-title"
+      :id="titleId"
       class="font-display text-(length:--mq-font-size-h3) leading-tight font-medium"
     >
       {{ title }}

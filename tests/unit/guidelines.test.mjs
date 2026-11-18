@@ -363,7 +363,7 @@ test("app-patterns.md holds the seven Maintainer patterns, reads the #38 tokens 
 // entry here fails, so it cannot ship undocumented.
 const PATTERN_COMPONENTS = {
   "App shell": ["MqAppNavigation"],
-  "Sign-in, access refused and error pages": [],
+  "Sign-in, access refused and error pages": ["MqErrorState"],
   "Overview: queue boxes and coverage cards": [],
   "Review table: filters, condition tile, status pill, code chips": ["MqDataTable", "MqSegmentedFilter", "MqFilterSelect", "MqStatusPill"],
   "Decision modal": ["MqReviewWindow", "MqStepper", "MqActionBar"],

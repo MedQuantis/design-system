@@ -464,6 +464,8 @@ After sign-in the person lands on the page they asked for, never on a default ho
 
 The status word and the icon carry each state together with its colour, never the colour alone (accessibility). Under `prefers-reduced-motion` the icon does not turn and the button reads "Retrying".
 
+**Component.** `MqErrorState` draws the error card of the three states: its icon tile, status word, title, sentence, the address asked for, the request ID frame with its copy button, the retry with its live line, and the way back. The sign-in page and the access refused page are drawn by the app.
+
 Stays in the app: the sign-in address and its return path, the role name and who assigns it, the request ID value, and the wording of each state.
 
 ## Overview: queue boxes and coverage cards

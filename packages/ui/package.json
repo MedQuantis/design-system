@@ -34,12 +34,12 @@
   "dependencies": {
     "@iconify-json/lucide": "1.2.143",
     "@medquantis/design-system": "1.6.0",
-    "@nuxt/ui": "4.11.3",
-    "reka-ui": "2.10.5"
+    "@nuxt/ui": "4.12.0",
+    "reka-ui": "2.11.0"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "1.17.0",
-    "@nuxt/test-utils": "4.3.3",
+    "@nuxt/test-utils": "4.4.0",
     "@types/node": "26.6.5",
     "@vue/test-utils": "2.5.1",
     "eslint": "10.7.0",
